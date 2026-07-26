@@ -1,0 +1,79 @@
+# Product
+
+<!-- impeccable:product-schema 1 -->
+
+## Platform
+
+web
+
+## Users
+
+O público principal são donos e gerentes de barbearias e salões de beleza. Profissionais autônomos do mesmo setor também fazem parte do público quando precisam organizar a própria agenda e operação.
+
+Essas pessoas trabalham em uma rotina de atendimento presencial, geralmente com horários coordenados por caderno, conversas manuais no WhatsApp ou planilhas. O trabalho central é manter a agenda organizada, reduzir faltas, acompanhar a equipe e entender o resultado financeiro do negócio sem aumentar o trabalho administrativo.
+
+## Product Purpose
+
+O Marc é um sistema web de agendamentos para barbearias e salões. Ele permite que clientes agendem sozinhos, automatiza lembretes no WhatsApp e reúne a gestão operacional e financeira do estabelecimento.
+
+O produto existe para reduzir o trabalho manual, evitar conflitos de horário, diminuir faltas e dar aos responsáveis uma visão confiável da agenda, do faturamento e das comissões.
+
+Sucesso significa uma operação previsível: clientes conseguem marcar com facilidade, a equipe sabe o que acontecerá no dia e os responsáveis gastam menos tempo confirmando horários ou reconciliando controles separados.
+
+## Positioning
+
+O diferencial central do Marc é reunir, no mesmo sistema e para a rotina específica de barbearias e salões:
+
+- agendamento online disponível 24 horas;
+- lembretes automáticos no WhatsApp;
+- agenda individual por profissional;
+- gestão financeira;
+- cálculo de comissões;
+- relatórios e histórico de clientes.
+
+A proposta não é apenas substituir uma agenda digital, mas conectar aquisição do agendamento, confirmação, execução do atendimento e controle financeiro em um único fluxo.
+
+## Operating Context
+
+- Clientes escolhem serviço, profissional e horário.
+- A equipe acompanha a agenda diária e o status dos atendimentos.
+- Lembretes são enviados pelo WhatsApp antes do horário.
+- Donos e gerentes acompanham entradas, saídas, faturamento e comissões.
+- O produto substitui ou consolida controles antes espalhados entre caderno, WhatsApp manual e planilhas.
+- O acesso acontece pelo navegador em celular ou computador; clientes não precisam instalar um aplicativo para agendar.
+
+## Capabilities and Constraints
+
+- O produto é uma aplicação web.
+- A experiência pública atual é uma landing page React/Vite sem backend.
+- O protótipo atual simula o cadastro para teste, mas não cria contas nem persiste dados.
+- Agendamento online, lembretes no WhatsApp, gestão financeira, agenda por profissional, comissões e relatórios são capacidades confirmadas como parte da proposta do produto.
+- Preços, limites de planos, período de teste e regras comerciais ainda não foram confirmados como fatos do produto.
+- Números de clientes, agendamentos, redução de faltas e tempo economizado ainda não foram confirmados.
+
+## Brand Commitments
+
+- Nome: Marc.
+- A marca usa um mascote de cachorro estilizado com óculos escuros.
+- A voz é direta, confiante e sem jargão técnico.
+- A comunicação deve falar em benefícios concretos para donos e gerentes: tempo economizado, menos faltas, mais organização, melhor controle e profissionalismo.
+- O logotipo fornecido está em `public/assets/marc-logo.png`; a versão recortada usada na interface está em `public/assets/marc-logo-cropped.png`.
+- O sistema visual existente está documentado em `design.md` e implementado em `src/styles.css`.
+
+## Evidence on Hand
+
+- `prompt.md`: estrutura e conteúdo pretendidos para a landing page.
+- `design.md`: identidade visual, tokens, tipografia e tom de voz existentes.
+- `src/App.jsx`: implementação da landing page e demonstração das capacidades do produto.
+- `public/assets/marc-dashboard-hero.png`: mockup ilustrativo do produto.
+- `public/assets/marc-whatsapp-reminder.png`: mockup ilustrativo do fluxo de lembretes.
+
+Os preços, métricas, nomes de estabelecimentos, fotografias e depoimentos presentes na landing page são ilustrativos. Trabalhos futuros não devem tratá-los como clientes reais, resultados comprovados ou condições comerciais vigentes sem nova confirmação.
+
+## Product Principles
+
+1. **Diminuir trabalho manual:** cada fluxo deve economizar ações repetitivas para donos, gerentes e equipe.
+2. **Manter a operação previsível:** agenda, confirmações, financeiro e comissões precisam formar uma visão coerente do negócio.
+3. **Facilitar para o cliente final:** marcar um horário deve ser possível a qualquer momento, sem ligação, conversa demorada ou instalação de aplicativo.
+4. **Falar em resultados concretos:** o produto deve explicar seu valor por meio de tempo, organização, redução de faltas e controle, sem jargão técnico.
+5. **Não fabricar prova:** métricas, depoimentos, preços e alegações quantitativas devem permanecer claramente ilustrativos até serem validados.
