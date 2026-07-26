@@ -90,6 +90,8 @@ blockquote { margin-top: 0; }
 
 .brand {
   width: 120px;
+  display: inline-flex;
+  align-items: center;
   flex: 0 0 auto;
 }
 

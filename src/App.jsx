@@ -502,7 +502,7 @@ export function App() {
           </section>
         </main>
 
-        <footer className="footer">
+        <footer className="footer" id="rodape">
           <div className="container footer__top">
             <div className="footer__brand">
               <Brand />
