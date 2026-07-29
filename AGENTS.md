@@ -9,3 +9,9 @@ When implementing from a selected generated mock, treat that image as the source
 Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts/prepare-sites-build.mjs`, and `tests/sites-worker.test.mjs` intact so the same local prototype can be handed to Sites. Before a Sites handoff, run `npm run build` and `npm run test:sites`; the build must leave `dist/client/index.html`, `dist/server/index.js`, and `dist/.openai/hosting.json`.
 
 Product truth is recorded in `PRODUCT.md`. Treat the current pricing, metrics, establishment names, portraits, and testimonials as illustrative until the user explicitly confirms real commercial terms or evidence.
+
+The project uses Next.js as the permanent frontend foundation so the future authenticated platform, public scheduling routes, and Hub can grow in the same architecture. Do not migrate the landing page back to Vite.
+
+The hero and final CTA use the provided animated WebGL gradient language. Keep future gradient surfaces within the Marc orange-and-neutral palette, provide a solid fallback, pause expensive animation when offscreen or hidden, and reduce — rather than completely freeze — the shader speed under `prefers-reduced-motion`.
+
+The hero copy, proof badges, and product mockup must remain structurally separated at every breakpoint: no negative mockup margins, no oversized mobile crop, and no overlap between copy or badges and the visual. Keep the footer logo at the same compact optical width as the header logo.

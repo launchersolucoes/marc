@@ -45,10 +45,11 @@ A proposta não é apenas substituir uma agenda digital, mas conectar aquisiçã
 ## Capabilities and Constraints
 
 - O produto é uma aplicação web.
-- A experiência pública atual é uma landing page React/Vite sem backend.
-- O protótipo atual simula o cadastro para teste, mas não cria contas nem persiste dados.
+- A experiência pública atual é uma landing page Next.js com exportação estática e sem backend.
+- O protótipo atual simula a reserva de um teste de 7 dias, mas não cria contas, envia dados, persiste contatos nem realiza cobranças.
 - Agendamento online, lembretes no WhatsApp, gestão financeira, agenda por profissional, comissões e relatórios são capacidades confirmadas como parte da proposta do produto.
-- Preços, limites de planos, período de teste e regras comerciais ainda não foram confirmados como fatos do produto.
+- O lançamento está planejado com assinatura e teste de 7 dias antes da cobrança.
+- Preços, limites de planos e demais regras comerciais ainda não foram confirmados como fatos do produto.
 - Números de clientes, agendamentos, redução de faltas e tempo economizado ainda não foram confirmados.
 
 ## Brand Commitments
@@ -58,13 +59,13 @@ A proposta não é apenas substituir uma agenda digital, mas conectar aquisiçã
 - A voz é direta, confiante e sem jargão técnico.
 - A comunicação deve falar em benefícios concretos para donos e gerentes: tempo economizado, menos faltas, mais organização, melhor controle e profissionalismo.
 - O logotipo fornecido está em `public/assets/marc-logo.png`; a versão recortada usada na interface está em `public/assets/marc-logo-cropped.png`.
-- O sistema visual existente está documentado em `design.md` e implementado em `src/styles.css`.
+- O sistema visual existente está documentado em `design.md` e implementado em `src/app/globals.css`.
 
 ## Evidence on Hand
 
 - `prompt.md`: estrutura e conteúdo pretendidos para a landing page.
 - `design.md`: identidade visual, tokens, tipografia e tom de voz existentes.
-- `src/App.jsx`: implementação da landing page e demonstração das capacidades do produto.
+- `src/app/landing-page.jsx`: implementação da landing page e demonstração das capacidades do produto.
 - `public/assets/marc-dashboard-hero.png`: mockup ilustrativo do produto.
 - `public/assets/marc-whatsapp-reminder.png`: mockup ilustrativo do fluxo de lembretes.
 

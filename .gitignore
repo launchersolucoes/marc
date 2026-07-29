@@ -1,5 +1,9 @@
 node_modules/
 dist/
+.next/
+out/
+.next-dev*.log
+implementation-next-*.png
 *.tar.gz
 
 # impeccable-live-ignore-start
