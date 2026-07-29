@@ -59,6 +59,7 @@ A proposta não é apenas substituir uma agenda digital, mas conectar aquisiçã
 - A voz é direta, confiante e sem jargão técnico.
 - A comunicação deve falar em benefícios concretos para donos e gerentes: tempo economizado, menos faltas, mais organização, melhor controle e profissionalismo.
 - O logotipo fornecido está em `public/assets/marc-logo.png`; a versão recortada usada na interface está em `public/assets/marc-logo-cropped.png`.
+- O mascote isolado está em `public/assets/marc-mascot.png`; o favicon oficial está em `src/app/icon.png`.
 - O sistema visual existente está documentado em `design.md` e implementado em `src/app/globals.css`.
 
 ## Evidence on Hand

@@ -117,6 +117,8 @@ Não reintroduzir os antigos `radial-gradient` e `linear-gradient` nessas superf
 - Vetoriais, monocromáticas (branco no tema escuro / preto suave no tema claro), formas arredondadas, poucos detalhes
 - Símbolo: cachorro estilizado, preenchimento sólido, sem contorno/sombra/gradiente/3D, óculos escuros como elemento marcante, alto contraste
 - Manter o logo em versão neutra (preto/branco) — não recolorir o mascote de laranja; o laranja fica reservado para CTAs e destaques de UI
+- O recorte oficial isolado do mascote está em `public/assets/marc-mascot.png`.
+- O favicon usa o mascote preto sobre fundo `--accent` em `src/app/icon.png`, garantindo contraste consistente em abas claras e escuras.
 
 ### Fotografias (se usadas)
 - Alto contraste, pessoas reais, ambiente moderno, luz suave, tom premium (ex.: cliente sendo atendido em barbearia/salão/esmalteria)
