@@ -12,6 +12,31 @@ O público principal são donos e gerentes de barbearias e salões de beleza. Pr
 
 Essas pessoas trabalham em uma rotina de atendimento presencial, geralmente com horários coordenados por caderno, conversas manuais no WhatsApp ou planilhas. O trabalho central é manter a agenda organizada, reduzir faltas, acompanhar a equipe e entender o resultado financeiro do negócio sem aumentar o trabalho administrativo.
 
+## Confirmed MVP Scope
+
+- Cadastro e autenticação.
+- Cadastro e configuração do estabelecimento.
+- Cadastro de profissionais e equipe.
+- Cadastro de serviços.
+- Agenda interna.
+- Página pública de agendamento.
+
+## Roles and Permissions
+
+- **Admin da plataforma:** equipe da Launcher, proprietária do Marc, com acesso administrativo global.
+- **Dono do estabelecimento:** administra o negócio e pode também atuar como profissional.
+- **Gerente:** visualiza e opera a agenda completa do estabelecimento.
+- **Recepcionista:** visualiza e opera a agenda completa do estabelecimento.
+- **Profissional:** visualiza e opera apenas a própria agenda.
+
+Os papéis pertencem ao contexto de cada estabelecimento. Uma mesma pessoa pode ser dona do estabelecimento e também possuir um perfil profissional.
+
+## Scheduling Rules
+
+- Cada profissional define os próprios serviços, valores, duração e demais regras de atendimento.
+- O estabelecimento mantém nome, endereço, telefone, horário de funcionamento, logo, serviços, preços e equipe.
+- A possibilidade de dono ou gerente alterar regras definidas por um profissional ainda depende de confirmação.
+
 ## Product Purpose
 
 O Marc é um sistema web de agendamentos para barbearias e salões. Ele permite que clientes agendem sozinhos, automatiza lembretes no WhatsApp e reúne a gestão operacional e financeira do estabelecimento.
@@ -48,6 +73,8 @@ A proposta não é apenas substituir uma agenda digital, mas conectar aquisiçã
 - A experiência pública atual é uma landing page Next.js com exportação estática e sem backend.
 - O protótipo atual simula a reserva de um teste de 7 dias, mas não cria contas, envia dados, persiste contatos nem realiza cobranças.
 - Agendamento online, lembretes no WhatsApp, gestão financeira, agenda por profissional, comissões e relatórios são capacidades confirmadas como parte da proposta do produto.
+- O primeiro MVP inclui autenticação, estabelecimentos, equipe, serviços, agenda interna e página pública de agendamento.
+- Pagamentos e automações de WhatsApp ficam para uma fase posterior.
 - O lançamento está planejado com assinatura e teste de 7 dias antes da cobrança.
 - Preços, limites de planos e demais regras comerciais ainda não foram confirmados como fatos do produto.
 - Números de clientes, agendamentos, redução de faltas e tempo economizado ainda não foram confirmados.

@@ -1,0 +1,2 @@
+-- Dados demonstrativos serão adicionados quando as primeiras telas autenticadas
+-- estiverem prontas. Produção nunca deve depender deste arquivo.
