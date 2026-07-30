@@ -1,5 +1,6 @@
 import {
   CalendarDays,
+  ChartNoAxesCombined,
   CircleDollarSign,
   LayoutDashboard,
   LogOut,
@@ -29,6 +30,7 @@ const navigation = [
   ["equipe", "/app/equipe", UserRound, "Equipe"],
   ["financeiro", "/app/financeiro", CircleDollarSign, "Financeiro"],
   ["comissoes", "/app/comissoes", Percent, "Comissões"],
+  ["relatorios", "/app/relatorios", ChartNoAxesCombined, "Relatórios"],
 ];
 
 export default function AppShell({ active, membership, user, children }) {
@@ -39,7 +41,8 @@ export default function AppShell({ active, membership, user, children }) {
     "M";
   const visibleNavigation = navigation.filter(([key]) =>
     (key !== "financeiro" || ["owner", "manager"].includes(membership.role)) &&
-    (key !== "comissoes" || ["owner", "manager", "professional"].includes(membership.role))
+    (key !== "comissoes" || ["owner", "manager", "professional"].includes(membership.role)) &&
+    (key !== "relatorios" || ["owner", "manager"].includes(membership.role))
   );
   const mobileNavigation = visibleNavigation.filter(([key]) =>
     ["home", "agenda", "clientes", "servicos", membership.role === "professional" ? "comissoes" : "financeiro"].includes(key)

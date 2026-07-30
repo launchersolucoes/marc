@@ -1,6 +1,7 @@
 import {
   ArrowRight,
   CalendarDays,
+  ChartNoAxesCombined,
   Check,
   ChevronDown,
   CircleDollarSign,
@@ -116,6 +117,7 @@ export default async function AppHomePage() {
           <Link href="/app/equipe"><UserRound size={19} /> Equipe</Link>
           {["owner", "manager"].includes(membership.role) && <Link href="/app/financeiro"><CircleDollarSign size={19} /> Financeiro</Link>}
           {["owner", "manager", "professional"].includes(membership.role) && <Link href="/app/comissoes"><Percent size={19} /> Comissões</Link>}
+          {["owner", "manager"].includes(membership.role) && <Link href="/app/relatorios"><ChartNoAxesCombined size={19} /> Relatórios</Link>}
         </nav>
         <div className="app-sidebar__bottom">
           <Link href="/app/configuracoes"><Settings size={19} /> Configurações</Link>

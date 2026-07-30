@@ -1,11 +1,13 @@
 import {
   ArrowDownRight,
   ArrowUpRight,
+  ChartNoAxesCombined,
   CircleDollarSign,
   ReceiptText,
   WalletCards,
 } from "lucide-react";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import AppShell from "../../../components/app-shell";
 import ExpenseForm from "../../../components/expense-form";
 import { getAppContext } from "../../../lib/app-context";
@@ -77,6 +79,7 @@ export default async function FinancePage() {
             <h1>Financeiro</h1>
             <p>Atendimentos concluídos viram entradas automaticamente. Registre as saídas para acompanhar o saldo real.</p>
           </div>
+          <Link className="button button--secondary" href="/app/relatorios"><ChartNoAxesCombined size={16} /> Ver relatórios</Link>
         </header>
 
         <section className="finance-summary" aria-label="Resumo financeiro do mês">
