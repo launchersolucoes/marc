@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AnimatedGradient } from "../components/ui/animated-gradient";
 import {
@@ -242,7 +243,7 @@ function ThemeToggle({ theme, onToggle }) {
   );
 }
 
-function ButtonLink({ children, href = "#cadastro", variant = "primary", className = "" }) {
+function ButtonLink({ children, href = "/cadastro", variant = "primary", className = "" }) {
   return (
     <a className={`button button--${variant} ${className}`} href={href}>
       {children}
@@ -310,7 +311,6 @@ function FeatureGroup({ group }) {
 export default function LandingPage() {
   const [theme, setTheme] = useState("dark");
   const [menuOpen, setMenuOpen] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
     setTheme(document.documentElement.dataset.theme || "dark");
@@ -321,11 +321,6 @@ export default function LandingPage() {
     document.documentElement.dataset.theme = nextTheme;
     localStorage.setItem("marc-theme", nextTheme);
     setTheme(nextTheme);
-  }
-
-  function handleSubmit(event) {
-    event.preventDefault();
-    setSubmitted(true);
   }
 
   return (
@@ -605,27 +600,17 @@ export default function LandingPage() {
               <h2>Troque o improviso por uma operação que simplesmente funciona.</h2>
               <p>Reserve seu teste de 7 dias. Quando o acesso for liberado, você poderá conhecer a plataforma antes de escolher uma assinatura.</p>
             </div>
-            <div className="signup-panel">
-              {submitted ? (
-                <div className="signup-success" role="status" aria-live="polite">
-                  <CheckCircle2 size={34} />
-                  <h3>Reserva simulada com sucesso.</h3>
-                  <p>Esta prévia não envia nem armazena dados. O fluxo real será conectado quando a plataforma abrir.</p>
-                  <button type="button" className="button button--secondary" onClick={() => setSubmitted(false)}>Voltar ao formulário</button>
-                </div>
-              ) : (
-                <form onSubmit={handleSubmit}>
-                  <label htmlFor="name">Seu nome</label>
-                  <input id="name" name="name" autoComplete="name" maxLength={80} placeholder="Como podemos chamar você?" required />
-                  <label htmlFor="whatsapp">WhatsApp</label>
-                  <input id="whatsapp" name="whatsapp" type="tel" inputMode="tel" autoComplete="tel" maxLength={24} aria-describedby="whatsapp-hint" placeholder="(00) 00000-0000" required />
-                  <small id="whatsapp-hint" className="field-hint">Use o número com DDD.</small>
-                  <label htmlFor="business">Nome do estabelecimento</label>
-                  <input id="business" name="business" autoComplete="organization" maxLength={100} placeholder="Ex.: Studio Marc" required />
-                  <button className="button button--primary" type="submit">Reservar meu teste <ArrowRight size={17} /></button>
-                  <small className="form-disclaimer"><ShieldCheck size={14} /> Demonstração sem envio, armazenamento ou cobrança.</small>
-                </form>
-              )}
+            <div className="signup-panel signup-panel--access">
+              <span className="signup-panel__eyebrow"><ShieldCheck size={15} /> Teste de 7 dias</span>
+              <h3>Crie sua conta e monte a base do seu negócio.</h3>
+              <p>Em poucos minutos, você configura o estabelecimento e abre o primeiro painel do Marc.</p>
+              <ul>
+                <li><Check size={16} /> Sem cartão para começar</li>
+                <li><Check size={16} /> Acesso seguro por e-mail e senha</li>
+                <li><Check size={16} /> Configuração guiada do estabelecimento</li>
+              </ul>
+              <ButtonLink>Criar minha conta <ArrowRight size={17} /></ButtonLink>
+              <Link className="signup-panel__login" href="/entrar">Já tenho uma conta</Link>
             </div>
           </div>
         </section>
