@@ -9,12 +9,26 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import AppShell from "../../../components/app-shell";
+import AppointmentActions from "../../../components/appointment-actions";
 import AppointmentForm from "../../../components/appointment-form";
 import AvailabilityForm from "../../../components/availability-form";
 import TimeOffForm from "../../../components/time-off-form";
 import { getAppContext } from "../../../lib/app-context";
 
 export const metadata = { title: "Agenda — Marc" };
+
+const statusLabels = {
+  pending: "Pendente",
+  confirmed: "Confirmado",
+  in_progress: "Em atendimento",
+  completed: "Concluído",
+  cancelled: "Cancelado",
+  no_show: "Faltou",
+};
+
+function money(value) {
+  return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value / 100);
+}
 
 function dateInBrazil() {
   return new Intl.DateTimeFormat("en-CA", {
@@ -47,6 +61,7 @@ function timeParts(date) {
 export default async function AgendaPage({ searchParams }) {
   const query = await searchParams;
   const selectedDate = /^\d{4}-\d{2}-\d{2}$/.test(query?.date || "") ? query.date : dateInBrazil();
+  const selectedAppointmentId = /^[0-9a-f-]{36}$/i.test(query?.appointment || "") ? query.appointment : "";
   const view = query?.view === "disponibilidade" ? "disponibilidade" : "agenda";
   const { supabase, user, membership, establishment, professional } = await getAppContext();
 
@@ -64,7 +79,7 @@ export default async function AgendaPage({ searchParams }) {
       professionalsQuery,
       supabase
         .from("appointments")
-        .select("id, starts_at, ends_at, status, price_cents, professional:professionals(id, display_name, color), customer:customers(full_name, phone), professional_service:professional_services(duration_minutes, service:services(name))")
+        .select("id, starts_at, ends_at, status, price_cents, notes, payment_method, professional:professionals(id, display_name, color), customer:customers(full_name, phone, email), professional_service:professional_services(duration_minutes, service:services(name))")
         .eq("establishment_id", establishment.id)
         .gte("starts_at", `${selectedDate}T00:00:00-03:00`)
         .lt("starts_at", `${dayEnd}T00:00:00-03:00`)
@@ -90,6 +105,7 @@ export default async function AgendaPage({ searchParams }) {
   }).format(new Date(`${selectedDate}T12:00:00Z`));
   const dateLabel = rawDateLabel.charAt(0).toUpperCase() + rawDateLabel.slice(1);
   const appointmentCount = appointments?.length || 0;
+  const selectedAppointment = appointments?.find((item) => item.id === selectedAppointmentId);
   const hours = Array.from({ length: 13 }, (_, index) => index + 8);
 
   return (
@@ -141,10 +157,10 @@ export default async function AgendaPage({ searchParams }) {
                           const top = Math.max(0, (start.hour - 8) * 60 + start.minute);
                           const duration = Math.max(32, (end.hour * 60 + end.minute) - (start.hour * 60 + start.minute));
                           return (
-                            <article className="schedule-event" key={appointment.id} style={{ top: `${top}px`, height: `${duration}px`, "--team-color": item.color || "#ffa500" }}>
+                            <Link className={`schedule-event is-${appointment.status}`} href={`/app/agenda?date=${selectedDate}&appointment=${appointment.id}`} key={appointment.id} style={{ top: `${top}px`, height: `${duration}px`, "--team-color": item.color || "#ffa500" }}>
                               <strong>{appointment.customer.full_name}</strong>
                               <span>{String(start.hour).padStart(2, "0")}:{String(start.minute).padStart(2, "0")} · {appointment.professional_service.service.name}</span>
-                            </article>
+                            </Link>
                           );
                         })}
                       </div>
@@ -156,7 +172,30 @@ export default async function AgendaPage({ searchParams }) {
               )}
             </section>
             <aside className="appointment-form-card">
-              {activeProfessionals.length
+              {selectedAppointment ? (
+                <div className="appointment-detail">
+                  <div className="appointment-detail__top">
+                    <Link href={`/app/agenda?date=${selectedDate}`}><ArrowLeft size={15} /> Voltar para novo atendimento</Link>
+                    <span className={`status-badge is-${selectedAppointment.status}`}>{statusLabels[selectedAppointment.status]}</span>
+                  </div>
+                  <div className="appointment-detail__identity">
+                    <span>{selectedAppointment.customer.full_name.slice(0, 1).toUpperCase()}</span>
+                    <div><h2>{selectedAppointment.customer.full_name}</h2><p>{selectedAppointment.customer.phone}</p></div>
+                  </div>
+                  <dl>
+                    <div><dt>Serviço</dt><dd>{selectedAppointment.professional_service.service.name}</dd></div>
+                    <div><dt>Profissional</dt><dd>{selectedAppointment.professional.display_name}</dd></div>
+                    <div><dt>Horário</dt><dd>{new Intl.DateTimeFormat("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: "America/Sao_Paulo" }).format(new Date(selectedAppointment.starts_at))}</dd></div>
+                    <div><dt>Valor</dt><dd>{money(selectedAppointment.price_cents)}</dd></div>
+                  </dl>
+                  {selectedAppointment.notes && <div className="appointment-detail__note"><strong>Observações</strong><p>{selectedAppointment.notes}</p></div>}
+                  {["completed", "cancelled", "no_show"].includes(selectedAppointment.status) ? (
+                    <p className="inline-note">Este atendimento está encerrado e permanece no histórico do cliente.</p>
+                  ) : (
+                    <AppointmentActions appointmentId={selectedAppointment.id} status={selectedAppointment.status} />
+                  )}
+                </div>
+              ) : activeProfessionals.length
                 ? <AppointmentForm professionals={activeProfessionals} defaultDate={selectedDate} />
                 : <div className="inline-note">Adicione um profissional para criar atendimentos.</div>}
             </aside>

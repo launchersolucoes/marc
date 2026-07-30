@@ -113,7 +113,7 @@ export default async function AppHomePage() {
           <Link href="/app/clientes"><UsersRound size={19} /> Clientes</Link>
           <Link href="/app/servicos"><Scissors size={19} /> Serviços</Link>
           <Link href="/app/equipe"><UserRound size={19} /> Equipe</Link>
-          <Link href="/app/financeiro"><CircleDollarSign size={19} /> Financeiro</Link>
+          {["owner", "manager"].includes(membership.role) && <Link href="/app/financeiro"><CircleDollarSign size={19} /> Financeiro</Link>}
         </nav>
         <div className="app-sidebar__bottom">
           <Link href="/app/configuracoes"><Settings size={19} /> Configurações</Link>

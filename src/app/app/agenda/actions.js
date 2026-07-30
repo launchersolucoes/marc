@@ -102,3 +102,30 @@ export async function createAppointment(_previousState, formData) {
   revalidatePath("/app");
   return { error: "", success: "Atendimento confirmado na agenda." };
 }
+
+export async function transitionAppointment(_previousState, formData) {
+  const appointmentId = value(formData, "appointmentId");
+  const status = value(formData, "status");
+  const allowed = ["confirmed", "in_progress", "completed", "cancelled", "no_show"];
+  if (!appointmentId || !allowed.includes(status)) {
+    return { error: "Essa mudança de status não é válida.", success: "" };
+  }
+
+  const { supabase } = await authenticatedContext();
+  const { error } = await supabase.rpc("transition_appointment_status", {
+    target_appointment_id: appointmentId,
+    target_status: status,
+    target_payment_method: status === "completed" ? value(formData, "paymentMethod") : null,
+    status_reason: value(formData, "reason"),
+  });
+
+  if (error) return { error: "Não foi possível atualizar o atendimento. Recarregue e tente novamente.", success: "" };
+
+  revalidatePath("/app/agenda");
+  revalidatePath("/app/financeiro");
+  revalidatePath("/app");
+  return {
+    error: "",
+    success: status === "completed" ? "Atendimento concluído e lançado no caixa." : "Status atualizado.",
+  };
+}

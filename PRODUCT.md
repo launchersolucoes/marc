@@ -72,8 +72,9 @@ A proposta não é apenas substituir uma agenda digital, mas conectar aquisiçã
 - O produto é uma aplicação web.
 - A base permanente é uma aplicação Next.js conectada ao Supabase, com autenticação, banco relacional e políticas de acesso por estabelecimento.
 - Cadastro por e-mail e senha, onboarding do estabelecimento, serviços, equipe, disponibilidade, agenda interna, clientes e agendamento público já persistem dados reais.
+- O ciclo do atendimento já permite confirmar, iniciar, concluir, cancelar e registrar falta. Atendimentos concluídos geram uma entrada financeira vinculada e dono/gerência podem registrar despesas no caixa mensal.
 - Convites de equipe já geram links individuais vinculados ao e-mail e com validade de 7 dias; o envio automático por e-mail ainda não foi conectado.
-- Agendamento online, lembretes no WhatsApp, gestão financeira, agenda por profissional, comissões e relatórios são capacidades confirmadas como parte da proposta do produto.
+- Agendamento online, lembretes no WhatsApp, gestão financeira, agenda por profissional, comissões e relatórios são capacidades confirmadas como parte da proposta do produto. A primeira entrega da gestão financeira — entradas por atendimento, saídas manuais e saldo mensal — já está implementada.
 - O primeiro MVP inclui autenticação, estabelecimentos, equipe, serviços, agenda interna e página pública de agendamento; esse núcleo já está implementado e segue em endurecimento.
 - Pagamentos e automações de WhatsApp ficam para uma fase posterior.
 - O lançamento está planejado com assinatura e teste de 7 dias antes da cobrança.

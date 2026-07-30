@@ -35,6 +35,9 @@ export default function AppShell({ active, membership, user, children }) {
     user.user_metadata?.full_name?.split(" ")[0] ||
     user.email?.split("@")[0] ||
     "M";
+  const visibleNavigation = navigation.filter(([key]) =>
+    key !== "financeiro" || ["owner", "manager"].includes(membership.role)
+  );
 
   return (
     <main className="app-layout">
@@ -43,7 +46,7 @@ export default function AppShell({ active, membership, user, children }) {
           <Image src="/assets/marc-logo-cropped.png" alt="Marc" width={208} height={90} priority />
         </Link>
         <nav aria-label="Navegação do painel">
-          {navigation.map(([key, href, Icon, label]) => (
+          {visibleNavigation.map(([key, href, Icon, label]) => (
             <Link className={active === key ? "is-active" : ""} href={href} key={key}>
               <Icon size={19} /> {label}
             </Link>
