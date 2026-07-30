@@ -8,7 +8,7 @@ export default async function SignInPage({ searchParams }) {
 
   return (
     <AuthShell mode="signin">
-      <AuthForm mode="signin" externalError={params?.erro || ""} />
+      <AuthForm mode="signin" externalError={params?.erro || ""} nextPath={params?.next || ""} />
     </AuthShell>
   );
 }

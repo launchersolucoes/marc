@@ -31,8 +31,8 @@ export async function updateSession(request) {
     },
   );
 
-  const { data } = await supabase.auth.getClaims();
-  const isAuthenticated = Boolean(data?.claims);
+  const { data } = await supabase.auth.getUser();
+  const isAuthenticated = Boolean(data?.user);
   const pathname = request.nextUrl.pathname;
 
   if (pathname === "/" && request.nextUrl.searchParams.has("code")) {

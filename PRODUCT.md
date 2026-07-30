@@ -70,10 +70,11 @@ A proposta não é apenas substituir uma agenda digital, mas conectar aquisiçã
 ## Capabilities and Constraints
 
 - O produto é uma aplicação web.
-- A experiência pública atual é uma landing page Next.js com exportação estática e sem backend.
-- O protótipo atual simula a reserva de um teste de 7 dias, mas não cria contas, envia dados, persiste contatos nem realiza cobranças.
+- A base permanente é uma aplicação Next.js conectada ao Supabase, com autenticação, banco relacional e políticas de acesso por estabelecimento.
+- Cadastro por e-mail e senha, onboarding do estabelecimento, serviços, equipe, disponibilidade, agenda interna, clientes e agendamento público já persistem dados reais.
+- Convites de equipe já geram links individuais vinculados ao e-mail e com validade de 7 dias; o envio automático por e-mail ainda não foi conectado.
 - Agendamento online, lembretes no WhatsApp, gestão financeira, agenda por profissional, comissões e relatórios são capacidades confirmadas como parte da proposta do produto.
-- O primeiro MVP inclui autenticação, estabelecimentos, equipe, serviços, agenda interna e página pública de agendamento.
+- O primeiro MVP inclui autenticação, estabelecimentos, equipe, serviços, agenda interna e página pública de agendamento; esse núcleo já está implementado e segue em endurecimento.
 - Pagamentos e automações de WhatsApp ficam para uma fase posterior.
 - O lançamento está planejado com assinatura e teste de 7 dias antes da cobrança.
 - Preços, limites de planos e demais regras comerciais ainda não foram confirmados como fatos do produto.

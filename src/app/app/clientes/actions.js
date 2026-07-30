@@ -1,0 +1,57 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { createClient } from "../../../lib/supabase/server";
+
+function value(formData, name) {
+  return String(formData.get(name) || "").trim();
+}
+
+export async function createCustomer(_previousState, formData) {
+  const fullName = value(formData, "fullName");
+  const phone = value(formData, "phone");
+  const email = value(formData, "email").toLowerCase();
+  const notes = value(formData, "notes");
+
+  if (fullName.length < 2 || phone.length < 8) {
+    return { error: "Informe o nome e um telefone válido.", success: "" };
+  }
+
+  const supabase = await createClient();
+  const { data: authData } = await supabase.auth.getUser();
+  if (!authData.user) redirect("/entrar");
+
+  const { data: membership } = await supabase
+    .from("establishment_memberships")
+    .select("establishment_id, role")
+    .eq("user_id", authData.user.id)
+    .eq("status", "active")
+    .limit(1)
+    .maybeSingle();
+  if (!membership) redirect("/onboarding");
+
+  if (!["owner", "manager", "receptionist"].includes(membership.role)) {
+    return { error: "Seu acesso permite consultar clientes da sua agenda, mas não criar contatos.", success: "" };
+  }
+
+  const { data: existing } = await supabase
+    .from("customers")
+    .select("id")
+    .eq("establishment_id", membership.establishment_id)
+    .eq("phone", phone)
+    .maybeSingle();
+  if (existing) return { error: "Já existe um cliente com esse telefone.", success: "" };
+
+  const { error } = await supabase.from("customers").insert({
+    establishment_id: membership.establishment_id,
+    full_name: fullName,
+    phone,
+    email: email || null,
+    notes: notes || null,
+  });
+  if (error) return { error: "Não foi possível salvar esse cliente.", success: "" };
+
+  revalidatePath("/app/clientes");
+  return { error: "", success: `${fullName} entrou na sua base de clientes.` };
+}

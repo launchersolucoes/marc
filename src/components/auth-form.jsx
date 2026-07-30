@@ -27,7 +27,7 @@ function SubmitButton({ mode }) {
   );
 }
 
-export default function AuthForm({ mode, externalError = "" }) {
+export default function AuthForm({ mode, externalError = "", nextPath = "" }) {
   const action = mode === "signup" ? signUp : signIn;
   const [state, formAction] = useActionState(action, initialState);
   const [showPassword, setShowPassword] = useState(false);
@@ -35,6 +35,7 @@ export default function AuthForm({ mode, externalError = "" }) {
 
   return (
     <form className="auth-form" action={formAction}>
+      {nextPath && <input type="hidden" name="next" value={nextPath} />}
       {isSignup && (
         <div className="field">
           <label htmlFor="fullName">Seu nome</label>
@@ -104,7 +105,7 @@ export default function AuthForm({ mode, externalError = "" }) {
 
       <p className="auth-switch">
         {isSignup ? "Já possui uma conta?" : "Ainda não possui uma conta?"}{" "}
-        <Link href={isSignup ? "/entrar" : "/cadastro"}>
+        <Link href={`${isSignup ? "/entrar" : "/cadastro"}${nextPath ? `?next=${encodeURIComponent(nextPath)}` : ""}`}>
           {isSignup ? "Entrar" : "Começar teste"}
         </Link>
       </p>
