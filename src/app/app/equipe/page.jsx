@@ -12,7 +12,7 @@ export default async function TeamPage() {
   const [{ data: professionals }, { data: invitations }] = await Promise.all([
     supabase
       .from("professionals")
-      .select("id, display_name, contact_email, contact_phone, color, user_id, is_active")
+      .select("id, display_name, contact_email, contact_phone, color, user_id, is_active, commission_percent")
       .eq("establishment_id", establishment.id)
       .order("created_at"),
     canManage
@@ -55,6 +55,7 @@ export default async function TeamPage() {
                   <div className="team-contact">
                     {professional.contact_email && <span><Mail size={14} /> {professional.contact_email}</span>}
                     {professional.contact_phone && <span><Phone size={14} /> {professional.contact_phone}</span>}
+                    <span>Comissão: {Number(professional.commission_percent || 0).toLocaleString("pt-BR")}%</span>
                   </div>
                   <em>{professional.is_active ? "Ativo" : "Inativo"}</em>
                 </article>

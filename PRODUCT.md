@@ -73,11 +73,12 @@ A proposta não é apenas substituir uma agenda digital, mas conectar aquisiçã
 - A base permanente é uma aplicação Next.js conectada ao Supabase, com autenticação, banco relacional e políticas de acesso por estabelecimento.
 - Cadastro por e-mail e senha, onboarding do estabelecimento, serviços, equipe, disponibilidade, agenda interna, clientes e agendamento público já persistem dados reais.
 - O ciclo do atendimento já permite confirmar, iniciar, concluir, cancelar e registrar falta. Atendimentos concluídos geram uma entrada financeira vinculada e dono/gerência podem registrar despesas no caixa mensal.
+- Comissões por profissional são configuráveis por dono ou gerente, registradas como fotografia da taxa no momento da conclusão e exibidas em um relatório mensal; profissionais visualizam somente o próprio resultado.
 - Dono e gerente já podem atualizar os dados públicos do estabelecimento; cada usuário pode atualizar o próprio perfil, solicitar recuperação de senha por e-mail e trocar a senha em uma sessão autenticada.
 - Convites de equipe já geram links individuais vinculados ao e-mail e com validade de 7 dias; o envio automático por e-mail ainda não foi conectado.
 - Agendamento online, lembretes no WhatsApp, gestão financeira, agenda por profissional, comissões e relatórios são capacidades confirmadas como parte da proposta do produto. A primeira entrega da gestão financeira — entradas por atendimento, saídas manuais e saldo mensal — já está implementada.
 - O primeiro MVP inclui autenticação, estabelecimentos, equipe, serviços, agenda interna e página pública de agendamento; esse núcleo já está implementado e segue em endurecimento.
-- Pagamentos e automações de WhatsApp ficam para uma fase posterior.
+- Pagamentos e automações de WhatsApp ficam para uma fase posterior. A infraestrutura da Meta WhatsApp Cloud API está explicitamente em espera até a Launcher possuir uma conta empresarial e um número dedicado.
 - O lançamento está planejado com assinatura e teste de 7 dias antes da cobrança.
 - Preços, limites de planos e demais regras comerciais ainda não foram confirmados como fatos do produto.
 - Números de clientes, agendamentos, redução de faltas e tempo economizado ainda não foram confirmados.

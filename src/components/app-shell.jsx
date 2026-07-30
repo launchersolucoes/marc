@@ -3,6 +3,7 @@ import {
   CircleDollarSign,
   LayoutDashboard,
   LogOut,
+  Percent,
   Scissors,
   Settings,
   UserRound,
@@ -27,6 +28,7 @@ const navigation = [
   ["servicos", "/app/servicos", Scissors, "Serviços"],
   ["equipe", "/app/equipe", UserRound, "Equipe"],
   ["financeiro", "/app/financeiro", CircleDollarSign, "Financeiro"],
+  ["comissoes", "/app/comissoes", Percent, "Comissões"],
 ];
 
 export default function AppShell({ active, membership, user, children }) {
@@ -36,7 +38,11 @@ export default function AppShell({ active, membership, user, children }) {
     user.email?.split("@")[0] ||
     "M";
   const visibleNavigation = navigation.filter(([key]) =>
-    key !== "financeiro" || ["owner", "manager"].includes(membership.role)
+    (key !== "financeiro" || ["owner", "manager"].includes(membership.role)) &&
+    (key !== "comissoes" || ["owner", "manager", "professional"].includes(membership.role))
+  );
+  const mobileNavigation = visibleNavigation.filter(([key]) =>
+    ["home", "agenda", "clientes", "servicos", membership.role === "professional" ? "comissoes" : "financeiro"].includes(key)
   );
 
   return (
@@ -73,7 +79,7 @@ export default function AppShell({ active, membership, user, children }) {
       </section>
 
       <nav className="app-mobile-nav" aria-label="Navegação rápida">
-        {navigation.slice(0, 4).map(([key, href, Icon, label]) => (
+        {mobileNavigation.map(([key, href, Icon, label]) => (
           <Link className={active === key ? "is-active" : ""} href={href} key={key}>
             <Icon size={20} /><span>{label === "Visão geral" ? "Início" : label}</span>
           </Link>

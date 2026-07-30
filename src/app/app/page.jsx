@@ -7,6 +7,7 @@ import {
   Clock3,
   LayoutDashboard,
   LogOut,
+  Percent,
   Scissors,
   Settings,
   Sparkles,
@@ -114,6 +115,7 @@ export default async function AppHomePage() {
           <Link href="/app/servicos"><Scissors size={19} /> Serviços</Link>
           <Link href="/app/equipe"><UserRound size={19} /> Equipe</Link>
           {["owner", "manager"].includes(membership.role) && <Link href="/app/financeiro"><CircleDollarSign size={19} /> Financeiro</Link>}
+          {["owner", "manager", "professional"].includes(membership.role) && <Link href="/app/comissoes"><Percent size={19} /> Comissões</Link>}
         </nav>
         <div className="app-sidebar__bottom">
           <Link href="/app/configuracoes"><Settings size={19} /> Configurações</Link>
@@ -226,6 +228,8 @@ export default async function AppHomePage() {
         <Link href="/app/agenda"><CalendarDays size={20} /><span>Agenda</span></Link>
         <Link href="/app/clientes"><UsersRound size={20} /><span>Clientes</span></Link>
         <Link href="/app/servicos"><Scissors size={20} /><span>Serviços</span></Link>
+        {["owner", "manager"].includes(membership.role) && <Link href="/app/financeiro"><CircleDollarSign size={20} /><span>Financeiro</span></Link>}
+        {membership.role === "professional" && <Link href="/app/comissoes"><Percent size={20} /><span>Comissões</span></Link>}
       </nav>
     </main>
   );
