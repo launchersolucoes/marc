@@ -8,6 +8,7 @@ import {
   Clock3,
   LayoutDashboard,
   LogOut,
+  ListTodo,
   Percent,
   Scissors,
   Settings,
@@ -112,6 +113,7 @@ export default async function AppHomePage() {
         <nav aria-label="Navegação do painel">
           <Link className="is-active" href="/app"><LayoutDashboard size={19} /> Visão geral</Link>
           <Link href="/app/agenda"><CalendarDays size={19} /> Agenda</Link>
+          <Link href="/app/lista-espera"><ListTodo size={19} /> Lista de espera</Link>
           <Link href="/app/clientes"><UsersRound size={19} /> Clientes</Link>
           <Link href="/app/servicos"><Scissors size={19} /> Serviços</Link>
           <Link href="/app/equipe"><UserRound size={19} /> Equipe</Link>

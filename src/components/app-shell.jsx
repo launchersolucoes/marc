@@ -4,6 +4,7 @@ import {
   CircleDollarSign,
   LayoutDashboard,
   LogOut,
+  ListTodo,
   Percent,
   Scissors,
   Settings,
@@ -25,6 +26,7 @@ const roleLabels = {
 const navigation = [
   ["home", "/app", LayoutDashboard, "Visão geral"],
   ["agenda", "/app/agenda", CalendarDays, "Agenda"],
+  ["lista-espera", "/app/lista-espera", ListTodo, "Lista de espera"],
   ["clientes", "/app/clientes", UsersRound, "Clientes"],
   ["servicos", "/app/servicos", Scissors, "Serviços"],
   ["equipe", "/app/equipe", UserRound, "Equipe"],

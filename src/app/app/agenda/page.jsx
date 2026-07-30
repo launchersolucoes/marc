@@ -4,6 +4,7 @@ import {
   Ban,
   CalendarDays,
   Clock3,
+  ListTodo,
   Settings2,
   UserRound,
 } from "lucide-react";
@@ -13,6 +14,7 @@ import AppointmentActions from "../../../components/appointment-actions";
 import AppointmentForm from "../../../components/appointment-form";
 import AvailabilityForm from "../../../components/availability-form";
 import TimeOffForm from "../../../components/time-off-form";
+import RescheduleForm from "../../../components/reschedule-form";
 import { getAppContext } from "../../../lib/app-context";
 
 export const metadata = { title: "Agenda — Marc" };
@@ -56,6 +58,20 @@ function timeParts(date) {
     hour: Number(parts.find((part) => part.type === "hour")?.value || 0),
     minute: Number(parts.find((part) => part.type === "minute")?.value || 0),
   };
+}
+
+function localDateTimeValue(date) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: "America/Sao_Paulo",
+  }).formatToParts(new Date(date));
+  const get = (type) => parts.find((part) => part.type === type)?.value;
+  return `${get("year")}-${get("month")}-${get("day")}T${get("hour")}:${get("minute")}`;
 }
 
 export default async function AgendaPage({ searchParams }) {
@@ -120,6 +136,7 @@ export default async function AgendaPage({ searchParams }) {
           <nav className="segmented-nav" aria-label="Visões da agenda">
             <Link className={view === "agenda" ? "is-active" : ""} href={`/app/agenda?date=${selectedDate}`}><CalendarDays size={16} /> Agenda</Link>
             <Link className={view === "disponibilidade" ? "is-active" : ""} href={`/app/agenda?view=disponibilidade&date=${selectedDate}`}><Settings2 size={16} /> Disponibilidade</Link>
+            <Link href="/app/lista-espera"><ListTodo size={16} /> Lista de espera</Link>
           </nav>
         </header>
 
@@ -189,6 +206,9 @@ export default async function AgendaPage({ searchParams }) {
                     <div><dt>Valor</dt><dd>{money(selectedAppointment.price_cents)}</dd></div>
                   </dl>
                   {selectedAppointment.notes && <div className="appointment-detail__note"><strong>Observações</strong><p>{selectedAppointment.notes}</p></div>}
+                  {["pending", "confirmed"].includes(selectedAppointment.status) && (
+                    <RescheduleForm appointmentId={selectedAppointment.id} defaultStart={localDateTimeValue(selectedAppointment.starts_at)} />
+                  )}
                   {["completed", "cancelled", "no_show"].includes(selectedAppointment.status) ? (
                     <p className="inline-note">Este atendimento está encerrado e permanece no histórico do cliente.</p>
                   ) : (

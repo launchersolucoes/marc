@@ -129,3 +129,28 @@ export async function transitionAppointment(_previousState, formData) {
     success: status === "completed" ? "Atendimento concluído e lançado no caixa." : "Status atualizado.",
   };
 }
+
+export async function rescheduleAppointment(_previousState, formData) {
+  const appointmentId = value(formData, "appointmentId");
+  const startsAt = value(formData, "startsAt");
+  if (!appointmentId || !startsAt) return { error: "Informe a nova data e hora.", success: "" };
+
+  const { supabase } = await authenticatedContext();
+  const { error } = await supabase.rpc("reschedule_appointment", {
+    target_appointment_id: appointmentId,
+    local_start: startsAt,
+  });
+
+  if (error) {
+    const message = error.message.toLowerCase();
+    if (message.includes("availability")) return { error: "O novo horário está fora da disponibilidade do profissional.", success: "" };
+    if (message.includes("blocked")) return { error: "O profissional bloqueou esse período.", success: "" };
+    if (message.includes("conflict")) return { error: "Já existe um atendimento nesse horário.", success: "" };
+    if (message.includes("cannot")) return { error: "Este atendimento não pode mais ser reagendado.", success: "" };
+    return { error: "Não foi possível reagendar. Revise o horário e tente novamente.", success: "" };
+  }
+
+  revalidatePath("/app/agenda");
+  revalidatePath("/app");
+  return { error: "", success: "Atendimento reagendado com sucesso." };
+}

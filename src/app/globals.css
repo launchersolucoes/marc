@@ -1670,6 +1670,39 @@ html[data-theme="light"] .public-booking-header img { filter: brightness(0); }
 .appointment-actions { display: grid; gap: 16px; padding-top: 2px; }
 .appointment-actions__grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
 .appointment-actions__grid .button { width: 100%; }
+.reschedule-form { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 9px; padding: 14px; border-radius: 12px; background: var(--surface-elevated); }
+.reschedule-form .field { gap: 6px; }
+.reschedule-form .field input { min-height: 40px; background: var(--surface); }
+.reschedule-form .button { min-height: 40px; }
+.reschedule-form .form-message { grid-column: 1 / -1; margin: 0; }
+
+.waitlist-board, .waitlist-empty { border: 1px solid var(--border); border-radius: 16px; background: var(--surface); }
+.waitlist-board { padding: 24px; }
+.waitlist-list { display: grid; }
+.waitlist-list > article { display: grid; grid-template-columns: minmax(210px, .65fr) minmax(320px, 1fr) minmax(300px, .8fr); gap: 22px; padding: 20px 0; border-top: 1px solid var(--border); }
+.waitlist-identity { display: grid; grid-template-columns: 44px minmax(0, 1fr); align-items: start; gap: 12px; }
+.waitlist-identity > span { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 12px; background: var(--accent); color: var(--text-on-accent); font-weight: 800; }
+.waitlist-identity > div { display: grid; gap: 6px; min-width: 0; padding-top: 3px; }
+.waitlist-identity strong { overflow: hidden; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
+.waitlist-identity small { display: flex; align-items: center; gap: 5px; color: var(--text-muted); font-size: 10px; }
+.waitlist-list dl { display: grid; grid-template-columns: 1fr 1fr; gap: 15px 20px; margin: 0; }
+.waitlist-list dl > div { display: grid; gap: 4px; }
+.waitlist-list dt { display: flex; align-items: center; gap: 5px; color: var(--text-muted); font-size: 9px; }
+.waitlist-list dd { min-width: 0; margin: 0; overflow-wrap: anywhere; font-size: 11px; font-weight: 720; }
+.waitlist-note { grid-column: 1 / 3; margin: -6px 0 0 56px; color: var(--text-muted); font-size: 11px; }
+.waitlist-actions { display: grid; gap: 8px; }
+.waitlist-actions > form:first-child { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 8px; }
+.waitlist-actions .field { gap: 5px; }
+.waitlist-actions input { min-height: 38px; padding-inline: 9px; background: var(--surface-elevated); }
+.waitlist-actions .button { min-height: 38px; padding-inline: 11px; font-size: 10px; }
+.waitlist-cancel { width: fit-content; min-height: 28px; display: inline-flex; align-items: center; gap: 5px; padding: 0; border: 0; background: transparent; color: var(--text-muted); font-size: 10px; font-weight: 700; cursor: pointer; }
+.waitlist-cancel:hover { color: var(--danger); }
+.waitlist-actions .form-message { margin: 0; }
+.waitlist-empty { min-height: 430px; display: grid; place-items: center; align-content: center; padding: 28px; text-align: center; }
+.waitlist-empty > svg { color: var(--accent); }
+.waitlist-empty h2 { margin: 18px 0 7px; font-size: 22px; }
+.waitlist-empty p { max-width: 48ch; margin: 0; color: var(--text-muted); font-size: 13px; line-height: 1.55; }
+.booking-waitlisted > div { background: var(--surface-elevated); color: var(--accent-strong); }
 
 .finance-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 20px; }
 .finance-summary article { min-height: 142px; display: flex; flex-direction: column; padding: 20px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); }
@@ -1860,6 +1893,10 @@ html[data-theme="light"] .public-booking-header img { filter: brightness(0); }
   .team-side-forms, .customer-form-card { order: -1; }
   .team-side-forms { grid-template-columns: 1fr 1fr; }
   .public-booking-layout { grid-template-columns: minmax(0, .7fr) minmax(480px, 1.3fr); gap: 48px; }
+  .waitlist-list > article { grid-template-columns: minmax(220px, .7fr) minmax(320px, 1fr); }
+  .waitlist-actions { grid-column: 1 / -1; grid-template-columns: minmax(0, 1fr) auto; align-items: start; padding-left: 56px; }
+  .waitlist-actions > form:first-child { max-width: 520px; }
+  .waitlist-actions .form-message { grid-column: 1 / -1; }
 }
 
 @media (max-width: 800px) {
@@ -1880,6 +1917,9 @@ html[data-theme="light"] .public-booking-header img { filter: brightness(0); }
   .schedule-toolbar { grid-template-columns: 1fr auto; }
   .schedule-toolbar > strong { grid-column: 1 / -1; grid-row: 2; padding-bottom: 14px; }
   .schedule-toolbar > span { grid-column: 2; grid-row: 1; }
+  .waitlist-list > article { grid-template-columns: 1fr; }
+  .waitlist-note { grid-column: auto; margin-left: 56px; }
+  .waitlist-actions { grid-column: auto; grid-template-columns: 1fr; padding-left: 0; }
 }
 
 @media (max-width: 560px) {
@@ -1923,4 +1963,8 @@ html[data-theme="light"] .public-booking-header img { filter: brightness(0); }
   .availability-times input { flex: 1; }
   .dashboard-appointments article { grid-template-columns: 50px 1fr; padding-block: 10px; }
   .dashboard-appointments em { grid-column: 2; }
+  .reschedule-form, .waitlist-actions > form:first-child { grid-template-columns: 1fr; }
+  .reschedule-form .button, .waitlist-actions .button { width: 100%; }
+  .waitlist-board { padding: 20px; }
+  .waitlist-list dl { grid-template-columns: 1fr; padding-left: 56px; }
 }

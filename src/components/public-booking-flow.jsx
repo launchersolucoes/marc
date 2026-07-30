@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarCheck2, Check, ChevronRight, Clock3, LoaderCircle, Scissors, UserRound } from "lucide-react";
+import { CalendarCheck2, Check, ChevronRight, Clock3, ListTodo, LoaderCircle, Scissors, UserRound } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "../lib/supabase/client";
 
@@ -34,6 +34,7 @@ export default function PublicBookingFlow({ establishment }) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [confirmed, setConfirmed] = useState(null);
+  const [waitlisted, setWaitlisted] = useState(null);
   const selectedOffering = offerings.find((item) => item.id === offeringId);
 
   useEffect(() => {
@@ -71,14 +72,34 @@ export default function PublicBookingFlow({ establishment }) {
   async function submit(event) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
-    if (!slot) {
-      setError("Escolha um horário para continuar.");
-      return;
-    }
-
     setSubmitting(true);
     setError("");
     const supabase = createClient();
+    if (!slot) {
+      const { data, error: waitlistError } = await supabase.rpc("create_public_waitlist_entry", {
+        establishment_slug: establishment.slug,
+        target_professional_service_id: offeringId,
+        customer_name: String(form.get("name") || ""),
+        customer_phone: String(form.get("phone") || ""),
+        customer_email: String(form.get("email") || ""),
+        target_preferred_date: date,
+        waitlist_notes: "",
+      });
+      setSubmitting(false);
+      if (waitlistError) {
+        setError("Não foi possível entrar na lista de espera. Revise seus dados e tente novamente.");
+        return;
+      }
+      setWaitlisted({
+        id: data,
+        name: String(form.get("name") || ""),
+        service: selectedOffering.service_name,
+        professional: selectedOffering.professional_name,
+        date,
+      });
+      return;
+    }
+
     const { data, error: bookingError } = await supabase.rpc("create_public_appointment", {
       establishment_slug: establishment.slug,
       target_professional_service_id: offeringId,
@@ -139,6 +160,23 @@ export default function PublicBookingFlow({ establishment }) {
     );
   }
 
+  if (waitlisted) {
+    return (
+      <div className="booking-confirmed booking-waitlisted" role="status">
+        <div><ListTodo size={28} /></div>
+        <span>Lista de espera</span>
+        <h2>Pedido registrado, {waitlisted.name.split(" ")[0]}.</h2>
+        <p>A equipe já pode ver sua preferência e entrar em contato quando encontrar um horário.</p>
+        <dl>
+          <div><dt>Serviço</dt><dd>{waitlisted.service}</dd></div>
+          <div><dt>Profissional</dt><dd>{waitlisted.professional}</dd></div>
+          <div><dt>Data desejada</dt><dd>{new Intl.DateTimeFormat("pt-BR", { dateStyle: "long", timeZone: "UTC" }).format(new Date(`${waitlisted.date}T12:00:00Z`))}</dd></div>
+        </dl>
+        <small>O contato automático por WhatsApp será ativado em uma próxima etapa. Por enquanto, o estabelecimento fará o retorno diretamente.</small>
+      </div>
+    );
+  }
+
   return (
     <form className="public-booking-form" onSubmit={submit}>
       <div className="booking-form-heading">
@@ -185,7 +223,7 @@ export default function PublicBookingFlow({ establishment }) {
               );
             })}
           </div>
-        ) : <p>Nenhum horário livre nesta data. Escolha outro dia.</p>}
+        ) : <p>Nenhum horário livre nesta data. Escolha outro dia ou entre na lista de espera.</p>}
       </fieldset>
 
       <div className="booking-customer-fields">
@@ -195,8 +233,12 @@ export default function PublicBookingFlow({ establishment }) {
       </div>
 
       {error && <p className="form-message form-message--error" role="alert">{error}</p>}
-      <button className="button button--primary booking-submit" type="submit" disabled={!slot || submitting}>
-        {submitting ? <><LoaderCircle className="spin" size={18} /> Confirmando</> : <>Confirmar meu horário <ChevronRight size={18} /></>}
+      <button className="button button--primary booking-submit" type="submit" disabled={submitting || loadingSlots || Boolean(error && !slots.length)}>
+        {submitting
+          ? <><LoaderCircle className="spin" size={18} /> Enviando</>
+          : slot
+            ? <>Confirmar meu horário <ChevronRight size={18} /></>
+            : <><ListTodo size={18} /> Entrar na lista de espera</>}
       </button>
     </form>
   );
