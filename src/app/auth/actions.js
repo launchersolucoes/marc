@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import { createClient } from "../../lib/supabase/server";
 
 const initialState = { error: "", success: "" };
@@ -87,4 +88,37 @@ export async function signOut() {
   const supabase = await createClient();
   await supabase.auth.signOut();
   redirect("/entrar");
+}
+
+export async function requestPasswordReset(_previousState = initialState, formData) {
+  const email = value(formData, "email").toLowerCase();
+  if (!email.includes("@")) return { error: "Informe um e-mail válido.", success: "" };
+
+  const supabase = await createClient();
+  const requestHeaders = await headers();
+  const origin = requestHeaders.get("origin") || process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const confirmationUrl = new URL("/auth/confirm", origin);
+  confirmationUrl.searchParams.set("next", "/nova-senha");
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: confirmationUrl.toString(),
+  });
+
+  if (error) return { error: "Não foi possível enviar a recuperação agora. Aguarde um instante e tente novamente.", success: "" };
+  return { error: "", success: "Se o e-mail estiver cadastrado, você receberá um link para criar uma nova senha." };
+}
+
+export async function updatePassword(_previousState = initialState, formData) {
+  const password = value(formData, "password");
+  const confirmation = value(formData, "passwordConfirmation");
+  if (password.length < 8) return { error: "Use uma senha com pelo menos 8 caracteres.", success: "" };
+  if (password !== confirmation) return { error: "As senhas informadas não são iguais.", success: "" };
+
+  const supabase = await createClient();
+  const { data: authData } = await supabase.auth.getUser();
+  if (!authData.user) redirect("/entrar?erro=Abra novamente o link de recuperação.");
+
+  const { error } = await supabase.auth.updateUser({ password });
+  if (error) return { error: "Não foi possível atualizar a senha. Solicite um novo link e tente novamente.", success: "" };
+  redirect("/app/configuracoes?senha=alterada");
 }

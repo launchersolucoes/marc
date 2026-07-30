@@ -66,7 +66,7 @@ export default function AuthForm({ mode, externalError = "", nextPath = "" }) {
       <div className="field">
         <div className="field__label-row">
           <label htmlFor="password">Senha</label>
-          {!isSignup && <span>mínimo 8 caracteres</span>}
+          {!isSignup && <Link className="auth-forgot" href="/recuperar-senha">Esqueci minha senha</Link>}
         </div>
         <div className="password-field">
           <input

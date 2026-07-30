@@ -1100,6 +1100,8 @@ html[data-theme="light"] .form-message--success { color: #167a4a; }
 .button:disabled { cursor: wait; opacity: .7; }
 .auth-switch { margin: 2px 0 0; text-align: center; color: var(--text-secondary); font-size: 14px; }
 .auth-switch a { color: var(--accent-strong); font-weight: 750; }
+.auth-forgot { color: var(--accent-strong); font-weight: 700; }
+.auth-forgot:hover { color: var(--accent); }
 
 .onboarding-page { min-height: 100svh; background: var(--bg-primary); }
 .onboarding-header {
@@ -1701,6 +1703,38 @@ html[data-theme="light"] .public-booking-header img { filter: brightness(0); }
 .expense-form { display: grid; gap: 18px; }
 .expense-form .field-grid { grid-template-columns: 1fr; margin: 0; }
 .expense-submit { width: 100%; }
+
+.settings-layout { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(330px, .65fr); gap: 20px; align-items: start; }
+.settings-layout--single { grid-template-columns: minmax(0, 1fr) minmax(330px, 440px); }
+.settings-primary, .settings-form--compact, .settings-access, .settings-public-link { border: 1px solid var(--border); border-radius: 16px; background: var(--surface); }
+.settings-primary { padding: 28px; }
+.settings-form { display: grid; gap: 20px; }
+.settings-form--compact, .settings-access { padding: 24px; }
+.settings-section-heading { display: flex; justify-content: space-between; gap: 20px; }
+.settings-section-heading h2, .settings-access h2 { margin: 0; font-size: 20px; letter-spacing: -.025em; }
+.settings-section-heading p, .settings-access p { max-width: 56ch; margin: 6px 0 0; color: var(--text-muted); font-size: 12px; line-height: 1.55; }
+.settings-grid { margin-top: 0; }
+.settings-span-2 { grid-column: 1 / -1; }
+.settings-divider { height: 1px; margin: 7px 0; background: var(--border); }
+.settings-submit { width: fit-content; min-width: 190px; justify-self: end; }
+.settings-aside { display: grid; gap: 20px; }
+.settings-profile-mark { width: 42px; height: 42px; display: grid; place-items: center; margin-bottom: 2px; border-radius: 12px; background: var(--accent); color: var(--text-on-accent); }
+.field-help { margin-top: -2px; color: var(--text-muted); font-size: 10px; line-height: 1.45; }
+.field input[readonly] { background: var(--surface-elevated); color: var(--text-muted); cursor: not-allowed; }
+.settings-access { display: grid; gap: 15px; }
+.settings-access .button { width: 100%; margin-top: 3px; }
+.settings-public-link { min-height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 14px 17px; }
+.settings-public-link > div { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.settings-public-link > div > svg { flex: 0 0 auto; color: var(--accent-strong); }
+.settings-public-link span { display: grid; gap: 3px; min-width: 0; }
+.settings-public-link strong { font-size: 12px; }
+.settings-public-link small { overflow: hidden; color: var(--text-muted); font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.settings-public-link > a { display: flex; align-items: center; gap: 4px; color: var(--accent-strong); font-size: 11px; font-weight: 750; }
+.settings-readonly { min-height: 360px; display: grid; place-items: center; align-content: center; text-align: center; }
+.settings-readonly > svg { color: var(--accent); }
+.settings-readonly h2 { max-width: 23ch; margin: 18px 0 8px; font-size: 22px; }
+.settings-readonly p { max-width: 46ch; margin: 0; color: var(--text-muted); font-size: 13px; line-height: 1.55; }
+.settings-page-message { display: flex; width: fit-content; margin: -14px 0 20px; }
 .appointment-form { display: grid; gap: 17px; }
 .appointment-form__heading > div { width: 42px; height: 42px; display: grid; place-items: center; margin-bottom: 17px; border-radius: 12px; background: var(--accent); color: var(--text-on-accent); }
 .appointment-form__heading h2 { margin: 0 0 6px; font-size: 22px; letter-spacing: -.025em; }
@@ -1741,7 +1775,7 @@ html[data-theme="light"] .public-booking-header img { filter: brightness(0); }
 .dashboard-appointments em { color: var(--accent-strong); font-size: 11px; font-style: normal; font-weight: 700; }
 
 @media (max-width: 1180px) {
-  .team-layout, .agenda-workspace, .availability-layout, .customers-layout, .finance-layout { grid-template-columns: 1fr; }
+  .team-layout, .agenda-workspace, .availability-layout, .customers-layout, .finance-layout, .settings-layout, .settings-layout--single { grid-template-columns: 1fr; }
   .team-form-card, .appointment-form-card, .time-off-card, .finance-expense-card { order: -1; }
   .finance-summary { grid-template-columns: 1fr; }
   .team-side-forms, .customer-form-card { order: -1; }
@@ -1775,6 +1809,10 @@ html[data-theme="light"] .public-booking-header img { filter: brightness(0); }
   .finance-list article { grid-template-columns: 38px 1fr auto; padding: 12px 0; }
   .finance-list time { grid-column: 2; text-align: left; }
   .finance-list em { grid-column: 3; grid-row: 1 / span 2; }
+  .settings-primary, .settings-form--compact, .settings-access { padding: 20px; }
+  .settings-grid { grid-template-columns: 1fr; }
+  .settings-span-2 { grid-column: auto; }
+  .settings-submit { width: 100%; }
   .team-list article { grid-template-columns: 42px 1fr; }
   .team-list article > em { grid-column: 2; }
   .team-contact { grid-column: 2; }

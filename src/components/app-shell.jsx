@@ -53,7 +53,7 @@ export default function AppShell({ active, membership, user, children }) {
           ))}
         </nav>
         <div className="app-sidebar__bottom">
-          <Link href="/app/configuracoes"><Settings size={19} /> Configurações</Link>
+          <Link className={active === "configuracoes" ? "is-active" : ""} href="/app/configuracoes"><Settings size={19} /> Configurações</Link>
           <form action={signOut}><button type="submit"><LogOut size={19} /> Sair</button></form>
         </div>
       </aside>

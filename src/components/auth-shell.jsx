@@ -4,7 +4,12 @@ import Link from "next/link";
 import AppThemeToggle from "./app-theme-toggle";
 
 export default function AuthShell({ children, mode }) {
-  const isSignup = mode === "signup";
+  const content = {
+    signup: ["Comece seu teste", "Primeiro criamos seu acesso. Depois você configura o estabelecimento."],
+    signin: ["Bem-vindo de volta", "Entre para acompanhar sua agenda e sua operação."],
+    recovery: ["Recupere seu acesso", "Enviaremos um link seguro para o e-mail vinculado à sua conta."],
+    "update-password": ["Crie uma nova senha", "Escolha uma senha segura que você ainda não utiliza em outros serviços."],
+  }[mode] || ["Acesse o Marc", "Continue para sua operação."];
 
   return (
     <main className="auth-page">
@@ -53,12 +58,8 @@ export default function AuthShell({ children, mode }) {
         </div>
         <div className="auth-card">
           <div className="auth-card__icon"><ShieldCheck size={22} /></div>
-          <h2>{isSignup ? "Comece seu teste" : "Bem-vindo de volta"}</h2>
-          <p>
-            {isSignup
-              ? "Primeiro criamos seu acesso. Depois você configura o estabelecimento."
-              : "Entre para acompanhar sua agenda e sua operação."}
-          </p>
+          <h2>{content[0]}</h2>
+          <p>{content[1]}</p>
           {children}
         </div>
       </section>

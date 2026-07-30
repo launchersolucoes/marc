@@ -1,0 +1,98 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { createClient } from "../../../lib/supabase/server";
+
+function value(formData, name) {
+  return String(formData.get(name) || "").trim();
+}
+
+async function authenticatedContext() {
+  const supabase = await createClient();
+  const { data: authData } = await supabase.auth.getUser();
+  if (!authData.user) redirect("/entrar");
+
+  const { data: membership } = await supabase
+    .from("establishment_memberships")
+    .select("establishment_id, role")
+    .eq("user_id", authData.user.id)
+    .eq("status", "active")
+    .limit(1)
+    .maybeSingle();
+
+  if (!membership) redirect("/onboarding");
+  return { supabase, user: authData.user, membership };
+}
+
+export async function updateEstablishment(_previousState, formData) {
+  const { supabase, membership } = await authenticatedContext();
+  if (!["owner", "manager"].includes(membership.role)) {
+    return { error: "Seu acesso não permite alterar os dados do estabelecimento.", success: "" };
+  }
+
+  const name = value(formData, "name");
+  const phone = value(formData, "phone");
+  const category = value(formData, "category");
+  const state = value(formData, "state").toUpperCase();
+  const categories = ["barbershop", "salon", "nail_studio", "beauty_studio", "other"];
+
+  if (name.length < 2 || phone.length < 8 || !categories.includes(category)) {
+    return { error: "Revise nome, categoria e telefone do estabelecimento.", success: "" };
+  }
+
+  if (state && state.length !== 2) {
+    return { error: "Informe a UF com duas letras.", success: "" };
+  }
+
+  const { error } = await supabase
+    .from("establishments")
+    .update({
+      name,
+      category,
+      phone,
+      email: value(formData, "email").toLowerCase() || null,
+      address_line: value(formData, "addressLine") || null,
+      address_number: value(formData, "addressNumber") || null,
+      address_complement: value(formData, "addressComplement") || null,
+      neighborhood: value(formData, "neighborhood") || null,
+      city: value(formData, "city") || null,
+      state: state || null,
+      postal_code: value(formData, "postalCode") || null,
+    })
+    .eq("id", membership.establishment_id);
+
+  if (error) return { error: "Não foi possível salvar os dados do estabelecimento.", success: "" };
+
+  revalidatePath("/app");
+  revalidatePath("/app/configuracoes");
+  revalidatePath("/agendar/[slug]", "page");
+  return { error: "", success: "Dados do estabelecimento atualizados." };
+}
+
+export async function updateProfile(_previousState, formData) {
+  const { supabase, user } = await authenticatedContext();
+  const fullName = value(formData, "fullName");
+  const phone = value(formData, "profilePhone");
+
+  if (fullName.length < 2) {
+    return { error: "Informe seu nome completo.", success: "" };
+  }
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({ full_name: fullName, phone: phone || null })
+    .eq("id", user.id);
+
+  if (error) return { error: "Não foi possível atualizar seu perfil.", success: "" };
+
+  const { error: authError } = await supabase.auth.updateUser({
+    data: { ...user.user_metadata, full_name: fullName },
+  });
+
+  if (authError) return { error: "O perfil foi salvo, mas o nome da sessão não pôde ser atualizado.", success: "" };
+
+  revalidatePath("/app");
+  revalidatePath("/app/configuracoes");
+  return { error: "", success: "Seu perfil foi atualizado." };
+}
