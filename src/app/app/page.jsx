@@ -50,8 +50,17 @@ export default async function AppHomePage() {
     authData.user.user_metadata?.full_name?.split(" ")[0] ||
     authData.user.email?.split("@")[0] ||
     "por aí";
+  const today = new Intl.DateTimeFormat("en-CA", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    timeZone: "America/Sao_Paulo",
+  }).format(new Date());
+  const tomorrowDate = new Date(`${today}T12:00:00Z`);
+  tomorrowDate.setUTCDate(tomorrowDate.getUTCDate() + 1);
+  const tomorrow = tomorrowDate.toISOString().slice(0, 10);
 
-  const [{ count: servicesCount }, { count: professionalsCount }, { count: appointmentsCount }] =
+  const [{ count: servicesCount }, { count: professionalsCount }, appointmentsResult, { count: availabilityCount }] =
     await Promise.all([
       supabase
         .from("services")
@@ -64,14 +73,23 @@ export default async function AppHomePage() {
         .eq("is_active", true),
       supabase
         .from("appointments")
-        .select("*", { count: "exact", head: true })
-        .eq("establishment_id", establishment.id),
+        .select("id, starts_at, status, customer:customers(full_name), professional:professionals(display_name), professional_service:professional_services(service:services(name))", { count: "exact" })
+        .eq("establishment_id", establishment.id)
+        .gte("starts_at", `${today}T00:00:00-03:00`)
+        .lt("starts_at", `${tomorrow}T00:00:00-03:00`)
+        .order("starts_at")
+        .limit(5),
+      supabase
+        .from("availability_rules")
+        .select("*", { count: "exact", head: true }),
     ]);
+  const appointmentsCount = appointmentsResult.count || 0;
+  const todayAppointments = appointmentsResult.data || [];
 
   const setupSteps = [
     { label: "Estabelecimento criado", done: true, href: "/app" },
     { label: "Cadastrar primeiro serviço", done: (servicesCount || 0) > 0, href: "/app/servicos" },
-    { label: "Configurar disponibilidade", done: false, href: "/app/agenda" },
+    { label: "Configurar disponibilidade", done: (availabilityCount || 0) > 0, href: "/app/agenda?view=disponibilidade" },
     { label: "Compartilhar página pública", done: false, href: `/agendar/${establishment.slug}` },
   ];
 
@@ -154,19 +172,31 @@ export default async function AppHomePage() {
                 <div><h2>Agenda de hoje</h2><p>Os próximos atendimentos aparecem aqui.</p></div>
                 <Link href="/app/agenda">Ver agenda <ArrowRight size={16} /></Link>
               </div>
-              <div className="agenda-empty">
-                <div className="agenda-empty__visual">
-                  <CalendarDays size={27} />
-                  <span>09:00</span>
-                  <span>10:00</span>
-                  <span>11:00</span>
+              {todayAppointments.length ? (
+                <div className="dashboard-appointments">
+                  {todayAppointments.map((appointment) => (
+                    <article key={appointment.id}>
+                      <time>{new Intl.DateTimeFormat("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: "America/Sao_Paulo" }).format(new Date(appointment.starts_at))}</time>
+                      <div><strong>{appointment.customer.full_name}</strong><span>{appointment.professional_service.service.name} com {appointment.professional.display_name}</span></div>
+                      <em>{appointment.status === "confirmed" ? "Confirmado" : appointment.status}</em>
+                    </article>
+                  ))}
                 </div>
-                <h3>Sua agenda está livre.</h3>
-                <p>Cadastre um serviço para começar a receber agendamentos pelo seu link.</p>
-                <Link className="button button--secondary" href="/app/servicos">
-                  Cadastrar serviço
-                </Link>
-              </div>
+              ) : (
+                <div className="agenda-empty">
+                  <div className="agenda-empty__visual">
+                    <CalendarDays size={27} />
+                    <span>09:00</span>
+                    <span>10:00</span>
+                    <span>11:00</span>
+                  </div>
+                  <h3>Sua agenda está livre.</h3>
+                  <p>Cadastre um serviço e defina seus horários para começar a receber agendamentos.</p>
+                  <Link className="button button--secondary" href="/app/servicos">
+                    Cadastrar serviço
+                  </Link>
+                </div>
+              )}
             </section>
 
             <aside className="activation-panel">
