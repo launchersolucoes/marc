@@ -33,6 +33,12 @@ export async function signIn(_previousState = initialState, formData) {
     };
   }
 
+  const requestedNext = value(formData, "next");
+  if (!requestedNext) {
+    const { data: isPlatformAdmin } = await supabase.rpc("is_platform_admin");
+    if (isPlatformAdmin) redirect("/master");
+  }
+
   redirect(safeNext(formData, "/app"));
 }
 
@@ -76,7 +82,10 @@ export async function signUp(_previousState = initialState, formData) {
     };
   }
 
-  if (data.session) redirect(next);
+  if (data.session) {
+    const { data: isPlatformAdmin } = await supabase.rpc("is_platform_admin");
+    redirect(isPlatformAdmin ? "/master" : next);
+  }
 
   return {
     error: "",

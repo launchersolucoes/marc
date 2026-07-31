@@ -83,6 +83,8 @@ A proposta não é apenas substituir uma agenda digital, mas conectar aquisiçã
 - Pagamentos e automações de WhatsApp ficam para uma fase posterior. A infraestrutura da Meta WhatsApp Cloud API está explicitamente em espera até a Launcher possuir uma conta empresarial e um número dedicado.
 - O lançamento está planejado com assinatura e teste de 7 dias antes da cobrança. A fundação técnica já está implementada: cada novo estabelecimento recebe automaticamente o trial, o acesso operacional é bloqueado após o vencimento sem apagar dados, a página pública de agendamento deixa de aceitar novas reservas e eventos de assinatura ficam registrados para auditoria.
 - Donos e gerentes já visualizam o estado do trial/assinatura dentro do produto. A cobrança automática e o checkout ainda dependem da escolha e integração do provedor de pagamentos.
+- A Launcher possui um painel Master protegido para acompanhar todos os estabelecimentos, profissionais, agendamentos e estados de assinatura. Enquanto a cobrança automática não estiver conectada, administradores da plataforma podem alterar plano, status e prazo de acesso manualmente, com registro de auditoria.
+- A conta `launchersolucoes@gmail.com` é promovida automaticamente a administradora da plataforma quando for criada no Auth do Marc; o painel Master não depende de uma senha de banco compartilhada.
 - Preços, limites de planos e demais regras comerciais ainda não foram confirmados como fatos do produto.
 - Números de clientes, agendamentos, redução de faltas e tempo economizado ainda não foram confirmados.
 
