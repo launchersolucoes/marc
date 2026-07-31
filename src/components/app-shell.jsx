@@ -2,6 +2,7 @@ import {
   CalendarDays,
   ChartNoAxesCombined,
   CircleDollarSign,
+  CreditCard,
   LayoutDashboard,
   LogOut,
   ListTodo,
@@ -15,6 +16,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { signOut } from "../app/auth/actions";
 import AppThemeToggle from "./app-theme-toggle";
+import SubscriptionNotice from "./subscription-notice";
 
 const roleLabels = {
   owner: "Dono",
@@ -35,7 +37,7 @@ const navigation = [
   ["relatorios", "/app/relatorios", ChartNoAxesCombined, "Relatórios"],
 ];
 
-export default function AppShell({ active, membership, user, children }) {
+export default function AppShell({ active, membership, user, children, allowRestricted = false }) {
   const establishment = membership.establishment;
   const firstName =
     user.user_metadata?.full_name?.split(" ")[0] ||
@@ -64,6 +66,9 @@ export default function AppShell({ active, membership, user, children }) {
           ))}
         </nav>
         <div className="app-sidebar__bottom">
+          {["owner", "manager"].includes(membership.role) && (
+            <Link className={active === "assinatura" ? "is-active" : ""} href="/app/assinatura"><CreditCard size={19} /> Plano e assinatura</Link>
+          )}
           <Link className={active === "configuracoes" ? "is-active" : ""} href="/app/configuracoes"><Settings size={19} /> Configurações</Link>
           <form action={signOut}><button type="submit"><LogOut size={19} /> Sair</button></form>
         </div>
@@ -80,6 +85,7 @@ export default function AppShell({ active, membership, user, children }) {
             <div className="app-avatar">{firstName.slice(0, 1).toUpperCase()}</div>
           </div>
         </header>
+        {!allowRestricted && <SubscriptionNotice access={membership.subscriptionAccess} role={membership.role} />}
         {children}
       </section>
 

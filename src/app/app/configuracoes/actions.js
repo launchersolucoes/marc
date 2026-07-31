@@ -1,32 +1,14 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
-import { createClient } from "../../../lib/supabase/server";
+import { getActionContext } from "../../../lib/action-context";
 
 function value(formData, name) {
   return String(formData.get(name) || "").trim();
 }
 
-async function authenticatedContext() {
-  const supabase = await createClient();
-  const { data: authData } = await supabase.auth.getUser();
-  if (!authData.user) redirect("/entrar");
-
-  const { data: membership } = await supabase
-    .from("establishment_memberships")
-    .select("establishment_id, role")
-    .eq("user_id", authData.user.id)
-    .eq("status", "active")
-    .limit(1)
-    .maybeSingle();
-
-  if (!membership) redirect("/onboarding");
-  return { supabase, user: authData.user, membership };
-}
-
 export async function updateEstablishment(_previousState, formData) {
-  const { supabase, membership } = await authenticatedContext();
+  const { supabase, membership } = await getActionContext();
   if (!["owner", "manager"].includes(membership.role)) {
     return { error: "Seu acesso não permite alterar os dados do estabelecimento.", success: "" };
   }
@@ -71,7 +53,7 @@ export async function updateEstablishment(_previousState, formData) {
 }
 
 export async function updateProfile(_previousState, formData) {
-  const { supabase, user } = await authenticatedContext();
+  const { supabase, user } = await getActionContext();
   const fullName = value(formData, "fullName");
   const phone = value(formData, "profilePhone");
 

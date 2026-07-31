@@ -1,8 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
-import { createClient } from "../../../lib/supabase/server";
+import { getActionContext } from "../../../lib/action-context";
 
 function value(formData, name) {
   return String(formData.get(name) || "").trim();
@@ -16,18 +15,7 @@ export async function createProfessional(_previousState, formData) {
 
   if (name.length < 2) return { error: "Informe o nome do profissional.", success: "" };
 
-  const supabase = await createClient();
-  const { data: authData } = await supabase.auth.getUser();
-  if (!authData.user) redirect("/entrar");
-
-  const { data: membership } = await supabase
-    .from("establishment_memberships")
-    .select("establishment_id, role")
-    .eq("user_id", authData.user.id)
-    .eq("status", "active")
-    .limit(1)
-    .maybeSingle();
-  if (!membership) redirect("/onboarding");
+  const { supabase, membership } = await getActionContext();
 
   if (!["owner", "manager"].includes(membership.role)) {
     return { error: "Somente dono ou gerente pode cadastrar profissionais.", success: "" };
@@ -57,17 +45,7 @@ export async function createInvitation(_previousState, formData) {
     return { error: "Informe um e-mail e um tipo de acesso válidos.", success: "", inviteUrl: "" };
   }
 
-  const supabase = await createClient();
-  const { data: authData } = await supabase.auth.getUser();
-  if (!authData.user) redirect("/entrar");
-
-  const { data: membership } = await supabase
-    .from("establishment_memberships")
-    .select("establishment_id, role")
-    .eq("user_id", authData.user.id)
-    .eq("status", "active")
-    .limit(1)
-    .maybeSingle();
+  const { supabase, membership } = await getActionContext();
 
   if (!membership || !["owner", "manager"].includes(membership.role)) {
     return { error: "Somente dono ou gerente pode criar convites.", success: "", inviteUrl: "" };

@@ -1,24 +1,12 @@
 import { ArrowLeft, Check, Clock3, Scissors } from "lucide-react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import ServiceForm from "../../../components/service-form";
-import { createClient } from "../../../lib/supabase/server";
+import { getAppContext } from "../../../lib/app-context";
 
 export const metadata = { title: "Serviços — Marc" };
 
 export default async function ServicesPage() {
-  const supabase = await createClient();
-  const { data: authData } = await supabase.auth.getUser();
-  if (!authData.user) redirect("/entrar");
-
-  const { data: membership } = await supabase
-    .from("establishment_memberships")
-    .select("establishment_id, establishment:establishments(name)")
-    .eq("user_id", authData.user.id)
-    .eq("status", "active")
-    .limit(1)
-    .maybeSingle();
-  if (!membership) redirect("/onboarding");
+  const { supabase, membership, establishment } = await getAppContext();
 
   const { data: services } = await supabase
     .from("services")
@@ -30,7 +18,7 @@ export default async function ServicesPage() {
     <main className="service-page">
       <header className="service-page__topbar">
         <Link href="/app"><ArrowLeft size={17} /> Voltar ao painel</Link>
-        <span>{membership.establishment.name}</span>
+        <span>{establishment.name}</span>
       </header>
       <div className="service-page__layout">
         <section className="service-list">

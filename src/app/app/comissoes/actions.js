@@ -1,8 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
-import { createClient } from "../../../lib/supabase/server";
+import { getActionContext } from "../../../lib/action-context";
 
 export async function updateCommission(_previousState, formData) {
   const professionalId = String(formData.get("professionalId") || "");
@@ -13,9 +12,7 @@ export async function updateCommission(_previousState, formData) {
     return { error: "Informe uma comissão entre 0% e 100%.", success: "" };
   }
 
-  const supabase = await createClient();
-  const { data: authData } = await supabase.auth.getUser();
-  if (!authData.user) redirect("/entrar");
+  const { supabase } = await getActionContext();
 
   const { error } = await supabase.rpc("update_professional_commission", {
     target_professional_id: professionalId,
@@ -30,4 +27,3 @@ export async function updateCommission(_previousState, formData) {
   revalidatePath("/app/equipe");
   return { error: "", success: "Comissão atualizada para os próximos atendimentos." };
 }
-

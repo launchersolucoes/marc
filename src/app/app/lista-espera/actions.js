@@ -1,18 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
-import { createClient } from "../../../lib/supabase/server";
+import { getActionContext } from "../../../lib/action-context";
 
 function value(formData, name) {
   return String(formData.get(name) || "").trim();
-}
-
-async function client() {
-  const supabase = await createClient();
-  const { data } = await supabase.auth.getUser();
-  if (!data.user) redirect("/entrar");
-  return supabase;
 }
 
 export async function scheduleWaitlist(_previousState, formData) {
@@ -20,7 +12,7 @@ export async function scheduleWaitlist(_previousState, formData) {
   const startsAt = value(formData, "startsAt");
   if (!waitlistId || !startsAt) return { error: "Informe uma nova data e hora.", success: "" };
 
-  const supabase = await client();
+  const { supabase } = await getActionContext();
   const { data: appointmentId, error } = await supabase.rpc("schedule_waitlist_entry", {
     target_waitlist_id: waitlistId,
     local_start: startsAt,
@@ -44,7 +36,7 @@ export async function cancelWaitlist(_previousState, formData) {
   const waitlistId = value(formData, "waitlistId");
   if (!waitlistId) return { error: "Solicitação não encontrada.", success: "" };
 
-  const supabase = await client();
+  const { supabase } = await getActionContext();
   const { error } = await supabase.rpc("cancel_waitlist_entry", {
     target_waitlist_id: waitlistId,
   });
@@ -53,4 +45,3 @@ export async function cancelWaitlist(_previousState, formData) {
   revalidatePath("/app/lista-espera");
   return { error: "", success: "Solicitação removida da lista de espera." };
 }
-

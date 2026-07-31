@@ -6,6 +6,7 @@ import {
   ChevronDown,
   CircleDollarSign,
   Clock3,
+  CreditCard,
   LayoutDashboard,
   LogOut,
   ListTodo,
@@ -18,10 +19,10 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import AppThemeToggle from "../../components/app-theme-toggle";
+import SubscriptionNotice from "../../components/subscription-notice";
+import { getAppContext } from "../../lib/app-context";
 import { signOut } from "../auth/actions";
-import { createClient } from "../../lib/supabase/server";
 
 export const metadata = { title: "Painel — Marc" };
 
@@ -33,25 +34,10 @@ const roleLabels = {
 };
 
 export default async function AppHomePage() {
-  const supabase = await createClient();
-  const { data: authData } = await supabase.auth.getUser();
-
-  if (!authData.user) redirect("/entrar");
-
-  const { data: membership } = await supabase
-    .from("establishment_memberships")
-    .select("role, establishment:establishments(id, name, slug)")
-    .eq("user_id", authData.user.id)
-    .eq("status", "active")
-    .limit(1)
-    .maybeSingle();
-
-  if (!membership?.establishment) redirect("/onboarding");
-
-  const establishment = membership.establishment;
+  const { supabase, user, membership, establishment } = await getAppContext();
   const firstName =
-    authData.user.user_metadata?.full_name?.split(" ")[0] ||
-    authData.user.email?.split("@")[0] ||
+    user.user_metadata?.full_name?.split(" ")[0] ||
+    user.email?.split("@")[0] ||
     "por aí";
   const today = new Intl.DateTimeFormat("en-CA", {
     year: "numeric",
@@ -122,6 +108,7 @@ export default async function AppHomePage() {
           {["owner", "manager"].includes(membership.role) && <Link href="/app/relatorios"><ChartNoAxesCombined size={19} /> Relatórios</Link>}
         </nav>
         <div className="app-sidebar__bottom">
+          {["owner", "manager"].includes(membership.role) && <Link href="/app/assinatura"><CreditCard size={19} /> Plano e assinatura</Link>}
           <Link href="/app/configuracoes"><Settings size={19} /> Configurações</Link>
           <form action={signOut}>
             <button type="submit"><LogOut size={19} /> Sair</button>
@@ -141,6 +128,7 @@ export default async function AppHomePage() {
             <div className="app-avatar">{firstName.slice(0, 1).toUpperCase()}</div>
           </div>
         </header>
+        <SubscriptionNotice access={membership.subscriptionAccess} role={membership.role} />
 
         <div className="app-content">
           <header className="dashboard-heading">

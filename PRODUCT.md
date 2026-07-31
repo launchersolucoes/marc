@@ -81,7 +81,8 @@ A proposta não é apenas substituir uma agenda digital, mas conectar aquisiçã
 - Agendamento online, lembretes no WhatsApp, gestão financeira, agenda por profissional, comissões e relatórios são capacidades confirmadas como parte da proposta do produto. A primeira entrega da gestão financeira — entradas por atendimento, saídas manuais e saldo mensal — já está implementada.
 - O primeiro MVP inclui autenticação, estabelecimentos, equipe, serviços, agenda interna e página pública de agendamento; esse núcleo já está implementado e segue em endurecimento.
 - Pagamentos e automações de WhatsApp ficam para uma fase posterior. A infraestrutura da Meta WhatsApp Cloud API está explicitamente em espera até a Launcher possuir uma conta empresarial e um número dedicado.
-- O lançamento está planejado com assinatura e teste de 7 dias antes da cobrança.
+- O lançamento está planejado com assinatura e teste de 7 dias antes da cobrança. A fundação técnica já está implementada: cada novo estabelecimento recebe automaticamente o trial, o acesso operacional é bloqueado após o vencimento sem apagar dados, a página pública de agendamento deixa de aceitar novas reservas e eventos de assinatura ficam registrados para auditoria.
+- Donos e gerentes já visualizam o estado do trial/assinatura dentro do produto. A cobrança automática e o checkout ainda dependem da escolha e integração do provedor de pagamentos.
 - Preços, limites de planos e demais regras comerciais ainda não foram confirmados como fatos do produto.
 - Números de clientes, agendamentos, redução de faltas e tempo economizado ainda não foram confirmados.
 

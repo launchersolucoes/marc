@@ -1,26 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
-import { createClient } from "../../../lib/supabase/server";
+import { getActionContext } from "../../../lib/action-context";
 
 function value(formData, name) {
   return String(formData.get(name) || "").trim();
-}
-
-async function authenticatedContext() {
-  const supabase = await createClient();
-  const { data: authData } = await supabase.auth.getUser();
-  if (!authData.user) redirect("/entrar");
-  const { data: membership } = await supabase
-    .from("establishment_memberships")
-    .select("establishment_id, role")
-    .eq("user_id", authData.user.id)
-    .eq("status", "active")
-    .limit(1)
-    .maybeSingle();
-  if (!membership) redirect("/onboarding");
-  return { supabase, membership };
 }
 
 export async function saveAvailability(_previousState, formData) {
@@ -36,7 +20,7 @@ export async function saveAvailability(_previousState, formData) {
     return { error: "Escolha ao menos um dia de atendimento.", success: "" };
   }
 
-  const { supabase } = await authenticatedContext();
+  const { supabase } = await getActionContext();
   const { error } = await supabase.rpc("configure_weekly_availability", {
     target_professional_id: professionalId,
     schedule,
@@ -57,7 +41,7 @@ export async function createTimeOff(_previousState, formData) {
     return { error: "Informe um período de bloqueio válido.", success: "" };
   }
 
-  const { supabase } = await authenticatedContext();
+  const { supabase } = await getActionContext();
   const { error } = await supabase.rpc("create_professional_time_off", {
     target_professional_id: professionalId,
     local_start: startsAt,
@@ -79,7 +63,7 @@ export async function createAppointment(_previousState, formData) {
     return { error: "Preencha cliente, telefone, serviço e horário.", success: "" };
   }
 
-  const { supabase, membership } = await authenticatedContext();
+  const { supabase, membership } = await getActionContext();
   const { error } = await supabase.rpc("create_staff_appointment", {
     target_establishment_id: membership.establishment_id,
     target_professional_service_id: professionalServiceId,
@@ -111,7 +95,7 @@ export async function transitionAppointment(_previousState, formData) {
     return { error: "Essa mudança de status não é válida.", success: "" };
   }
 
-  const { supabase } = await authenticatedContext();
+  const { supabase } = await getActionContext();
   const { error } = await supabase.rpc("transition_appointment_status", {
     target_appointment_id: appointmentId,
     target_status: status,
@@ -135,7 +119,7 @@ export async function rescheduleAppointment(_previousState, formData) {
   const startsAt = value(formData, "startsAt");
   if (!appointmentId || !startsAt) return { error: "Informe a nova data e hora.", success: "" };
 
-  const { supabase } = await authenticatedContext();
+  const { supabase } = await getActionContext();
   const { error } = await supabase.rpc("reschedule_appointment", {
     target_appointment_id: appointmentId,
     local_start: startsAt,

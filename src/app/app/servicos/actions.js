@@ -1,8 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
-import { createClient } from "../../../lib/supabase/server";
+import { getActionContext } from "../../../lib/action-context";
 
 function value(formData, name) {
   return String(formData.get(name) || "").trim();
@@ -19,19 +18,7 @@ export async function createService(_previousState, formData) {
     return { error: "Informe nome, duração e valor válidos." };
   }
 
-  const supabase = await createClient();
-  const { data: authData } = await supabase.auth.getUser();
-  if (!authData.user) redirect("/entrar");
-
-  const { data: membership } = await supabase
-    .from("establishment_memberships")
-    .select("establishment_id")
-    .eq("user_id", authData.user.id)
-    .eq("status", "active")
-    .limit(1)
-    .maybeSingle();
-
-  if (!membership) redirect("/onboarding");
+  const { supabase, user, membership } = await getActionContext();
 
   const { data: service, error: serviceError } = await supabase
     .from("services")
@@ -55,7 +42,7 @@ export async function createService(_previousState, formData) {
     .from("professionals")
     .select("id")
     .eq("establishment_id", membership.establishment_id)
-    .eq("user_id", authData.user.id)
+    .eq("user_id", user.id)
     .maybeSingle();
 
   if (professional) {

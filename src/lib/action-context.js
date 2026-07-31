@@ -4,20 +4,20 @@ import { redirect } from "next/navigation";
 import { getSubscriptionAccess } from "./subscription";
 import { createClient } from "./supabase/server";
 
-export async function getAppContext({ allowRestricted = false } = {}) {
+export async function getActionContext({ allowRestricted = false } = {}) {
   const supabase = await createClient();
   const { data: authData } = await supabase.auth.getUser();
   if (!authData.user) redirect("/entrar");
 
   const { data: membership } = await supabase
     .from("establishment_memberships")
-    .select("role, establishment_id, establishment:establishments(id, name, slug, timezone)")
+    .select("establishment_id, role")
     .eq("user_id", authData.user.id)
     .eq("status", "active")
     .limit(1)
     .maybeSingle();
 
-  if (!membership?.establishment) redirect("/onboarding");
+  if (!membership) redirect("/onboarding");
 
   const { data: subscription } = await supabase
     .from("establishment_subscriptions")
@@ -28,19 +28,10 @@ export async function getAppContext({ allowRestricted = false } = {}) {
   const subscriptionAccess = getSubscriptionAccess(subscription);
   if (!allowRestricted && !subscriptionAccess.canAccess) redirect("/app/assinatura?estado=bloqueado");
 
-  const { data: professional } = await supabase
-    .from("professionals")
-    .select("id, display_name")
-    .eq("establishment_id", membership.establishment_id)
-    .eq("user_id", authData.user.id)
-    .maybeSingle();
-
   return {
     supabase,
     user: authData.user,
-    membership: { ...membership, subscription, subscriptionAccess },
-    establishment: membership.establishment,
-    professional,
+    membership,
     subscription,
     subscriptionAccess,
   };
