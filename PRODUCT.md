@@ -34,6 +34,7 @@ Os papéis pertencem ao contexto de cada estabelecimento. Uma mesma pessoa pode 
 ## Scheduling Rules
 
 - Cada profissional define os próprios serviços, valores, duração e demais regras de atendimento.
+- O catálogo pode ser consultado pela equipe, mas somente um acesso conectado a um perfil profissional cria ou altera a própria oferta, valor e duração; recepção e gestão não assumem silenciosamente essas regras.
 - O estabelecimento mantém nome, endereço, telefone, horário de funcionamento, logo, serviços, preços e equipe.
 - A possibilidade de dono ou gerente alterar regras definidas por um profissional ainda depende de confirmação.
 
@@ -85,7 +86,7 @@ A proposta não é apenas substituir uma agenda digital, mas conectar aquisiçã
 - O lançamento está planejado com assinatura e teste de 7 dias antes da cobrança. A fundação técnica já está implementada: cada novo estabelecimento recebe automaticamente o trial, o acesso operacional é bloqueado após o vencimento sem apagar dados, a página pública de agendamento deixa de aceitar novas reservas e eventos de assinatura ficam registrados para auditoria.
 - Donos e gerentes já visualizam o estado do trial/assinatura dentro do produto. A cobrança automática e o checkout ainda dependem da escolha e integração do provedor de pagamentos.
 - A Launcher possui um painel Master protegido para acompanhar todos os estabelecimentos, profissionais, agendamentos e estados de assinatura. Enquanto a cobrança automática não estiver conectada, administradores da plataforma podem alterar plano, status e prazo de acesso manualmente, com registro de auditoria.
-- A conta `launchersolucoes@gmail.com` é promovida automaticamente a administradora da plataforma quando for criada no Auth do Marc; o painel Master não depende de uma senha de banco compartilhada.
+- O acesso Master usa uma lista explícita de administradores. A conta da Launcher deve primeiro existir no Auth do Marc e, depois de validada, ser autorizada pelo identificador interno do usuário; o endereço de e-mail sozinho nunca concede privilégios globais.
 - Preços, limites de planos e demais regras comerciais ainda não foram confirmados como fatos do produto.
 - Números de clientes, agendamentos, redução de faltas e tempo economizado ainda não foram confirmados.
 

@@ -27,7 +27,7 @@ export default function ServiceForm() {
         <div><Scissors size={21} /></div>
         <span>Novo serviço</span>
         <h2>O que você atende?</h2>
-        <p>Defina a base agora. Depois cada profissional poderá ajustar disponibilidade e regras.</p>
+        <p>Defina o serviço, o valor e a duração usados especificamente na sua agenda.</p>
       </div>
       <div className="field">
         <label htmlFor="serviceName">Nome do serviço</label>

@@ -18,48 +18,23 @@ export async function createService(_previousState, formData) {
     return { error: "Informe nome, duração e valor válidos." };
   }
 
-  const { supabase, user, membership } = await getActionContext();
+  const { supabase } = await getActionContext();
+  const { error } = await supabase.rpc("upsert_own_service_offering", {
+    service_name: name,
+    service_description: description,
+    service_price_cents: priceCents,
+    service_duration_minutes: duration,
+  });
 
-  const { data: service, error: serviceError } = await supabase
-    .from("services")
-    .insert({
-      establishment_id: membership.establishment_id,
-      name,
-      description: description || null,
-    })
-    .select("id")
-    .single();
-
-  if (serviceError) {
+  if (error) {
     return {
-      error: serviceError.code === "23505"
-        ? "Já existe um serviço com esse nome."
-        : "Não foi possível cadastrar o serviço.",
+      error: error.message.toLowerCase().includes("professional profile")
+        ? "Conecte seu acesso a um perfil profissional antes de definir serviços."
+        : "Não foi possível salvar esse serviço.",
     };
-  }
-
-  const { data: professional } = await supabase
-    .from("professionals")
-    .select("id")
-    .eq("establishment_id", membership.establishment_id)
-    .eq("user_id", user.id)
-    .maybeSingle();
-
-  if (professional) {
-    const { error: linkError } = await supabase.from("professional_services").insert({
-      professional_id: professional.id,
-      service_id: service.id,
-      price_cents: priceCents,
-      duration_minutes: duration,
-    });
-
-    if (linkError) {
-      await supabase.from("services").delete().eq("id", service.id);
-      return { error: "O serviço não pôde ser vinculado ao seu perfil." };
-    }
   }
 
   revalidatePath("/app");
   revalidatePath("/app/servicos");
-  return { success: "Serviço cadastrado. Sua agenda já pode usar essa configuração." };
+  return { success: "Serviço e regras atualizados. Sua agenda já pode usar essa configuração." };
 }
