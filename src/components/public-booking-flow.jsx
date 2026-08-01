@@ -2,6 +2,7 @@
 
 import { CalendarCheck2, Check, ChevronRight, Clock3, ListTodo, LoaderCircle, Scissors, UserRound } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { isValidPhone, normalizePhone } from "../lib/phone";
 import { createClient } from "../lib/supabase/client";
 
 function localDate(offset = 0) {
@@ -72,6 +73,11 @@ export default function PublicBookingFlow({ establishment }) {
   async function submit(event) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
+    const customerPhone = normalizePhone(form.get("phone"));
+    if (!isValidPhone(customerPhone)) {
+      setError("Informe um número de WhatsApp válido, com DDD.");
+      return;
+    }
     setSubmitting(true);
     setError("");
     const supabase = createClient();
@@ -80,7 +86,7 @@ export default function PublicBookingFlow({ establishment }) {
         establishment_slug: establishment.slug,
         target_professional_service_id: offeringId,
         customer_name: String(form.get("name") || ""),
-        customer_phone: String(form.get("phone") || ""),
+        customer_phone: customerPhone,
         customer_email: String(form.get("email") || ""),
         target_preferred_date: date,
         waitlist_notes: "",
@@ -104,7 +110,7 @@ export default function PublicBookingFlow({ establishment }) {
       establishment_slug: establishment.slug,
       target_professional_service_id: offeringId,
       customer_name: String(form.get("name") || ""),
-      customer_phone: String(form.get("phone") || ""),
+      customer_phone: customerPhone,
       customer_email: String(form.get("email") || ""),
       local_start: slot,
     });

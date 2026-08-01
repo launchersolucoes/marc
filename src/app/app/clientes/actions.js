@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { getActionContext } from "../../../lib/action-context";
+import { isValidPhone, normalizePhone } from "../../../lib/phone";
 
 function value(formData, name) {
   return String(formData.get(name) || "").trim();
@@ -9,11 +10,11 @@ function value(formData, name) {
 
 export async function createCustomer(_previousState, formData) {
   const fullName = value(formData, "fullName");
-  const phone = value(formData, "phone");
+  const phone = normalizePhone(value(formData, "phone"));
   const email = value(formData, "email").toLowerCase();
   const notes = value(formData, "notes");
 
-  if (fullName.length < 2 || phone.length < 8) {
+  if (fullName.length < 2 || !isValidPhone(phone)) {
     return { error: "Informe o nome e um telefone válido.", success: "" };
   }
 

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { getActionContext } from "../../../lib/action-context";
+import { isValidPhone, normalizePhone } from "../../../lib/phone";
 
 function value(formData, name) {
   return String(formData.get(name) || "").trim();
@@ -57,9 +58,9 @@ export async function createTimeOff(_previousState, formData) {
 export async function createAppointment(_previousState, formData) {
   const professionalServiceId = value(formData, "professionalServiceId");
   const customerName = value(formData, "customerName");
-  const customerPhone = value(formData, "customerPhone");
+  const customerPhone = normalizePhone(value(formData, "customerPhone"));
   const startsAt = value(formData, "startsAt");
-  if (!professionalServiceId || customerName.length < 2 || customerPhone.length < 8 || !startsAt) {
+  if (!professionalServiceId || customerName.length < 2 || !isValidPhone(customerPhone) || !startsAt) {
     return { error: "Preencha cliente, telefone, serviço e horário.", success: "" };
   }
 

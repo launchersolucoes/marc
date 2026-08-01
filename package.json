@@ -9,6 +9,7 @@
     "start": "next start",
     "test:admin": "node --test tests/platform-admin.test.mjs",
     "test:email": "node --test tests/email.test.mjs",
+    "test:mvp": "node --test tests/mvp-integrity.test.mjs",
     "test:performance": "node --test tests/performance-regressions.test.mjs",
     "test:security": "node --test tests/security-regressions.test.mjs",
     "test:subscriptions": "node --test tests/subscription.test.mjs",
