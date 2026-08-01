@@ -2,6 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { getActionContext } from "../../../lib/action-context";
+import { sendTransactionalEmail } from "../../../lib/email";
+import { buildInvitationEmail } from "../../../lib/email-template";
 
 function value(formData, name) {
   return String(formData.get(name) || "").trim();
@@ -64,9 +66,24 @@ export async function createInvitation(_previousState, formData) {
 
   revalidatePath("/app/equipe");
   const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000").replace(/\/$/, "");
+  const inviteUrl = `${siteUrl}/convite/${token}`;
+  const { data: establishment } = await supabase
+    .from("establishments")
+    .select("name")
+    .eq("id", membership.establishment_id)
+    .single();
+  const message = buildInvitationEmail({
+    establishmentName: establishment?.name || "sua equipe",
+    role,
+    inviteUrl,
+  });
+  const delivery = await sendTransactionalEmail({ to: email, ...message });
+
   return {
     error: "",
-    success: "Convite pronto para compartilhar.",
-    inviteUrl: `${siteUrl}/convite/${token}`,
+    success: delivery.sent
+      ? "Convite enviado por e-mail. O link também está disponível abaixo."
+      : "Convite pronto para compartilhar.",
+    inviteUrl,
   };
 }

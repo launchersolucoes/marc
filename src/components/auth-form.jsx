@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { signIn, signUp } from "../app/auth/actions";
+import { createClient } from "../lib/supabase/client";
 
 const initialState = { error: "", success: "" };
 
@@ -31,10 +32,31 @@ export default function AuthForm({ mode, externalError = "", nextPath = "" }) {
   const action = mode === "signup" ? signUp : signIn;
   const [state, formAction] = useActionState(action, initialState);
   const [showPassword, setShowPassword] = useState(false);
+  const [oauthError, setOauthError] = useState("");
   const isSignup = mode === "signup";
+  const googleEnabled = process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED === "true";
+
+  async function continueWithGoogle() {
+    setOauthError("");
+    const supabase = createClient();
+    const callbackUrl = new URL("/auth/confirm", window.location.origin);
+    callbackUrl.searchParams.set("next", nextPath || (isSignup ? "/onboarding" : "/app"));
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: callbackUrl.toString() },
+    });
+    if (error) setOauthError("Não foi possível iniciar o acesso com Google.");
+  }
 
   return (
-    <form className="auth-form" action={formAction}>
+    <>
+      {googleEnabled && (
+        <div className="auth-oauth">
+          <button type="button" onClick={continueWithGoogle}><span aria-hidden="true">G</span>{isSignup ? "Criar conta com Google" : "Entrar com Google"}</button>
+          <div><span>ou continue com e-mail</span></div>
+        </div>
+      )}
+      <form className="auth-form" action={formAction}>
       {nextPath && <input type="hidden" name="next" value={nextPath} />}
       {isSignup && (
         <div className="field">
@@ -88,9 +110,9 @@ export default function AuthForm({ mode, externalError = "", nextPath = "" }) {
         </div>
       </div>
 
-      {(state.error || externalError) && (
+      {(state.error || externalError || oauthError) && (
         <p className="form-message form-message--error" role="alert">
-          {state.error || externalError}
+          {state.error || externalError || oauthError}
         </p>
       )}
 
@@ -109,6 +131,7 @@ export default function AuthForm({ mode, externalError = "", nextPath = "" }) {
           {isSignup ? "Entrar" : "Começar teste"}
         </Link>
       </p>
-    </form>
+      </form>
+    </>
   );
 }
