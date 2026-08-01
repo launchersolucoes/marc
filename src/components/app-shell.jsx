@@ -14,7 +14,9 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
 import { signOut } from "../app/auth/actions";
+import AppNavigationProgress from "./app-navigation-progress";
 import AppThemeToggle from "./app-theme-toggle";
 import SubscriptionNotice from "./subscription-notice";
 
@@ -54,6 +56,7 @@ export default function AppShell({ active, membership, user, children, allowRest
 
   return (
     <main className="app-layout">
+      <Suspense fallback={null}><AppNavigationProgress /></Suspense>
       <aside className="app-sidebar">
         <Link className="app-brand" href="/app">
           <Image src="/assets/marc-logo-cropped.png" alt="Marc" width={208} height={90} priority />

@@ -6,42 +6,30 @@ import { createClient } from "./supabase/server";
 
 export async function getAppContext({ allowRestricted = false } = {}) {
   const supabase = await createClient();
-  const { data: authData } = await supabase.auth.getUser();
+  const [{ data: authData }, { data: context, error: contextError }] = await Promise.all([
+    supabase.auth.getUser(),
+    supabase.rpc("get_current_app_context"),
+  ]);
   if (!authData.user) redirect("/entrar");
+  if (contextError) throw contextError;
+  if (!context?.establishment) redirect("/onboarding");
 
-  const { data: membership } = await supabase
-    .from("establishment_memberships")
-    .select("role, establishment_id, establishment:establishments(id, name, slug, timezone)")
-    .eq("user_id", authData.user.id)
-    .eq("status", "active")
-    .limit(1)
-    .maybeSingle();
-
-  if (!membership?.establishment) redirect("/onboarding");
-
-  const { data: subscription } = await supabase
-    .from("establishment_subscriptions")
-    .select("id, plan_code, status, trial_starts_at, trial_ends_at, current_period_starts_at, current_period_ends_at, grace_period_ends_at, cancel_at_period_end")
-    .eq("establishment_id", membership.establishment_id)
-    .maybeSingle();
-
-  const subscriptionAccess = getSubscriptionAccess(subscription);
+  const subscriptionAccess = getSubscriptionAccess(context.subscription);
   if (!allowRestricted && !subscriptionAccess.canAccess) redirect("/app/assinatura?estado=bloqueado");
-
-  const { data: professional } = await supabase
-    .from("professionals")
-    .select("id, display_name")
-    .eq("establishment_id", membership.establishment_id)
-    .eq("user_id", authData.user.id)
-    .maybeSingle();
+  const membership = {
+    ...context.membership,
+    establishment: context.establishment,
+    subscription: context.subscription,
+    subscriptionAccess,
+  };
 
   return {
     supabase,
     user: authData.user,
-    membership: { ...membership, subscription, subscriptionAccess },
-    establishment: membership.establishment,
-    professional,
-    subscription,
+    membership,
+    establishment: context.establishment,
+    professional: context.professional,
+    subscription: context.subscription,
     subscriptionAccess,
   };
 }

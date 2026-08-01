@@ -15,3 +15,5 @@ The project uses Next.js as the permanent frontend foundation so the future auth
 The hero and final CTA use the provided animated WebGL gradient language. Keep future gradient surfaces within the Marc orange-and-neutral palette, provide a solid fallback, pause expensive animation when offscreen or hidden, and reduce — rather than completely freeze — the shader speed under `prefers-reduced-motion`.
 
 The hero copy, proof badges, and product mockup must remain structurally separated at every breakpoint: no negative mockup margins, no oversized mobile crop, and no overlap between copy or badges and the visual. Keep the footer logo at the same compact optical width as the header logo.
+
+Authenticated navigation should feel immediate: keep app-context data consolidated, preserve Next.js link prefetching, and show subtle progress feedback while a server-rendered route is resolving.

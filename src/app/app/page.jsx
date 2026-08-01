@@ -19,6 +19,8 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
+import AppNavigationProgress from "../../components/app-navigation-progress";
 import AppThemeToggle from "../../components/app-theme-toggle";
 import SubscriptionNotice from "../../components/subscription-notice";
 import { getAppContext } from "../../lib/app-context";
@@ -92,6 +94,7 @@ export default async function AppHomePage() {
 
   return (
     <main className="app-layout">
+      <Suspense fallback={null}><AppNavigationProgress /></Suspense>
       <aside className="app-sidebar">
         <Link className="app-brand" href="/app">
           <Image src="/assets/marc-logo-cropped.png" alt="Marc" width={208} height={90} priority />

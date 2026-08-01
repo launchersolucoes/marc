@@ -1194,6 +1194,35 @@ html[data-theme="light"] .form-message--success { color: #167a4a; }
 .onboarding-actions { display: grid; grid-template-columns: auto 1fr; gap: 12px; margin-top: 28px; }
 
 .app-layout { min-height: 100svh; display: grid; grid-template-columns: 244px minmax(0, 1fr); background: var(--bg-primary); }
+.app-route-progress {
+  position: fixed;
+  z-index: 200;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 3px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease-out;
+}
+.app-route-progress.is-visible { opacity: 1; }
+.app-route-progress span {
+  width: 42%;
+  height: 100%;
+  display: block;
+  border-radius: 0 3px 3px 0;
+  background: var(--accent);
+  box-shadow: 8px 0 18px color-mix(in srgb, var(--accent) 48%, transparent);
+  animation: app-route-loading 900ms cubic-bezier(.2, .8, .2, 1) infinite;
+}
+@keyframes app-route-loading {
+  from { transform: translateX(-115%); }
+  to { transform: translateX(340%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-route-progress span { animation-duration: 1800ms; }
+}
 .app-sidebar {
   height: 100svh;
   position: sticky;
