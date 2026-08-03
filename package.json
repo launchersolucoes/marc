@@ -9,6 +9,7 @@
     "start": "next start",
     "pilot:provision": "node scripts/provision-e2e-account.mjs",
     "test:admin": "node --test tests/platform-admin.test.mjs",
+    "test:billing": "node --test tests/billing.test.mjs",
     "test:email": "node --test tests/email.test.mjs",
     "test:mvp": "node --test tests/mvp-integrity.test.mjs",
     "test:performance": "node --test tests/performance-regressions.test.mjs",
@@ -18,7 +19,7 @@
     "test:sites": "node --test tests/sites-worker.test.mjs",
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
-    "test:all": "npm run test:admin && npm run test:email && npm run test:mvp && npm run test:performance && npm run test:operational && npm run test:security && npm run test:subscriptions && npm run test:sites && npm run test:e2e"
+    "test:all": "npm run test:admin && npm run test:billing && npm run test:email && npm run test:mvp && npm run test:performance && npm run test:operational && npm run test:security && npm run test:subscriptions && npm run test:sites && npm run test:e2e"
   },
   "dependencies": {
     "@fontsource-variable/instrument-sans": "^5.3.0",
@@ -30,6 +31,7 @@
     "postcss": "^8.5.24",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
+    "stripe": "^22.4.0",
     "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
