@@ -40,4 +40,9 @@ src/plugins/impeccable-live.client.ts
 
 .vercel
 
+# Playwright
+playwright-report/
+test-results/
+
 .env*
+!.env.example

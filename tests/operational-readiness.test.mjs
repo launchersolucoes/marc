@@ -1,0 +1,39 @@
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+import test from "node:test";
+
+const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
+
+test("provides branded recovery states for route, app and global failures", async () => {
+  const [routeError, appError, globalError, notFound] = await Promise.all([
+    read("src/app/error.jsx"),
+    read("src/app/app/error.jsx"),
+    read("src/app/global-error.jsx"),
+    read("src/app/not-found.jsx"),
+  ]);
+
+  assert.match(routeError, /onRetry=\{reset\}/);
+  assert.match(appError, /antes de repetir qualquer cadastro ou agendamento/);
+  assert.match(globalError, /Nada foi apagado/);
+  assert.match(notFound, /Página não encontrada/);
+});
+
+test("server error telemetry excludes request and customer payloads", async () => {
+  const instrumentation = await read("src/instrumentation.js");
+
+  assert.match(instrumentation, /onRequestError/);
+  assert.match(instrumentation, /context\?\.routePath/);
+  assert.doesNotMatch(instrumentation, /errorRequest\.(headers|path)/);
+  assert.doesNotMatch(instrumentation, /error\?\.message/);
+});
+
+test("critical dynamic surfaces expose explicit loading feedback", async () => {
+  const [appLoading, bookingLoading] = await Promise.all([
+    read("src/app/app/loading.jsx"),
+    read("src/app/agendar/[slug]/loading.jsx"),
+  ]);
+
+  assert.match(appLoading, /aria-busy="true"/);
+  assert.match(appLoading, /Organizando sua operação/);
+  assert.match(bookingLoading, /Buscando horários disponíveis/);
+});
