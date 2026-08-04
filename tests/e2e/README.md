@@ -26,3 +26,11 @@ prepara serviços e disponibilidade ilustrativos:
 ```bash
 E2E_PROVISION_CONFIRM=provision-dedicated-pilot npm run pilot:provision
 ```
+
+Depois da conta proprietária, a matriz de papéis cria acessos isolados de
+gerente, recepção e profissional no mesmo estabelecimento piloto. As senhas
+continuam somente em `.env.local`:
+
+```bash
+E2E_ROLE_PROVISION_CONFIRM=provision-role-matrix npm run pilot:roles
+```
