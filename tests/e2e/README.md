@@ -50,3 +50,7 @@ E2E_FINANCIAL_MUTATION_CONFIRM=complete-pilot-appointment npx playwright test te
 `public-booking.spec.mjs` também cobre a jornada sem vaga: o cliente entra na
 lista de espera e a recepção pode converter a solicitação em atendimento ou
 removê-la. Os contatos usados nesses cenários são apagados ao final do teste.
+
+`booking-resilience.spec.mjs` força concorrência no mesmo horário, repetição de
+pedidos, ocupação durante o preenchimento e falha temporária de rede. A suíte
+confirma que o banco impede duplicidade e que a página oferece recuperação.

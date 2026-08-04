@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 import {
   cleanupPilotCustomer,
+  cleanupPilotCustomers,
   nextOpenDate,
   nextSundayDate,
   pilotEmail,
@@ -37,16 +38,8 @@ async function joinWaitlist(page, { name, phone }) {
 test.describe("agendamento público do piloto", () => {
   test.skip(!pilotEmail || !pilotPassword || !pilotSlug, "A conta piloto precisa estar provisionada.");
 
-  test.beforeEach(async () => Promise.all([
-    cleanupPilotCustomer(customerPhone),
-    cleanupPilotCustomer(waitlistPhone),
-    cleanupPilotCustomer(removedWaitlistPhone),
-  ]));
-  test.afterEach(async () => Promise.all([
-    cleanupPilotCustomer(customerPhone),
-    cleanupPilotCustomer(waitlistPhone),
-    cleanupPilotCustomer(removedWaitlistPhone),
-  ]));
+  test.beforeEach(async () => cleanupPilotCustomers([customerPhone, waitlistPhone, removedWaitlistPhone]));
+  test.afterEach(async () => cleanupPilotCustomers([customerPhone, waitlistPhone, removedWaitlistPhone]));
 
   test("cliente escolhe um horário real e recebe confirmação", async ({ page }) => {
     await page.goto(`/agendar/${pilotSlug}`);

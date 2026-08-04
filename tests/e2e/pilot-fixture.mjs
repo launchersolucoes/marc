@@ -26,19 +26,31 @@ export function nextSundayDate() {
   }).format(date);
 }
 
+const authenticatedClients = new Map();
+
 function authenticatedClient(email, password) {
+  if (authenticatedClients.has(email)) return authenticatedClients.get(email);
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
     { auth: { persistSession: false, autoRefreshToken: false } },
   );
-  return supabase.auth.signInWithPassword({ email, password }).then(({ error }) => {
+  const clientPromise = supabase.auth.signInWithPassword({ email, password }).then(({ error }) => {
     if (error) throw error;
     return supabase;
+  }).catch((error) => {
+    authenticatedClients.delete(email);
+    throw error;
   });
+  authenticatedClients.set(email, clientPromise);
+  return clientPromise;
 }
 
 export async function cleanupPilotCustomer(customerPhone) {
+  return cleanupPilotCustomers([customerPhone]);
+}
+
+export async function cleanupPilotCustomers(customerPhones) {
   if (!pilotEmail || !pilotPassword) return;
   const supabase = await authenticatedClient(pilotEmail, pilotPassword);
 
@@ -55,7 +67,7 @@ export async function cleanupPilotCustomer(customerPhone) {
     .from("customers")
     .select("id")
     .eq("establishment_id", membership.establishment_id)
-    .eq("phone", customerPhone);
+    .in("phone", customerPhones);
   if (customerReadError) throw customerReadError;
 
   const customerIds = (customers || []).map((customer) => customer.id);
