@@ -15,6 +15,17 @@ export function nextOpenDate(daysAhead = 1) {
   }).format(date);
 }
 
+export function nextSundayDate() {
+  const date = new Date();
+  const daysUntilSunday = (7 - date.getDay()) % 7 || 7;
+  date.setDate(date.getDate() + daysUntilSunday);
+  return new Intl.DateTimeFormat("en-CA", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(date);
+}
+
 function authenticatedClient(email, password) {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,

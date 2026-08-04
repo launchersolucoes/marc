@@ -46,3 +46,7 @@ Por isso, o cenário de conclusão exige confirmação explícita:
 ```bash
 E2E_FINANCIAL_MUTATION_CONFIRM=complete-pilot-appointment npx playwright test tests/e2e/appointment-flows.spec.mjs
 ```
+
+`public-booking.spec.mjs` também cobre a jornada sem vaga: o cliente entra na
+lista de espera e a recepção pode converter a solicitação em atendimento ou
+removê-la. Os contatos usados nesses cenários são apagados ao final do teste.
