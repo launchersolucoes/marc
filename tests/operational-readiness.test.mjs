@@ -37,3 +37,15 @@ test("critical dynamic surfaces expose explicit loading feedback", async () => {
   assert.match(appLoading, /Organizando sua operação/);
   assert.match(bookingLoading, /Buscando horários disponíveis/);
 });
+
+test("incomplete onboarding accounts can switch users and cannot skip required setup fields", async () => {
+  const [page, form] = await Promise.all([
+    readFile("src/app/onboarding/page.jsx", "utf8"),
+    readFile("src/components/onboarding-form.jsx", "utf8"),
+  ]);
+
+  assert.match(page, /form action=\{signOut\}/);
+  assert.match(page, /Sair desta conta e entrar com outra/);
+  assert.match(form, /reportValidity\(\)/);
+  assert.match(form, /onClick=\{continueToAddress\}/);
+});

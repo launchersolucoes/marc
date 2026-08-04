@@ -8,7 +8,7 @@ import {
   LoaderCircle,
   MapPin,
 } from "lucide-react";
-import { useActionState, useState } from "react";
+import { useActionState, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { createEstablishment } from "../app/onboarding/actions";
 
@@ -31,9 +31,14 @@ function FinishButton() {
 export default function OnboardingForm({ defaultName = "" }) {
   const [step, setStep] = useState(1);
   const [state, formAction] = useActionState(createEstablishment, initialState);
+  const formRef = useRef(null);
+
+  function continueToAddress() {
+    if (formRef.current?.reportValidity()) setStep(2);
+  }
 
   return (
-    <form className="onboarding-form" action={formAction}>
+    <form ref={formRef} className="onboarding-form" action={formAction}>
       <div className="onboarding-progress" aria-label={`Etapa ${step} de 2`}>
         <span className={step >= 1 ? "is-active" : ""} />
         <span className={step >= 2 ? "is-active" : ""} />
@@ -98,7 +103,7 @@ export default function OnboardingForm({ defaultName = "" }) {
           </span>
         </label>
 
-        <button className="button button--primary onboarding-next" type="button" onClick={() => setStep(2)}>
+        <button className="button button--primary onboarding-next" type="button" onClick={continueToAddress}>
           Continuar <ArrowRight size={18} />
         </button>
       </fieldset>
