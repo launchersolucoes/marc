@@ -46,15 +46,12 @@ function authenticatedClient(email, password) {
   return clientPromise;
 }
 
-export async function cleanupPilotCustomer(customerPhone) {
-  return cleanupPilotCustomers([customerPhone]);
-}
-
-export async function cleanupPilotCustomers(customerPhones) {
-  if (!pilotEmail || !pilotPassword) return;
+export async function getPilotOwnerContext() {
+  if (!pilotEmail || !pilotPassword) throw new Error("Credenciais do piloto ausentes.");
   const supabase = await authenticatedClient(pilotEmail, pilotPassword);
+  const { data: authData, error: authError } = await supabase.auth.getUser();
+  if (authError) throw authError;
 
-  const { data: authData } = await supabase.auth.getUser();
   const { data: membership, error: membershipError } = await supabase
     .from("establishment_memberships")
     .select("establishment_id")
@@ -63,10 +60,21 @@ export async function cleanupPilotCustomers(customerPhones) {
     .single();
   if (membershipError) throw membershipError;
 
+  return { supabase, establishmentId: membership.establishment_id };
+}
+
+export async function cleanupPilotCustomer(customerPhone) {
+  return cleanupPilotCustomers([customerPhone]);
+}
+
+export async function cleanupPilotCustomers(customerPhones) {
+  if (!pilotEmail || !pilotPassword) return;
+  const { supabase, establishmentId } = await getPilotOwnerContext();
+
   const { data: customers, error: customerReadError } = await supabase
     .from("customers")
     .select("id")
-    .eq("establishment_id", membership.establishment_id)
+    .eq("establishment_id", establishmentId)
     .in("phone", customerPhones);
   if (customerReadError) throw customerReadError;
 

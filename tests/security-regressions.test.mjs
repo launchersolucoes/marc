@@ -16,3 +16,15 @@ test("service management hardens the insert policy for authenticated professiona
   assert.match(sql, /alter policy "Members can create services"/);
   assert.doesNotMatch(sql, /drop policy/i);
 });
+
+test("public booking limits abuse and audit events exclude customer data", async () => {
+  const sql = await readFile("supabase/migrations/20260803230000_public_abuse_audit_observability.sql", "utf8");
+
+  assert.match(sql, /recent_booking_count >= 5/);
+  assert.match(sql, /future_booking_count >= 10/);
+  assert.match(sql, /waiting_count >= 5/);
+  assert.match(sql, /existing_request_id is not null[\s\S]*return existing_request_id/i);
+  assert.match(sql, /create table public\.operational_audit_events/);
+  assert.match(sql, /revoke all on table public\.operational_audit_events from public, anon, authenticated/);
+  assert.doesNotMatch(sql, /audit_metadata[\s\S]{0,120}(phone|email|full_name)/i);
+});

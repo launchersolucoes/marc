@@ -93,7 +93,9 @@ export default function PublicBookingFlow({ establishment }) {
       });
       setSubmitting(false);
       if (waitlistError) {
-        setError("Não foi possível entrar na lista de espera. Revise seus dados e tente novamente.");
+        setError(waitlistError.message.toLowerCase().includes("limit")
+          ? "Você já possui várias solicitações abertas. Aguarde o contato do estabelecimento."
+          : "Não foi possível entrar na lista de espera. Revise seus dados e tente novamente.");
         return;
       }
       setWaitlisted({
@@ -117,9 +119,12 @@ export default function PublicBookingFlow({ establishment }) {
 
     if (bookingError) {
       setSubmitting(false);
-      setError(bookingError.message.toLowerCase().includes("conflict")
+      const message = bookingError.message.toLowerCase();
+      setError(message.includes("conflict")
         ? "Esse horário acabou de ser reservado. Escolha outro disponível."
-        : "Não foi possível confirmar. Revise seus dados e tente novamente.");
+        : message.includes("limit")
+          ? "Muitas reservas foram feitas com este WhatsApp. Revise seus horários antes de tentar novamente."
+          : "Não foi possível confirmar. Revise seus dados e tente novamente.");
       const { data: refreshed } = await supabase.rpc("get_public_available_slots", {
         establishment_slug: establishment.slug,
         target_professional_service_id: offeringId,

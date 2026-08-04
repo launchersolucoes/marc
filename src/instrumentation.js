@@ -3,11 +3,14 @@ export async function register() {}
 export function onRequestError(error, _request, context) {
   const event = {
     event: "marc_request_error",
+    severity: "error",
     digest: typeof error?.digest === "string" ? error.digest : null,
     name: typeof error?.name === "string" ? error.name : "UnknownError",
     route: context?.routePath || "unknown",
     routeType: context?.routeType || "unknown",
     router: context?.routerKind || "unknown",
+    environment: process.env.VERCEL_ENV || process.env.NODE_ENV || "unknown",
+    release: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 12) || "local",
     occurredAt: new Date().toISOString(),
   };
 

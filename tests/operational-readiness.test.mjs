@@ -23,6 +23,8 @@ test("server error telemetry excludes request and customer payloads", async () =
 
   assert.match(instrumentation, /onRequestError/);
   assert.match(instrumentation, /context\?\.routePath/);
+  assert.match(instrumentation, /VERCEL_GIT_COMMIT_SHA/);
+  assert.match(instrumentation, /VERCEL_ENV/);
   assert.doesNotMatch(instrumentation, /errorRequest\.(headers|path)/);
   assert.doesNotMatch(instrumentation, /error\?\.message/);
 });
