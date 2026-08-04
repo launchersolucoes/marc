@@ -9,6 +9,7 @@ import {
 } from "../src/lib/billing/config.js";
 import { isTrustedBillingRequest } from "../src/lib/billing/request.js";
 import { mapStripeSubscription } from "../src/lib/billing/webhook.js";
+import { commercialPlans } from "../src/lib/subscription.js";
 
 const environment = {
   STRIPE_SECRET_KEY: "sk_test_example",
@@ -18,6 +19,14 @@ const environment = {
   STRIPE_PRICE_PRO: "price_pro",
   STRIPE_PRICE_MAX: "not_configured",
 };
+
+test("commercial catalog keeps the confirmed monthly prices", () => {
+  assert.deepEqual(commercialPlans, {
+    starter: { monthlyPriceCents: 2990, monthlyPriceLabel: "R$ 29,90" },
+    pro: { monthlyPriceCents: 4990, monthlyPriceLabel: "R$ 49,90" },
+    max: { monthlyPriceCents: 9990, monthlyPriceLabel: "R$ 99,90" },
+  });
+});
 
 test("billing only exposes plans backed by valid Stripe price ids", () => {
   assert.deepEqual(getConfiguredBillingPlans(environment), [

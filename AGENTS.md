@@ -8,7 +8,9 @@ When implementing from a selected generated mock, treat that image as the source
 
 Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts/prepare-sites-build.mjs`, and `tests/sites-worker.test.mjs` intact so the same local prototype can be handed to Sites. Before a Sites handoff, run `npm run build` and `npm run test:sites`; the build must leave `dist/client/index.html`, `dist/server/index.js`, and `dist/.openai/hosting.json`.
 
-Product truth is recorded in `PRODUCT.md`. Treat the current pricing, metrics, establishment names, portraits, and testimonials as illustrative until the user explicitly confirms real commercial terms or evidence.
+Product truth is recorded in `PRODUCT.md`. Treat metrics, establishment names, portraits, testimonials, plan limits, and unconfirmed commercial claims as illustrative until the user explicitly confirms real terms or evidence.
+
+The monthly prices shown on the landing page are confirmed commercial terms: Starter R$ 29,90, Pro R$ 49,90, and Max R$ 99,90. Every new establishment receives a 14-day free trial. Plan limits, metrics, establishment names, portraits, and testimonials remain illustrative until explicitly confirmed.
 
 The project uses Next.js as the permanent frontend foundation so the future authenticated platform, public scheduling routes, and Hub can grow in the same architecture. Do not migrate the landing page back to Vite.
 

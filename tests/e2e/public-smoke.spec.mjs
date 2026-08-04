@@ -6,7 +6,7 @@ test.describe("superfícies públicas", () => {
 
     await expect(page).toHaveTitle(/Marc/);
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Sua agenda trabalha");
-    await expect(page.getByRole("link", { name: "Reservar teste de 7 dias" })).toHaveAttribute("href", "/cadastro");
+    await expect(page.getByRole("link", { name: "Começar teste grátis de 14 dias" })).toHaveAttribute("href", "/cadastro");
     await expect(page.getByRole("navigation", { name: "Navegação principal" })).toBeVisible();
   });
 

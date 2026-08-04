@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AnimatedGradient } from "../components/ui/animated-gradient";
+import { commercialPlans } from "../lib/subscription";
 import {
   ArrowRight,
   BarChart3,
@@ -93,14 +94,14 @@ const featureGroups = [
 const plans = [
   {
     name: "Starter",
-    price: "29,90",
+    price: commercialPlans.starter.monthlyPriceLabel.replace("R$ ", ""),
     audience: "Para quem atende sozinho",
     limit: "1 profissional",
     benefits: ["Agendamento online 24h", "WhatsApp automático", "Link próprio", "Caixa diário", "Histórico de clientes"],
   },
   {
     name: "Pro",
-    price: "49,90",
+    price: commercialPlans.pro.monthlyPriceLabel.replace("R$ ", ""),
     audience: "Para equipes em crescimento",
     limit: "Até 5 profissionais",
     popular: true,
@@ -108,7 +109,7 @@ const plans = [
   },
   {
     name: "Max",
-    price: "99,90",
+    price: commercialPlans.max.monthlyPriceLabel.replace("R$ ", ""),
     audience: "Para operações completas",
     limit: "Até 15 profissionais",
     benefits: ["Tudo do Pro", "Multi-unidades", "Sinal antecipado", "Estoque e fidelidade", "Onboarding assistido"],
@@ -218,7 +219,7 @@ const faqs = [
   ["Meus clientes precisam baixar um aplicativo?", "Não. Eles acessam seu link, escolhem o serviço, o profissional e o horário. Simples assim."],
   ["Como funciona o lembrete no WhatsApp?", "Antes do atendimento, o Marc envia uma mensagem automática para lembrar o cliente e facilitar a confirmação."],
   ["O que é o Hub de descoberta Marc?", "É a rede de estabelecimentos parceiros. Quando não há vaga em um local, o cliente pode descobrir outra opção próxima dentro do Marc."],
-  ["Posso trocar de plano depois?", "Sim. A proposta é que o plano acompanhe o tamanho da sua operação. As condições comerciais exibidas nesta página ainda são demonstrativas."],
+  ["Posso trocar de plano depois?", "Sim. Você pode começar com o plano adequado para hoje e mudar conforme a sua operação crescer."],
 ];
 
 function Brand() {
@@ -363,7 +364,7 @@ export default function LandingPage() {
                 O Marc organiza agendamentos, lembra clientes no WhatsApp e cuida das finanças da sua barbearia, salão ou esmalteria — tudo em um só lugar.
               </p>
               <div className="hero__actions">
-                <ButtonLink>Reservar teste de 7 dias <ArrowRight size={17} /></ButtonLink>
+                <ButtonLink>Começar teste grátis de 14 dias <ArrowRight size={17} /></ButtonLink>
                 <ButtonLink href="#como-funciona" variant="secondary">Ver como funciona</ButtonLink>
               </div>
               <div className="hero__proof">
@@ -523,7 +524,7 @@ export default function LandingPage() {
             <SectionHeader
               tag="Planos de lançamento"
               title="Escolha o tamanho da sua operação. Não o limite do seu crescimento."
-              description="A assinatura incluirá 7 dias de teste antes da cobrança. Os valores e limites abaixo ainda são uma prévia sujeita à validação comercial."
+              description="Teste o Marc grátis por 14 dias, sem cartão de crédito. Depois, escolha o plano que combina com o tamanho da sua operação."
               align="center"
             />
             <div className="pricing-grid">
@@ -543,7 +544,7 @@ export default function LandingPage() {
                 </article>
               ))}
             </div>
-            <p className="pricing-note">Nenhuma assinatura ou cobrança acontece nesta demonstração.</p>
+            <p className="pricing-note">Todos os planos incluem 14 dias grátis. A cobrança só começa após a contratação; os limites de profissionais ainda podem ser ajustados antes do lançamento comercial.</p>
           </div>
         </section>
 
@@ -598,10 +599,10 @@ export default function LandingPage() {
             <div>
               <span className="section-tag">Comece com calma</span>
               <h2>Troque o improviso por uma operação que simplesmente funciona.</h2>
-              <p>Reserve seu teste de 7 dias. Quando o acesso for liberado, você poderá conhecer a plataforma antes de escolher uma assinatura.</p>
+              <p>Comece com 14 dias grátis para configurar o negócio, organizar a agenda e testar a operação antes de escolher uma assinatura.</p>
             </div>
             <div className="signup-panel signup-panel--access">
-              <span className="signup-panel__eyebrow"><ShieldCheck size={15} /> Teste de 7 dias</span>
+              <span className="signup-panel__eyebrow"><ShieldCheck size={15} /> Teste grátis de 14 dias</span>
               <h3>Crie sua conta e monte a base do seu negócio.</h3>
               <p>Em poucos minutos, você configura o estabelecimento e abre o primeiro painel do Marc.</p>
               <ul>

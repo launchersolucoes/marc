@@ -85,11 +85,11 @@ A proposta não é apenas substituir uma agenda digital, mas conectar aquisiçã
 - A camada de integridade do MVP normaliza telefones de clientes por estabelecimento, impede duplicações equivalentes e rejeita agendamentos com data passada, preço adulterado ou referências de cliente, serviço e profissional fora do mesmo estabelecimento.
 - Um estabelecimento isolado de piloto mantém serviços e disponibilidade ilustrativos para testes E2E. A suíte valida login, permissões de dono, carregamento das áreas operacionais, responsividade, agendamento público e o ciclo interno de criar, iniciar e cancelar atendimentos; dados transacionais de teste são removidos ao final de cada cenário.
 - Automações de WhatsApp ficam para uma fase posterior. A infraestrutura da Meta WhatsApp Cloud API está explicitamente em espera até a Launcher possuir uma conta empresarial e um número dedicado.
-- O lançamento está planejado com assinatura e teste de 7 dias antes da cobrança. A fundação técnica já está implementada: cada novo estabelecimento recebe automaticamente o trial, o acesso operacional é bloqueado após o vencimento sem apagar dados, a página pública de agendamento deixa de aceitar novas reservas e eventos de assinatura ficam registrados para auditoria.
-- Donos e gerentes já visualizam o estado do trial/assinatura dentro do produto. A fundação de cobrança usa Stripe Checkout, Customer Portal e webhooks idempotentes, mas permanece inativa até a Launcher configurar a conta, produtos, preços, chaves e endpoint de webhook; nenhum preço comercial foi codificado no produto.
+- O lançamento está confirmado com assinatura e teste grátis de 14 dias antes da cobrança. A fundação técnica já está implementada: cada novo estabelecimento recebe automaticamente o trial, o acesso operacional é bloqueado após o vencimento sem apagar dados, a página pública de agendamento deixa de aceitar novas reservas e eventos de assinatura ficam registrados para auditoria.
+- Donos e gerentes já visualizam o estado do trial/assinatura dentro do produto. A fundação de cobrança usa Stripe Checkout, Customer Portal e webhooks idempotentes, mas permanece inativa até a Launcher configurar a conta, os produtos, os Price IDs, as chaves e o endpoint de webhook.
 - A Launcher possui um painel Master protegido para acompanhar todos os estabelecimentos, profissionais, agendamentos e estados de assinatura. Enquanto a cobrança automática não estiver conectada, administradores da plataforma podem alterar plano, status e prazo de acesso manualmente, com registro de auditoria.
 - O acesso Master usa uma lista explícita de administradores. A conta da Launcher deve primeiro existir no Auth do Marc e, depois de validada, ser autorizada pelo identificador interno do usuário; o endereço de e-mail sozinho nunca concede privilégios globais.
-- Preços, limites de planos e demais regras comerciais ainda não foram confirmados como fatos do produto.
+- Os preços mensais estão confirmados: Starter por R$ 29,90, Pro por R$ 49,90 e Max por R$ 99,90. Os limites e demais regras comerciais continuam sujeitos à confirmação.
 - Números de clientes, agendamentos, redução de faltas e tempo economizado ainda não foram confirmados.
 
 ## Brand Commitments
@@ -110,7 +110,7 @@ A proposta não é apenas substituir uma agenda digital, mas conectar aquisiçã
 - `public/assets/marc-dashboard-hero.png`: mockup ilustrativo do produto.
 - `public/assets/marc-whatsapp-reminder.png`: mockup ilustrativo do fluxo de lembretes.
 
-Os preços, métricas, nomes de estabelecimentos, fotografias e depoimentos presentes na landing page são ilustrativos. Trabalhos futuros não devem tratá-los como clientes reais, resultados comprovados ou condições comerciais vigentes sem nova confirmação.
+Os preços mensais e o teste grátis de 14 dias estão confirmados. Métricas, nomes de estabelecimentos, fotografias, depoimentos e limites de planos presentes na landing page continuam ilustrativos até nova confirmação.
 
 ## Product Principles
 
@@ -118,4 +118,4 @@ Os preços, métricas, nomes de estabelecimentos, fotografias e depoimentos pres
 2. **Manter a operação previsível:** agenda, confirmações, financeiro e comissões precisam formar uma visão coerente do negócio.
 3. **Facilitar para o cliente final:** marcar um horário deve ser possível a qualquer momento, sem ligação, conversa demorada ou instalação de aplicativo.
 4. **Falar em resultados concretos:** o produto deve explicar seu valor por meio de tempo, organização, redução de faltas e controle, sem jargão técnico.
-5. **Não fabricar prova:** métricas, depoimentos, preços e alegações quantitativas devem permanecer claramente ilustrativos até serem validados.
+5. **Não fabricar prova:** métricas, depoimentos e alegações quantitativas sem confirmação devem permanecer claramente ilustrativos; os preços mensais e o teste de 14 dias são fatos comerciais confirmados.

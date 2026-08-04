@@ -1,6 +1,17 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { readFile } from "node:fs/promises";
 import { getSubscriptionAccess } from "../src/lib/subscription.js";
+
+test("new and active trials use the confirmed 14-day period", async () => {
+  const migration = await readFile("supabase/migrations/20260804100000_extend_free_trial_to_14_days.sql", "utf8");
+
+  assert.match(migration, /set default \(now\(\) \+ interval '14 days'\)/);
+  assert.match(migration, /status = 'trialing'/);
+  assert.match(migration, /trial_ends_at > now\(\)/);
+  assert.match(migration, /trial_starts_at \+ interval '14 days'/);
+  assert.match(migration, /'trial_extended'/);
+});
 
 const now = new Date("2026-07-31T12:00:00.000Z");
 

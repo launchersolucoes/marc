@@ -58,7 +58,7 @@ export default async function MasterPage({ searchParams }) {
           <div className="master-panel__heading"><div><span>Operação comercial</span><h2>Estabelecimentos</h2></div><small>{establishments.length} cadastrados</small></div>
 
           {establishments.length === 0 ? (
-            <div className="master-empty"><Sparkles size={24} /><h3>Nenhum estabelecimento ainda</h3><p>Os primeiros cadastros aparecerão aqui automaticamente com 7 dias de teste.</p></div>
+            <div className="master-empty"><Sparkles size={24} /><h3>Nenhum estabelecimento ainda</h3><p>Os primeiros cadastros aparecerão aqui automaticamente com 14 dias de teste.</p></div>
           ) : (
             <div className="master-establishments">
               {establishments.map((item) => (

@@ -1,7 +1,7 @@
 import { CalendarClock, Check, CreditCard, Database, LockKeyhole, ShieldCheck } from "lucide-react";
 import AppShell from "../../../components/app-shell";
 import { getBillingConfiguration } from "../../../lib/billing/config";
-import { subscriptionPlanLabels, subscriptionStatusLabels } from "../../../lib/subscription";
+import { commercialPlans, subscriptionPlanLabels, subscriptionStatusLabels } from "../../../lib/subscription";
 import { getAppContext } from "../../../lib/app-context";
 
 export const metadata = { title: "Plano e assinatura — Marc" };
@@ -33,6 +33,7 @@ export default async function SubscriptionPage({ searchParams }) {
   const status = subscriptionAccess.effectiveStatus;
   const isLocked = !subscriptionAccess.canAccess;
   const accessDate = subscriptionAccess.accessEndsAt || subscription?.trial_ends_at || subscription?.current_period_ends_at;
+  const currentPlan = commercialPlans[subscription?.plan_code || "starter"];
 
   return (
     <AppShell active="assinatura" membership={membership} user={user} allowRestricted>
@@ -57,7 +58,7 @@ export default async function SubscriptionPage({ searchParams }) {
             <div className="subscription-summary__icon"><CreditCard size={24} /></div>
             <span>Plano atual</span>
             <h2>{subscriptionPlanLabels[subscription?.plan_code] || "Starter"}</h2>
-            <p>As condições comerciais e os limites definitivos serão confirmados antes da cobrança.</p>
+            <p>{currentPlan.monthlyPriceLabel}/mês após o período gratuito. A cobrança só começa quando a assinatura for contratada.</p>
 
             {billingMessages[query?.cobranca] && (
               <div className={`subscription-feedback ${query.cobranca === "sucesso" ? "subscription-feedback--success" : ""}`} role="status">
@@ -84,7 +85,7 @@ export default async function SubscriptionPage({ searchParams }) {
                 <div>
                   <select id="billing-plan" name="plan" defaultValue={subscription?.plan_code || billing.plans[0]?.planCode}>
                     {billing.plans.map(({ planCode }) => (
-                      <option key={planCode} value={planCode}>{subscriptionPlanLabels[planCode]}</option>
+                      <option key={planCode} value={planCode}>{subscriptionPlanLabels[planCode]} — {commercialPlans[planCode].monthlyPriceLabel}/mês</option>
                     ))}
                   </select>
                   <button className="button button--primary" type="submit">Ir para pagamento seguro</button>
@@ -108,7 +109,7 @@ export default async function SubscriptionPage({ searchParams }) {
 
           <aside className="subscription-assurances">
             <div><Database size={19} /><span><strong>Seus dados permanecem seguros</strong><small>Agenda, clientes e histórico não são apagados quando o acesso pausa.</small></span></div>
-            <div><CalendarClock size={19} /><span><strong>7 dias para testar a operação</strong><small>O período começa quando o estabelecimento é criado.</small></span></div>
+            <div><CalendarClock size={19} /><span><strong>14 dias para testar a operação</strong><small>O período começa quando o estabelecimento é criado.</small></span></div>
             <div><Check size={19} /><span><strong>{billingReady ? "Cobrança protegida pela Stripe" : "Cobrança online em preparação"}</strong><small>{billingReady ? "O checkout e o portal de cobrança são hospedados pelo provedor de pagamentos." : "Ela só será habilitada quando conta, produtos, preços e webhook estiverem configurados."}</small></span></div>
           </aside>
         </div>

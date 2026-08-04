@@ -26,7 +26,7 @@
 
 - No open P0, P1, or P2 findings.
 - The current product screenshots were originally produced in the former green identity. A restrained hue treatment aligns their accent color with the new orange system while preserving the illustrated interface. They should eventually be regenerated from the real product UI.
-- Pricing, metrics, testimonials, trial period, and commercial limits remain explicitly labeled as illustrative until validated.
+- Monthly pricing and the 14-day free trial are confirmed. Metrics, testimonials, and commercial limits remain explicitly labeled as illustrative until validated.
 
 ## Validation result
 

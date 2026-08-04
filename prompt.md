@@ -22,7 +22,7 @@ Converter donos de barbearias, salões e esmalterias em trial/cadastro do Marc. 
    - Headline forte em 2–3 linhas, com uma palavra/expressão em `--accent` (ex.: "Sua agenda **sempre cheia**, sem esforço.")
    - Subheadline curta: o Marc organiza agendamentos, lembra clientes no WhatsApp e cuida das finanças da sua barbearia, salão ou esmalteria, tudo em um só lugar.
    - Prova social: fileira de avatares + "+X estabelecimentos confiam no Marc" (placeholder de número).
-   - Dois CTAs: primário "Começar agora — 7 dias grátis" e secundário "Ver como funciona".
+   - Dois CTAs: primário "Começar agora — 14 dias grátis" e secundário "Ver como funciona".
    - Mockup do produto (dashboard/app de agenda, placeholder) flutuando à direita com glow sutil em `--accent`.
 
 3. **Seção de dor (o problema sem o Marc)**
@@ -86,7 +86,7 @@ Converter donos de barbearias, salões e esmalterias em trial/cadastro do Marc. 
    - **Max — R$ 99,90/mês**
      15 profissionais · tudo do Pro + todas as funcionalidades do bloco "Escala"
 
-   Cada card com lista de benefícios com check em `--accent` e botão "Assinar [nome do plano]". Nota abaixo do pricing: "Todos os planos incluem 7 dias grátis, sem cartão de crédito, e acesso ao Hub de descoberta Marc."
+   Cada card com lista de benefícios com check em `--accent` e botão "Assinar [nome do plano]". Nota abaixo do pricing: "Todos os planos incluem 14 dias grátis, sem cartão de crédito, e acesso ao Hub de descoberta Marc."
 
 10. **Depoimentos**
     3 cards com avatar, nome, estabelecimento, estrelas e frase curta sobre resultado real. Conteúdo placeholder claramente editável.

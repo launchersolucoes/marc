@@ -12,6 +12,12 @@ export const subscriptionPlanLabels = {
   max: "Max",
 };
 
+export const commercialPlans = {
+  starter: { monthlyPriceCents: 2990, monthlyPriceLabel: "R$ 29,90" },
+  pro: { monthlyPriceCents: 4990, monthlyPriceLabel: "R$ 49,90" },
+  max: { monthlyPriceCents: 9990, monthlyPriceLabel: "R$ 99,90" },
+};
+
 function validDate(value) {
   const date = value ? new Date(value) : null;
   return date && !Number.isNaN(date.getTime()) ? date : null;
