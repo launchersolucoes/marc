@@ -34,3 +34,15 @@ continuam somente em `.env.local`:
 ```bash
 E2E_ROLE_PROVISION_CONFIRM=provision-role-matrix npm run pilot:roles
 ```
+
+A suíte `appointment-flows.spec.mjs` usa essa matriz para validar o ciclo real:
+gerência conclui e lança no caixa, recepção reagenda e cancela, e o profissional
+bloqueia a própria agenda. Use somente no estabelecimento piloto, pois a
+conclusão preserva o lançamento contábil ilustrativo mesmo após a limpeza do
+cliente temporário.
+
+Por isso, o cenário de conclusão exige confirmação explícita:
+
+```bash
+E2E_FINANCIAL_MUTATION_CONFIRM=complete-pilot-appointment npx playwright test tests/e2e/appointment-flows.spec.mjs
+```

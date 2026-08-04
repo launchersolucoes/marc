@@ -4,9 +4,9 @@ export const pilotEmail = process.env.E2E_EMAIL;
 export const pilotPassword = process.env.E2E_PASSWORD;
 export const pilotSlug = process.env.E2E_ESTABLISHMENT_SLUG;
 
-export function nextOpenDate() {
+export function nextOpenDate(daysAhead = 1) {
   const date = new Date();
-  date.setDate(date.getDate() + 1);
+  date.setDate(date.getDate() + daysAhead);
   while (date.getDay() === 0) date.setDate(date.getDate() + 1);
   return new Intl.DateTimeFormat("en-CA", {
     year: "numeric",
@@ -15,18 +15,21 @@ export function nextOpenDate() {
   }).format(date);
 }
 
-export async function cleanupPilotCustomer(customerPhone) {
-  if (!pilotEmail || !pilotPassword) return;
+function authenticatedClient(email, password) {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
     { auth: { persistSession: false, autoRefreshToken: false } },
   );
-  const { error: authError } = await supabase.auth.signInWithPassword({
-    email: pilotEmail,
-    password: pilotPassword,
+  return supabase.auth.signInWithPassword({ email, password }).then(({ error }) => {
+    if (error) throw error;
+    return supabase;
   });
-  if (authError) throw authError;
+}
+
+export async function cleanupPilotCustomer(customerPhone) {
+  if (!pilotEmail || !pilotPassword) return;
+  const supabase = await authenticatedClient(pilotEmail, pilotPassword);
 
   const { data: authData } = await supabase.auth.getUser();
   const { data: membership, error: membershipError } = await supabase
@@ -58,4 +61,26 @@ export async function cleanupPilotCustomer(customerPhone) {
     .delete()
     .in("id", customerIds);
   if (customerDeleteError) throw customerDeleteError;
+}
+
+export async function cleanupProfessionalTimeOff(reason) {
+  const email = process.env.E2E_PROFESSIONAL_EMAIL;
+  const password = process.env.E2E_PROFESSIONAL_PASSWORD;
+  if (!email || !password) return;
+
+  const supabase = await authenticatedClient(email, password);
+  const { data: authData } = await supabase.auth.getUser();
+  const { data: professional, error: professionalError } = await supabase
+    .from("professionals")
+    .select("id")
+    .eq("user_id", authData.user.id)
+    .single();
+  if (professionalError) throw professionalError;
+
+  const { error: deleteError } = await supabase
+    .from("professional_time_off")
+    .delete()
+    .eq("professional_id", professional.id)
+    .eq("reason", reason);
+  if (deleteError) throw deleteError;
 }
