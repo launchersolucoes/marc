@@ -2,7 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useGSAP } from "@gsap/react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useEffect, useRef, useState } from "react";
 import { AnimatedGradient } from "../components/ui/animated-gradient";
 import { commercialPlans } from "../lib/subscription";
 import {
@@ -36,6 +39,8 @@ import {
   WalletCards,
   X,
 } from "lucide-react";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const essentialFeatures = [
   [CalendarCheck2, "Agendamento online 24h", "Seu cliente marca sozinho, mesmo quando o negócio está fechado."],
@@ -325,12 +330,202 @@ function FeatureGroup({ group }) {
 }
 
 export default function LandingPage() {
+  const landingRef = useRef(null);
   const [theme, setTheme] = useState("dark");
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     setTheme(document.documentElement.dataset.theme || "dark");
   }, []);
+
+  useGSAP(() => {
+    const root = landingRef.current;
+    if (!root) return undefined;
+
+    document.documentElement.removeAttribute("data-gsap-ready");
+    void root.offsetWidth;
+
+    const media = gsap.matchMedia();
+    media.add(
+      {
+        desktop: "(min-width: 769px)",
+      },
+      ({ conditions }) => {
+        const distance = conditions.desktop ? 34 : 18;
+        const select = (selector, scope = root) => Array.from(scope.querySelectorAll(selector));
+        const reveal = ({ trigger, targets, from, duration = 0.72, stagger = 0 }) => {
+          const triggerElement = typeof trigger === "string" ? root.querySelector(trigger) : trigger;
+          const elements = typeof targets === "string" ? select(targets) : Array.from(targets || []);
+          if (!triggerElement || !elements.length) return;
+
+          const scrollTrigger = {
+            trigger: triggerElement,
+            start: "top 86%",
+            once: true,
+            invalidateOnRefresh: true,
+          };
+          const shared = {
+            autoAlpha: 1,
+            x: 0,
+            y: 0,
+            clipPath: "inset(0% 0% 0% 0%)",
+            duration,
+            ease: "power3.out",
+            force3D: true,
+            lazy: false,
+            immediateRender: true,
+            willChange: "transform,opacity,clip-path",
+            clearProps: "transform,opacity,visibility,clipPath,willChange",
+            overwrite: "auto",
+          };
+
+          if (typeof from === "function") {
+            const timeline = gsap.timeline({ scrollTrigger });
+            elements.forEach((element, index) => {
+              timeline.fromTo(
+                element,
+                from(index, element),
+                shared,
+                index * stagger,
+              );
+            });
+          } else {
+            gsap.fromTo(elements, from, { ...shared, stagger, scrollTrigger });
+          }
+        };
+
+        select(".section-heading").forEach((heading) => {
+          reveal({
+            trigger: heading,
+            targets: [heading],
+            from: { autoAlpha: 0, y: distance * 0.7, clipPath: "inset(0 0 24% 0)" },
+          });
+        });
+
+        reveal({
+          trigger: ".contrast-grid",
+          targets: select(".contrast-panel"),
+          from: (index) => ({ autoAlpha: 0, x: index === 0 ? -distance : distance }),
+          stagger: 0.1,
+          duration: 0.78,
+        });
+
+        const hubMap = root.querySelector(".hub-map");
+        const hubCopy = root.querySelector(".hub-grid .spotlight-copy");
+        reveal({
+          trigger: ".hub-grid",
+          targets: [hubMap, hubCopy].filter(Boolean),
+          from: (index) => ({
+            autoAlpha: 0,
+            x: index === 0 ? -distance : distance,
+            clipPath: index === 0 ? "inset(4% 8% 4% 0 round 16px)" : "inset(0 0 12% 0)",
+          }),
+          stagger: 0.12,
+          duration: 0.82,
+        });
+
+        select(".feature-group").forEach((group) => {
+          const intro = group.querySelector(".feature-group__intro");
+          const rows = select(".feature-group__content > .feature-group__list .feature-row", group);
+          const timeline = gsap.timeline({
+            scrollTrigger: {
+              trigger: group,
+              start: "top 84%",
+              once: true,
+              invalidateOnRefresh: true,
+            },
+            defaults: {
+              ease: "power3.out",
+              force3D: true,
+              lazy: false,
+              immediateRender: true,
+              clearProps: "transform,opacity,visibility,willChange",
+            },
+          });
+          if (intro) {
+            timeline.fromTo(
+              intro,
+              { autoAlpha: 0, x: -distance * 0.7 },
+              {
+                autoAlpha: 1,
+                x: 0,
+                duration: 0.64,
+                willChange: "transform,opacity",
+              },
+            );
+          }
+          if (rows.length) {
+            timeline.fromTo(
+              rows,
+              { autoAlpha: 0, y: distance * 0.55 },
+              {
+                autoAlpha: 1,
+                y: 0,
+                duration: 0.54,
+                stagger: 0.07,
+                willChange: "transform,opacity",
+              },
+              intro ? "-=0.38" : 0,
+            );
+          }
+        });
+
+        const whatsappCopy = root.querySelector(".whatsapp-section .spotlight-copy");
+        const phoneStage = root.querySelector(".phone-stage");
+        reveal({
+          trigger: ".whatsapp-section .spotlight-grid",
+          targets: [whatsappCopy, phoneStage].filter(Boolean),
+          from: (index) => ({ autoAlpha: 0, x: index === 0 ? -distance : distance }),
+          stagger: 0.12,
+          duration: 0.8,
+        });
+
+        reveal({
+          trigger: ".product-demo__header",
+          targets: select(".product-demo__header > *"),
+          from: { autoAlpha: 0, y: distance * 0.55, clipPath: "inset(0 0 18% 0)" },
+          stagger: 0.07,
+          duration: 0.62,
+        });
+        reveal({
+          trigger: ".product-flow",
+          targets: select(".product-flow__step"),
+          from: { autoAlpha: 0, y: distance * 0.7 },
+          stagger: 0.11,
+          duration: 0.64,
+        });
+
+        reveal({
+          trigger: ".pricing-grid",
+          targets: select(".price-card"),
+          from: { autoAlpha: 0, y: distance * 0.65, clipPath: "inset(7% 0 0 0 round 16px)" },
+          stagger: 0.1,
+          duration: 0.7,
+        });
+
+        reveal({
+          trigger: ".evidence-grid",
+          targets: select(".evidence-item"),
+          from: { autoAlpha: 0, y: distance * 0.45 },
+          stagger: 0.08,
+          duration: 0.58,
+        });
+
+        reveal({
+          trigger: ".final-cta__grid",
+          targets: select(".final-cta__grid > *"),
+          from: (index) => ({ autoAlpha: 0, x: index === 0 ? -distance : distance }),
+          stagger: 0.12,
+          duration: 0.8,
+        });
+
+        const refreshFrame = window.requestAnimationFrame(() => ScrollTrigger.refresh());
+        return () => window.cancelAnimationFrame(refreshFrame);
+      },
+    );
+
+    return () => media.revert();
+  }, { scope: landingRef });
 
   function toggleTheme() {
     const nextTheme = theme === "dark" ? "light" : "dark";
@@ -340,7 +535,7 @@ export default function LandingPage() {
   }
 
   return (
-    <div className="site-shell">
+    <div className="site-shell" ref={landingRef}>
       <header className="site-header">
         <div className="container site-header__inner">
           <Brand />

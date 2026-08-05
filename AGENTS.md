@@ -21,3 +21,5 @@ The hero copy, proof badges, and product mockup must remain structurally separat
 Authenticated navigation should feel immediate: keep app-context data consolidated, preserve Next.js link prefetching, and show subtle progress feedback while a server-rendered route is resolving.
 
 The authenticated product follows a hybrid visual direction: keep routine operational surfaces sober, dense only where the task requires it, and highly scannable; reserve stronger Marc brand expression for onboarding, empty states, confirmations, success moments, and other moments of guidance or reassurance.
+
+Landing-page scroll reveals use GSAP ScrollTrigger with once-only, content-specific sequences: paired surfaces move relationally, feature rows stagger only inside their group, and the product flow reveals in order. Keep native scrolling, run these reveals independently of the operating system's reduced-motion preference, use the pre-hydration visibility guard plus layout-phase tween initialization to prevent cold-load and enter-time flicker, and always clean up triggers through the React lifecycle.

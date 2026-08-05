@@ -24,6 +24,11 @@ export const metadata = {
 
 const themeScript = `
   (function () {
+    document.documentElement.dataset.gsapReady = "true";
+    window.setTimeout(function () {
+      document.documentElement.removeAttribute("data-gsap-ready");
+    }, 2500);
+
     try {
       var stored = localStorage.getItem("marc-theme");
       var system = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
@@ -36,7 +41,7 @@ const themeScript = `
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="pt-BR" data-theme="dark" suppressHydrationWarning>
+    <html lang="pt-BR" data-theme="dark" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>

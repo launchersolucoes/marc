@@ -166,6 +166,24 @@ html[data-theme="light"] .route-loading > img { filter: brightness(0); }
 }
 
 .site-shell { min-width: 320px; overflow: clip; }
+
+html[data-gsap-ready="true"] .site-shell :is(
+  .section-heading,
+  .contrast-panel,
+  .hub-map,
+  .hub-grid .spotlight-copy,
+  .feature-group__intro,
+  .feature-group__content > .feature-group__list .feature-row,
+  .whatsapp-section .spotlight-copy,
+  .phone-stage,
+  .product-demo__header > *,
+  .product-flow__step,
+  .price-card,
+  .evidence-item,
+  .final-cta__grid > *
+) {
+  visibility: hidden;
+}
 .container { width: min(1180px, calc(100% - 40px)); margin-inline: auto; }
 
 .site-header {
