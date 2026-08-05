@@ -1,39 +1,17 @@
 import {
   ArrowRight,
   CalendarDays,
-  ChartNoAxesCombined,
   Check,
-  ChevronDown,
-  CircleDollarSign,
   Clock3,
-  CreditCard,
-  LayoutDashboard,
-  LogOut,
-  ListTodo,
-  Percent,
   Scissors,
-  Settings,
   Sparkles,
   UserRound,
-  UsersRound,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
-import { Suspense } from "react";
-import AppNavigationProgress from "../../components/app-navigation-progress";
-import AppThemeToggle from "../../components/app-theme-toggle";
-import SubscriptionNotice from "../../components/subscription-notice";
+import AppShell from "../../components/app-shell";
 import { getAppContext } from "../../lib/app-context";
-import { signOut } from "../auth/actions";
 
 export const metadata = { title: "Painel — Marc" };
-
-const roleLabels = {
-  owner: "Dono",
-  manager: "Gerente",
-  receptionist: "Recepção",
-  professional: "Profissional",
-};
 
 export default async function AppHomePage() {
   const { supabase, user, membership, establishment } = await getAppContext();
@@ -91,54 +69,43 @@ export default async function AppHomePage() {
     month: "long",
     timeZone: "America/Sao_Paulo",
   }).format(new Date());
+  const currentHour = Number(new Intl.DateTimeFormat("pt-BR", {
+    hour: "2-digit",
+    hour12: false,
+    timeZone: "America/Sao_Paulo",
+  }).format(new Date()));
+  const greeting = currentHour < 12 ? "Bom dia" : currentHour < 18 ? "Boa tarde" : "Boa noite";
+  const hasServices = (servicesCount || 0) > 0;
+  const hasAvailability = (availabilityCount || 0) > 0;
+  const emptyAgenda = !hasServices
+    ? {
+        title: "Cadastre seu primeiro serviço.",
+        text: "Defina o que você atende, quanto custa e quanto tempo ocupa na agenda.",
+        href: "/app/servicos",
+        action: "Cadastrar serviço",
+      }
+    : !hasAvailability
+      ? {
+          title: "Defina quando você atende.",
+          text: "O catálogo já está pronto. Agora informe os dias e horários disponíveis.",
+          href: "/app/agenda?view=disponibilidade",
+          action: "Configurar disponibilidade",
+        }
+      : {
+          title: "Sua agenda está livre hoje.",
+          text: "A operação está configurada. Crie um atendimento ou compartilhe sua página pública.",
+          href: "/app/agenda?novo=1",
+          action: "Criar agendamento",
+        };
 
   return (
-    <main className="app-layout">
-      <Suspense fallback={null}><AppNavigationProgress /></Suspense>
-      <aside className="app-sidebar">
-        <Link className="app-brand" href="/app">
-          <Image src="/assets/marc-logo-cropped.png" alt="Marc" width={208} height={90} priority />
-        </Link>
-        <nav aria-label="Navegação do painel">
-          <Link className="is-active" href="/app"><LayoutDashboard size={19} /> Visão geral</Link>
-          <Link href="/app/agenda"><CalendarDays size={19} /> Agenda</Link>
-          <Link href="/app/lista-espera"><ListTodo size={19} /> Lista de espera</Link>
-          <Link href="/app/clientes"><UsersRound size={19} /> Clientes</Link>
-          <Link href="/app/servicos"><Scissors size={19} /> Serviços</Link>
-          <Link href="/app/equipe"><UserRound size={19} /> Equipe</Link>
-          {["owner", "manager"].includes(membership.role) && <Link href="/app/financeiro"><CircleDollarSign size={19} /> Financeiro</Link>}
-          {["owner", "manager", "professional"].includes(membership.role) && <Link href="/app/comissoes"><Percent size={19} /> Comissões</Link>}
-          {["owner", "manager"].includes(membership.role) && <Link href="/app/relatorios"><ChartNoAxesCombined size={19} /> Relatórios</Link>}
-        </nav>
-        <div className="app-sidebar__bottom">
-          {["owner", "manager"].includes(membership.role) && <Link href="/app/assinatura"><CreditCard size={19} /> Plano e assinatura</Link>}
-          <Link href="/app/configuracoes"><Settings size={19} /> Configurações</Link>
-          <form action={signOut}>
-            <button type="submit"><LogOut size={19} /> Sair</button>
-          </form>
-        </div>
-      </aside>
-
-      <section className="app-main">
-        <header className="app-topbar">
-          <button className="business-switcher" type="button">
-            <span>{establishment.name.slice(0, 1).toUpperCase()}</span>
-            <div><strong>{establishment.name}</strong><small>{roleLabels[membership.role]}</small></div>
-            <ChevronDown size={17} />
-          </button>
-          <div className="app-topbar__actions">
-            <AppThemeToggle />
-            <div className="app-avatar">{firstName.slice(0, 1).toUpperCase()}</div>
-          </div>
-        </header>
-        <SubscriptionNotice access={membership.subscriptionAccess} role={membership.role} />
-
-        <div className="app-content">
+    <AppShell active="home" membership={membership} user={user}>
+      <div className="app-content">
           <header className="dashboard-heading">
             <div>
               <span>{todayLabel}</span>
-              <h1>Boa noite, {firstName}.</h1>
-              <p>Seu espaço está pronto. Agora vamos colocar a primeira agenda para funcionar.</p>
+              <h1>{greeting}, {firstName}.</h1>
+              <p>{completedSteps === setupSteps.length ? "Acompanhe o dia e mantenha a operação em movimento." : "Conclua os primeiros passos para abrir sua agenda aos clientes."}</p>
             </div>
             <Link className="button button--primary" href="/app/agenda">
               <CalendarDays size={18} /> Novo agendamento
@@ -187,10 +154,10 @@ export default async function AppHomePage() {
                     <span>10:00</span>
                     <span>11:00</span>
                   </div>
-                  <h3>Sua agenda está livre.</h3>
-                  <p>Cadastre um serviço e defina seus horários para começar a receber agendamentos.</p>
-                  <Link className="button button--secondary" href="/app/servicos">
-                    Cadastrar serviço
+                  <h3>{emptyAgenda.title}</h3>
+                  <p>{emptyAgenda.text}</p>
+                  <Link className="button button--secondary" href={emptyAgenda.href}>
+                    {emptyAgenda.action}
                   </Link>
                 </div>
               )}
@@ -215,17 +182,7 @@ export default async function AppHomePage() {
               </ul>
             </aside>
           </div>
-        </div>
-      </section>
-
-      <nav className="app-mobile-nav" aria-label="Navegação rápida">
-        <Link className="is-active" href="/app"><LayoutDashboard size={20} /><span>Início</span></Link>
-        <Link href="/app/agenda"><CalendarDays size={20} /><span>Agenda</span></Link>
-        <Link href="/app/clientes"><UsersRound size={20} /><span>Clientes</span></Link>
-        <Link href="/app/servicos"><Scissors size={20} /><span>Serviços</span></Link>
-        {["owner", "manager"].includes(membership.role) && <Link href="/app/financeiro"><CircleDollarSign size={20} /><span>Financeiro</span></Link>}
-        {membership.role === "professional" && <Link href="/app/comissoes"><Percent size={20} /><span>Comissões</span></Link>}
-      </nav>
-    </main>
+      </div>
+    </AppShell>
   );
 }

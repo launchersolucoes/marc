@@ -37,6 +37,7 @@ export default function PublicBookingFlow({ establishment }) {
   const [confirmed, setConfirmed] = useState(null);
   const [waitlisted, setWaitlisted] = useState(null);
   const selectedOffering = offerings.find((item) => item.id === offeringId);
+  const canJoinWaitlist = Boolean(offeringId && date && !loadingSlots && !error && slots.length === 0);
 
   useEffect(() => {
     const nextOfferings = offerings.filter((item) => item.service_id === serviceId);
@@ -81,6 +82,13 @@ export default function PublicBookingFlow({ establishment }) {
     setSubmitting(true);
     setError("");
     const supabase = createClient();
+    if (!slot && !canJoinWaitlist) {
+      setSubmitting(false);
+      setError(slots.length
+        ? "Escolha um dos horários disponíveis para continuar."
+        : "Aguarde a consulta da agenda antes de continuar.");
+      return;
+    }
     if (!slot) {
       const { data, error: waitlistError } = await supabase.rpc("create_public_waitlist_entry", {
         establishment_slug: establishment.slug,
@@ -234,22 +242,44 @@ export default function PublicBookingFlow({ establishment }) {
               );
             })}
           </div>
-        ) : <p>Nenhum horário livre nesta data. Escolha outro dia ou entre na lista de espera.</p>}
+        ) : (
+          <div className="slot-empty" role="status">
+            <ListTodo size={18} />
+            <span><strong>Nenhum horário livre nesta data.</strong><small>Escolha outro dia ou deixe seu contato na lista de espera.</small></span>
+          </div>
+        )}
       </fieldset>
 
-      <div className="booking-customer-fields">
-        <div className="field"><label htmlFor="bookingName">Seu nome</label><input id="bookingName" name="name" autoComplete="name" placeholder="Nome completo" minLength={2} required /></div>
-        <div className="field"><label htmlFor="bookingPhone">WhatsApp</label><input id="bookingPhone" name="phone" type="tel" autoComplete="tel" placeholder="(00) 00000-0000" minLength={8} required /></div>
-        <div className="field booking-email"><label htmlFor="bookingEmail">E-mail <span>opcional</span></label><input id="bookingEmail" name="email" type="email" autoComplete="email" placeholder="voce@email.com" /></div>
-      </div>
+      {(slot || canJoinWaitlist) && (
+        <div className="booking-customer-step">
+          <div className="booking-customer-step__heading">
+            <span>{slot ? "Último passo" : "Seus dados"}</span>
+            <strong>{slot ? "Quem vai receber este atendimento?" : "Como a equipe pode falar com você?"}</strong>
+          </div>
+          <div className="booking-customer-fields">
+            <div className="field"><label htmlFor="bookingName">Seu nome</label><input id="bookingName" name="name" autoComplete="name" placeholder="Nome completo" minLength={2} required /></div>
+            <div className="field"><label htmlFor="bookingPhone">WhatsApp</label><input id="bookingPhone" name="phone" type="tel" autoComplete="tel" placeholder="(00) 00000-0000" minLength={8} required /></div>
+            <div className="field booking-email"><label htmlFor="bookingEmail">E-mail <span>opcional</span></label><input id="bookingEmail" name="email" type="email" autoComplete="email" placeholder="voce@email.com" /></div>
+          </div>
+        </div>
+      )}
 
       {error && <p className="form-message form-message--error" role="alert">{error}</p>}
-      <button className="button button--primary booking-submit" type="submit" disabled={submitting || loadingSlots || Boolean(error && !slots.length)}>
+      {!loadingSlots && slots.length > 0 && !slot && !error && (
+        <p className="booking-next-step" role="status">Escolha um horário disponível para liberar a confirmação.</p>
+      )}
+      <button
+        className="button button--primary booking-submit"
+        type="submit"
+        disabled={submitting || loadingSlots || Boolean(error) || (!slot && !canJoinWaitlist)}
+      >
         {submitting
           ? <><LoaderCircle className="spin" size={18} /> Enviando</>
           : slot
             ? <>Confirmar meu horário <ChevronRight size={18} /></>
-            : <><ListTodo size={18} /> Entrar na lista de espera</>}
+            : canJoinWaitlist
+              ? <><ListTodo size={18} /> Entrar na lista de espera</>
+              : <>Escolha um horário <ChevronRight size={18} /></>}
       </button>
     </form>
   );

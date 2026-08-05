@@ -78,6 +78,7 @@ export default async function AgendaPage({ searchParams }) {
   const query = await searchParams;
   const selectedDate = /^\d{4}-\d{2}-\d{2}$/.test(query?.date || "") ? query.date : dateInBrazil();
   const selectedAppointmentId = /^[0-9a-f-]{36}$/i.test(query?.appointment || "") ? query.appointment : "";
+  const newAppointmentRequested = query?.novo === "1";
   const view = query?.view === "disponibilidade" ? "disponibilidade" : "agenda";
   const { supabase, user, membership, establishment, professional } = await getAppContext();
 
@@ -133,11 +134,18 @@ export default async function AgendaPage({ searchParams }) {
             <h1>Agenda</h1>
             <p>Horários confirmados, equipe e bloqueios na mesma visão.</p>
           </div>
-          <nav className="segmented-nav" aria-label="Visões da agenda">
-            <Link className={view === "agenda" ? "is-active" : ""} href={`/app/agenda?date=${selectedDate}`}><CalendarDays size={16} /> Agenda</Link>
-            <Link className={view === "disponibilidade" ? "is-active" : ""} href={`/app/agenda?view=disponibilidade&date=${selectedDate}`}><Settings2 size={16} /> Disponibilidade</Link>
-            <Link href="/app/lista-espera"><ListTodo size={16} /> Lista de espera</Link>
-          </nav>
+          <div className="agenda-heading__actions">
+            <nav className="segmented-nav" aria-label="Visões da agenda">
+              <Link className={view === "agenda" ? "is-active" : ""} href={`/app/agenda?date=${selectedDate}`}><CalendarDays size={16} /> Agenda</Link>
+              <Link className={view === "disponibilidade" ? "is-active" : ""} href={`/app/agenda?view=disponibilidade&date=${selectedDate}`}><Settings2 size={16} /> Disponibilidade</Link>
+              <Link href="/app/lista-espera"><ListTodo size={16} /> Lista de espera</Link>
+            </nav>
+            {view === "agenda" && (
+              <Link className="button button--primary agenda-new-action" href={`/app/agenda?date=${selectedDate}&novo=1#novo-atendimento`}>
+                <CalendarDays size={17} /> Novo atendimento
+              </Link>
+            )}
+          </div>
         </header>
 
         {view === "agenda" ? (
@@ -188,11 +196,14 @@ export default async function AgendaPage({ searchParams }) {
                 <div className="agenda-teach-empty"><UserRound size={26} /><h2>Cadastre um profissional primeiro.</h2><p>A agenda precisa de alguém para receber serviços e horários.</p><Link className="button button--secondary" href="/app/equipe">Abrir equipe</Link></div>
               )}
             </section>
-            <aside className="appointment-form-card">
+            <aside
+              className={`appointment-form-card ${selectedAppointment || newAppointmentRequested ? "is-requested" : ""}`}
+              id="novo-atendimento"
+            >
               {selectedAppointment ? (
                 <div className="appointment-detail">
                   <div className="appointment-detail__top">
-                    <Link href={`/app/agenda?date=${selectedDate}`}><ArrowLeft size={15} /> Voltar para novo atendimento</Link>
+                    <Link href={`/app/agenda?date=${selectedDate}`}><ArrowLeft size={15} /> Voltar à agenda</Link>
                     <span className={`status-badge is-${selectedAppointment.status}`}>{statusLabels[selectedAppointment.status]}</span>
                   </div>
                   <div className="appointment-detail__identity">

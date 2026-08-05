@@ -19,3 +19,5 @@ The hero and final CTA use the provided animated WebGL gradient language. Keep f
 The hero copy, proof badges, and product mockup must remain structurally separated at every breakpoint: no negative mockup margins, no oversized mobile crop, and no overlap between copy or badges and the visual. Keep the footer logo at the same compact optical width as the header logo.
 
 Authenticated navigation should feel immediate: keep app-context data consolidated, preserve Next.js link prefetching, and show subtle progress feedback while a server-rendered route is resolving.
+
+The authenticated product follows a hybrid visual direction: keep routine operational surfaces sober, dense only where the task requires it, and highly scannable; reserve stronger Marc brand expression for onboarding, empty states, confirmations, success moments, and other moments of guidance or reassurance.

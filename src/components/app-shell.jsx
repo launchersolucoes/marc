@@ -1,13 +1,18 @@
 import {
   CalendarDays,
   ChartNoAxesCombined,
+  CircleHelp,
   CircleDollarSign,
   CreditCard,
+  ExternalLink,
   LayoutDashboard,
   LogOut,
   ListTodo,
+  Menu,
   Percent,
+  Plus,
   Scissors,
+  Search,
   Settings,
   UserRound,
   UsersRound,
@@ -27,16 +32,22 @@ const roleLabels = {
   professional: "Profissional",
 };
 
-const navigation = [
-  ["home", "/app", LayoutDashboard, "Visão geral"],
-  ["agenda", "/app/agenda", CalendarDays, "Agenda"],
-  ["lista-espera", "/app/lista-espera", ListTodo, "Lista de espera"],
-  ["clientes", "/app/clientes", UsersRound, "Clientes"],
-  ["servicos", "/app/servicos", Scissors, "Serviços"],
-  ["equipe", "/app/equipe", UserRound, "Equipe"],
-  ["financeiro", "/app/financeiro", CircleDollarSign, "Financeiro"],
-  ["comissoes", "/app/comissoes", Percent, "Comissões"],
-  ["relatorios", "/app/relatorios", ChartNoAxesCombined, "Relatórios"],
+const navigationGroups = [
+  ["Operação", [
+    ["home", "/app", LayoutDashboard, "Visão geral"],
+    ["agenda", "/app/agenda", CalendarDays, "Agenda"],
+    ["lista-espera", "/app/lista-espera", ListTodo, "Lista de espera"],
+  ]],
+  ["Relacionamento", [
+    ["clientes", "/app/clientes", UsersRound, "Clientes"],
+    ["servicos", "/app/servicos", Scissors, "Serviços"],
+    ["equipe", "/app/equipe", UserRound, "Equipe"],
+  ]],
+  ["Gestão", [
+    ["financeiro", "/app/financeiro", CircleDollarSign, "Financeiro"],
+    ["comissoes", "/app/comissoes", Percent, "Comissões"],
+    ["relatorios", "/app/relatorios", ChartNoAxesCombined, "Relatórios"],
+  ]],
 ];
 
 export default function AppShell({ active, membership, user, children, allowRestricted = false }) {
@@ -45,14 +56,18 @@ export default function AppShell({ active, membership, user, children, allowRest
     user.user_metadata?.full_name?.split(" ")[0] ||
     user.email?.split("@")[0] ||
     "M";
-  const visibleNavigation = navigation.filter(([key]) =>
+  const canSeeNavigationItem = ([key]) =>
     (key !== "financeiro" || ["owner", "manager"].includes(membership.role)) &&
     (key !== "comissoes" || ["owner", "manager", "professional"].includes(membership.role)) &&
-    (key !== "relatorios" || ["owner", "manager"].includes(membership.role))
-  );
-  const mobileNavigation = visibleNavigation.filter(([key]) =>
-    ["home", "agenda", "clientes", "servicos", membership.role === "professional" ? "comissoes" : "financeiro"].includes(key)
-  );
+    (key !== "relatorios" || ["owner", "manager"].includes(membership.role));
+  const visibleGroups = navigationGroups
+    .map(([label, items]) => [label, items.filter(canSeeNavigationItem)])
+    .filter(([, items]) => items.length);
+  const visibleNavigation = visibleGroups.flatMap(([, items]) => items);
+  const primaryMobileKeys = ["home", "agenda", "clientes", "servicos"];
+  const mobileNavigation = visibleNavigation.filter(([key]) => primaryMobileKeys.includes(key));
+  const mobileSecondaryNavigation = visibleNavigation.filter(([key]) => !primaryMobileKeys.includes(key));
+  const secondaryActive = mobileSecondaryNavigation.some(([key]) => key === active) || ["assinatura", "configuracoes"].includes(active);
 
   return (
     <main className="app-layout">
@@ -62,10 +77,15 @@ export default function AppShell({ active, membership, user, children, allowRest
           <Image src="/assets/marc-logo-cropped.png" alt="Marc" width={208} height={90} priority />
         </Link>
         <nav aria-label="Navegação do painel">
-          {visibleNavigation.map(([key, href, Icon, label]) => (
-            <Link className={active === key ? "is-active" : ""} href={href} key={key}>
-              <Icon size={19} /> {label}
-            </Link>
+          {visibleGroups.map(([groupLabel, items]) => (
+            <div className="app-sidebar__group" key={groupLabel}>
+              <span>{groupLabel}</span>
+              {items.map(([key, href, Icon, label]) => (
+                <Link className={active === key ? "is-active" : ""} href={href} key={key}>
+                  <Icon size={19} /> {label}
+                </Link>
+              ))}
+            </div>
           ))}
         </nav>
         <div className="app-sidebar__bottom">
@@ -73,6 +93,7 @@ export default function AppShell({ active, membership, user, children, allowRest
             <Link className={active === "assinatura" ? "is-active" : ""} href="/app/assinatura"><CreditCard size={19} /> Plano e assinatura</Link>
           )}
           <Link className={active === "configuracoes" ? "is-active" : ""} href="/app/configuracoes"><Settings size={19} /> Configurações</Link>
+          <a href="mailto:launchersolucoes@gmail.com?subject=Ajuda%20com%20o%20Marc"><CircleHelp size={19} /> Ajuda</a>
           <form action={signOut}><button type="submit"><LogOut size={19} /> Sair</button></form>
         </div>
       </aside>
@@ -84,6 +105,14 @@ export default function AppShell({ active, membership, user, children, allowRest
             <div><strong>{establishment.name}</strong><small>{roleLabels[membership.role]}</small></div>
           </div>
           <div className="app-topbar__actions">
+            <details className="app-quick-actions">
+              <summary><Plus size={17} /> <span>Ações rápidas</span></summary>
+              <div>
+                <Link href="/app/agenda?novo=1"><CalendarDays size={17} /><span><strong>Novo agendamento</strong><small>Abrir a agenda e cadastrar um horário</small></span></Link>
+                <Link href="/app/clientes"><Search size={17} /><span><strong>Buscar cliente</strong><small>Consultar contato e histórico</small></span></Link>
+                <Link href={`/agendar/${establishment.slug}`} target="_blank"><ExternalLink size={17} /><span><strong>Página pública</strong><small>Ver como o cliente encontra horários</small></span></Link>
+              </div>
+            </details>
             <AppThemeToggle />
             <div className="app-avatar">{firstName.slice(0, 1).toUpperCase()}</div>
           </div>
@@ -98,6 +127,17 @@ export default function AppShell({ active, membership, user, children, allowRest
             <Icon size={20} /><span>{label === "Visão geral" ? "Início" : label}</span>
           </Link>
         ))}
+        <details className={`app-mobile-more ${secondaryActive ? "is-active" : ""}`}>
+          <summary aria-label="Abrir mais opções"><Menu size={20} /><span>Mais</span></summary>
+          <div>
+            {mobileSecondaryNavigation.map(([key, href, Icon, label]) => (
+              <Link className={active === key ? "is-active" : ""} href={href} key={key}><Icon size={19} /> {label}</Link>
+            ))}
+            {["owner", "manager"].includes(membership.role) && <Link className={active === "assinatura" ? "is-active" : ""} href="/app/assinatura"><CreditCard size={19} /> Plano e assinatura</Link>}
+            <Link className={active === "configuracoes" ? "is-active" : ""} href="/app/configuracoes"><Settings size={19} /> Configurações</Link>
+            <a href="mailto:launchersolucoes@gmail.com?subject=Ajuda%20com%20o%20Marc"><CircleHelp size={19} /> Ajuda</a>
+          </div>
+        </details>
       </nav>
     </main>
   );

@@ -91,19 +91,34 @@ const featureGroups = [
   },
 ];
 
+const plannedFeatures = new Set([
+  "Lembretes no WhatsApp",
+  "Confirmação automática",
+  "Aniversário do cliente",
+  ...scaleFeatures.map(([, title]) => title),
+]);
+
+const plannedPlanBenefits = new Set([
+  "WhatsApp automático",
+  "Multi-unidades",
+  "Sinal antecipado",
+  "Estoque e fidelidade",
+  "Onboarding assistido",
+]);
+
 const plans = [
   {
     name: "Starter",
     price: commercialPlans.starter.monthlyPriceLabel.replace("R$ ", ""),
     audience: "Para quem atende sozinho",
-    limit: "1 profissional",
+    limit: "Composição do plano em definição",
     benefits: ["Agendamento online 24h", "WhatsApp automático", "Link próprio", "Caixa diário", "Histórico de clientes"],
   },
   {
     name: "Pro",
     price: commercialPlans.pro.monthlyPriceLabel.replace("R$ ", ""),
     audience: "Para equipes em crescimento",
-    limit: "Até 5 profissionais",
+    limit: "Composição do plano em definição",
     popular: true,
     benefits: ["Tudo do Starter", "Agenda por profissional", "Comissões automáticas", "Relatórios completos", "Usuários e permissões"],
   },
@@ -111,7 +126,7 @@ const plans = [
     name: "Max",
     price: commercialPlans.max.monthlyPriceLabel.replace("R$ ", ""),
     audience: "Para operações completas",
-    limit: "Até 15 profissionais",
+    limit: "Composição do plano em definição",
     benefits: ["Tudo do Pro", "Multi-unidades", "Sinal antecipado", "Estoque e fidelidade", "Onboarding assistido"],
   },
 ];
@@ -126,8 +141,8 @@ const productFlow = [
   {
     icon: MessageCircleMore,
     moment: "Marc",
-    title: "Confirma pelo WhatsApp",
-    text: "O lembrete sai automaticamente e a resposta atualiza a agenda da equipe.",
+    title: "Prepara a confirmação pelo WhatsApp",
+    text: "A automação está em preparação para conectar lembrete, resposta e agenda da equipe.",
   },
   {
     icon: UsersRound,
@@ -217,8 +232,8 @@ const gradientThemes = {
 const faqs = [
   ["Preciso instalar alguma coisa?", "Não. O Marc funciona pelo navegador no celular ou computador. A configuração e a gestão acontecem online."],
   ["Meus clientes precisam baixar um aplicativo?", "Não. Eles acessam seu link, escolhem o serviço, o profissional e o horário. Simples assim."],
-  ["Como funciona o lembrete no WhatsApp?", "Antes do atendimento, o Marc envia uma mensagem automática para lembrar o cliente e facilitar a confirmação."],
-  ["O que é o Hub de descoberta Marc?", "É a rede de estabelecimentos parceiros. Quando não há vaga em um local, o cliente pode descobrir outra opção próxima dentro do Marc."],
+  ["Como funcionará o lembrete no WhatsApp?", "A automação está em preparação. Quando for liberada, o Marc enviará a mensagem antes do atendimento e levará a resposta para a agenda da equipe."],
+  ["O que é o Hub de descoberta Marc?", "É uma evolução planejada para conectar estabelecimentos parceiros. O Hub ainda não faz parte da operação disponível no teste."],
   ["Posso trocar de plano depois?", "Sim. Você pode começar com o plano adequado para hoje e mudar conforme a sua operação crescer."],
 ];
 
@@ -262,12 +277,12 @@ function SectionHeader({ tag, title, description, align = "left" }) {
   );
 }
 
-function FeatureRow({ icon: Icon, title, text }) {
+function FeatureRow({ icon: Icon, title, text, planned = false }) {
   return (
     <article className="feature-row">
       <div className="feature-row__icon"><Icon size={20} strokeWidth={2} /></div>
       <div>
-        <h4>{title}</h4>
+        <h4>{title}{planned && <span className="feature-status">Em preparação</span>}</h4>
         <p>{text}</p>
       </div>
     </article>
@@ -288,7 +303,7 @@ function FeatureGroup({ group }) {
       <div className="feature-group__content">
         <div className="feature-group__list">
           {visibleFeatures.map(([icon, title, text]) => (
-            <FeatureRow key={title} icon={icon} title={title} text={text} />
+            <FeatureRow key={title} icon={icon} title={title} text={text} planned={plannedFeatures.has(title)} />
           ))}
         </div>
         {additionalFeatures.length > 0 && (
@@ -299,7 +314,7 @@ function FeatureGroup({ group }) {
             </summary>
             <div className="feature-group__list feature-group__list--more">
               {additionalFeatures.map(([icon, title, text]) => (
-                <FeatureRow key={title} icon={icon} title={title} text={text} />
+                <FeatureRow key={title} icon={icon} title={title} text={text} planned={plannedFeatures.has(title)} />
               ))}
             </div>
           </details>
@@ -361,7 +376,7 @@ export default function LandingPage() {
               <div className="hero__eyebrow"><Sparkles size={15} /> Gestão feita para quem atende pessoas</div>
               <h1>Sua agenda trabalha. <em>Você atende.</em></h1>
               <p className="hero__lead">
-                O Marc organiza agendamentos, lembra clientes no WhatsApp e cuida das finanças da sua barbearia, salão ou esmalteria — tudo em um só lugar.
+                O Marc organiza agendamentos e finanças da sua barbearia, salão ou esmalteria. A automação pelo WhatsApp está em preparação.
               </p>
               <div className="hero__actions">
                 <ButtonLink>Começar teste grátis de 14 dias <ArrowRight size={17} /></ButtonLink>
@@ -369,7 +384,7 @@ export default function LandingPage() {
               </div>
               <div className="hero__proof">
                 <span><CalendarCheck2 size={16} /> Agenda</span>
-                <span><MessageCircleMore size={16} /> WhatsApp</span>
+                <span><MessageCircleMore size={16} /> WhatsApp em preparação</span>
                 <span><WalletCards size={16} /> Financeiro</span>
               </div>
             </div>
@@ -385,7 +400,7 @@ export default function LandingPage() {
               />
               <div className="floating-note floating-note--top">
                 <span><Check size={14} /></span>
-                <div><strong>Horário confirmado</strong><small>WhatsApp enviado automaticamente</small></div>
+                <div><strong>Confirmação preparada</strong><small>Automação pelo WhatsApp em evolução</small></div>
               </div>
               <div className="floating-note floating-note--bottom">
                 <span><BarChart3 size={14} /></span>
@@ -418,7 +433,7 @@ export default function LandingPage() {
                 <span className="contrast-panel__label">Com o Marc</span>
                 <h3>A operação trabalha junto com você.</h3>
                 <ul>
-                  <li><Check size={17} /> Lembretes e confirmações saem sozinhos</li>
+                  <li><Check size={17} /> A equipe acompanha confirmações na agenda</li>
                   <li><Check size={17} /> Cada profissional tem sua agenda certa</li>
                   <li><Check size={17} /> Faturamento e comissões ficam visíveis</li>
                   <li><Check size={17} /> O cliente agenda a qualquer hora</li>
@@ -461,7 +476,7 @@ export default function LandingPage() {
             <SectionHeader
               tag="Produto completo"
               title="Comece pelo essencial. Cresça sem trocar de sistema."
-              description="Os recursos acompanham a maturidade do seu negócio, mas você já pode entender toda a plataforma antes de escolher."
+              description="Veja o que já funciona no teste e o que está marcado como próxima evolução da plataforma."
             />
             <div className="feature-groups">
               {featureGroups.map((group) => <FeatureGroup key={group.id} group={group} />)}
@@ -472,10 +487,10 @@ export default function LandingPage() {
         <section className="section whatsapp-section">
           <div className="container spotlight-grid">
             <div className="spotlight-copy">
-              <span className="section-tag">WhatsApp automático</span>
+              <span className="section-tag">Automação em preparação</span>
               <h2>Um lembrete enviado. Um horário protegido.</h2>
               <p>
-                Cada falta abre um buraco na agenda que dificilmente volta a ser preenchido. O Marc lembra, confirma e mantém cliente e equipe no mesmo ritmo.
+                Cada falta abre um buraco na agenda. Esta demonstração mostra como o Marc conectará lembrete, confirmação e equipe quando a automação for liberada.
               </p>
               <ul className="check-list">
                 <li><Check size={17} /> Mensagem antes do atendimento</li>
@@ -483,8 +498,8 @@ export default function LandingPage() {
                 <li><Check size={17} /> Menos tempo cobrando respostas</li>
               </ul>
               <div className="impact-callout">
-                <strong>Lembrete, resposta e agenda no mesmo fluxo.</strong>
-                <span>Demonstração funcional do comportamento planejado para a plataforma.</span>
+                <strong>Prévia do fluxo planejado.</strong>
+                <span>A página de agendamento já funciona; o envio automático pelo WhatsApp será ativado em uma fase posterior.</span>
               </div>
             </div>
             <div className="phone-stage">
@@ -538,7 +553,7 @@ export default function LandingPage() {
                     <p>{plan.limit}</p>
                   </div>
                   <ul>
-                    {plan.benefits.map((benefit) => <li key={benefit}><Check size={17} /> {benefit}</li>)}
+                    {plan.benefits.map((benefit) => <li key={benefit}><Check size={17} /> <span>{benefit}{plannedPlanBenefits.has(benefit) && <small>Em preparação</small>}</span></li>)}
                   </ul>
                   <ButtonLink variant={plan.popular ? "dark" : "secondary"}>Reservar teste {plan.name} <ArrowRight size={16} /></ButtonLink>
                 </article>
@@ -564,7 +579,7 @@ export default function LandingPage() {
               <article className="evidence-item">
                 <MessageCircleMore size={24} />
                 <span>Confirmação conectada</span>
-                <h3>A resposta no WhatsApp atualiza o status visto pela equipe.</h3>
+                <h3>Prévia de como a resposta do WhatsApp atualizará o status da equipe.</h3>
               </article>
               <article className="evidence-item">
                 <CircleDollarSign size={24} />

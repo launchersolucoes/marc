@@ -1,12 +1,13 @@
-import { ArrowLeft, Check, Clock3, Scissors } from "lucide-react";
+import { Check, Clock3, Scissors } from "lucide-react";
 import Link from "next/link";
+import AppShell from "../../../components/app-shell";
 import ServiceForm from "../../../components/service-form";
 import { getAppContext } from "../../../lib/app-context";
 
 export const metadata = { title: "Serviços — Marc" };
 
 export default async function ServicesPage() {
-  const { supabase, membership, establishment, professional } = await getAppContext();
+  const { supabase, user, membership, professional } = await getAppContext();
 
   const { data: services } = await supabase
     .from("services")
@@ -15,16 +16,19 @@ export default async function ServicesPage() {
     .order("created_at", { ascending: false });
 
   return (
-    <main className="service-page">
-      <header className="service-page__topbar">
-        <Link href="/app"><ArrowLeft size={17} /> Voltar ao painel</Link>
-        <span>{establishment.name}</span>
-      </header>
-      <div className="service-page__layout">
+    <AppShell active="servicos" membership={membership} user={user}>
+      <div className="app-content service-page">
+        <header className="product-heading service-page__heading">
+          <div>
+            <span>Oferta e agenda</span>
+            <h1>Serviços</h1>
+            <p>Consulte o catálogo do estabelecimento e defina o que aparece na sua própria agenda.</p>
+          </div>
+          <div className="heading-stat"><Scissors size={18} /><strong>{services?.length || 0}</strong><span>no catálogo</span></div>
+        </header>
+        <div className="service-page__layout">
         <section className="service-list">
-          <span className="section-tag">Catálogo</span>
-          <h1>Serviços</h1>
-          <p>O serviço reúne nome, duração e valor usados pela agenda e pela página pública.</p>
+          <div className="section-title"><div><h2>Catálogo do estabelecimento</h2><p>Nome, duração e valor usados na agenda e na página pública.</p></div></div>
           {services?.length ? (
             <div className="service-list__items">
               {services.map((service) => {
@@ -51,7 +55,8 @@ export default async function ServicesPage() {
             ? <ServiceForm />
             : <div className="service-professional-required"><Scissors size={23} /><span>Regras do profissional</span><h2>Serviços, valores e duração são definidos por quem atende.</h2><p>Seu acesso pode consultar o catálogo, mas precisa estar conectado a um perfil profissional para alterar essas regras.</p><Link className="button button--secondary" href="/app/equipe">Abrir equipe</Link></div>}
         </aside>
+        </div>
       </div>
-    </main>
+    </AppShell>
   );
 }

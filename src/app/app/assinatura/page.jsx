@@ -110,7 +110,7 @@ export default async function SubscriptionPage({ searchParams }) {
           <aside className="subscription-assurances">
             <div><Database size={19} /><span><strong>Seus dados permanecem seguros</strong><small>Agenda, clientes e histórico não são apagados quando o acesso pausa.</small></span></div>
             <div><CalendarClock size={19} /><span><strong>14 dias para testar a operação</strong><small>O período começa quando o estabelecimento é criado.</small></span></div>
-            <div><Check size={19} /><span><strong>{billingReady ? "Cobrança protegida pela Stripe" : "Cobrança online em preparação"}</strong><small>{billingReady ? "O checkout e o portal de cobrança são hospedados pelo provedor de pagamentos." : "Ela só será habilitada quando conta, produtos, preços e webhook estiverem configurados."}</small></span></div>
+            <div><Check size={19} /><span><strong>{billingReady ? "Pagamento protegido pela Stripe" : "Pagamento online em preparação"}</strong><small>{billingReady ? "Você confere o valor e administra a assinatura em um ambiente seguro." : "Enquanto essa etapa não é liberada, fale com a Launcher para ativar ou ajustar o acesso."}</small></span></div>
           </aside>
         </div>
       </div>

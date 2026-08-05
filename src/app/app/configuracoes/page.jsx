@@ -47,18 +47,12 @@ export default async function SettingsPage({ searchParams }) {
 
         {query?.senha === "alterada" && <p className="form-message form-message--success settings-page-message"><ShieldCheck size={17} />Senha atualizada com segurança.</p>}
 
-        <div className={`settings-layout ${canManage ? "" : "settings-layout--single"}`}>
-          <section className="settings-primary">
-            {canManage ? (
+        <div className={`settings-layout ${canManage ? "" : "settings-layout--profile"}`}>
+          {canManage && (
+            <section className="settings-primary">
               <EstablishmentSettingsForm establishment={fullEstablishment || establishment} />
-            ) : (
-              <div className="settings-readonly">
-                <ShieldCheck size={23} />
-                <h2>Os dados do negócio são gerenciados pela liderança.</h2>
-                <p>Você pode atualizar seu perfil e sua senha. Alterações no estabelecimento ficam disponíveis para dono e gerente.</p>
-              </div>
-            )}
-          </section>
+            </section>
+          )}
 
           <aside className="settings-aside">
             <ProfileSettingsForm profile={profile} email={user.email} />

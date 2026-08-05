@@ -27,7 +27,8 @@ async function joinWaitlist(page, { name, phone }) {
   const date = page.getByLabel("Data");
   await date.fill(nextSundayDate());
   await expect(date).toHaveValue(nextSundayDate());
-  await expect(page.getByText("Nenhum horário livre nesta data. Escolha outro dia ou entre na lista de espera.", { exact: true })).toBeVisible();
+  await expect(page.getByText("Nenhum horário livre nesta data.", { exact: true })).toBeVisible();
+  await expect(page.getByText("Escolha outro dia ou deixe seu contato na lista de espera.", { exact: true })).toBeVisible();
   await page.getByLabel("Seu nome").fill(name);
   await page.getByLabel("WhatsApp").fill(phone);
   await page.getByRole("button", { name: "Entrar na lista de espera" }).click();
