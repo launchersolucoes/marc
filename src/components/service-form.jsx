@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, CheckCircle2, LoaderCircle, Scissors } from "lucide-react";
+import { ArrowRight, CheckCircle2, LoaderCircle } from "lucide-react";
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { createService } from "../app/app/servicos/actions";
@@ -24,9 +24,7 @@ export default function ServiceForm() {
   return (
     <form className="service-form" action={action}>
       <div className="service-form__heading">
-        <div><Scissors size={21} /></div>
-        <span>Novo serviço</span>
-        <h2>O que você atende?</h2>
+        <h2>Novo serviço</h2>
         <p>Defina o serviço, o valor e a duração usados especificamente na sua agenda.</p>
       </div>
       <div className="field">

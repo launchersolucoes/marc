@@ -1,4 +1,5 @@
-import { CalendarDays, Search, UserPlus, UsersRound } from "lucide-react";
+import { CalendarDays, Search, UserPlus } from "lucide-react";
+import Link from "next/link";
 import AppShell from "../../../components/app-shell";
 import CustomerForm from "../../../components/customer-form";
 import { getAppContext } from "../../../lib/app-context";
@@ -12,6 +13,7 @@ function money(cents) {
 export default async function CustomersPage({ searchParams }) {
   const query = await searchParams;
   const search = String(query?.busca || "").trim().replace(/[,%()]/g, "").slice(0, 80);
+  const newCustomerRequested = query?.novo === "1";
   const { supabase, user, membership, establishment } = await getAppContext();
   const canManage = ["owner", "manager", "receptionist"].includes(membership.role);
 
@@ -45,7 +47,7 @@ export default async function CustomersPage({ searchParams }) {
             <h1>Clientes e histórico.</h1>
             <p>Contatos, preferências e atendimentos ficam juntos para a equipe reconhecer quem volta.</p>
           </div>
-          <div className="heading-stat"><UsersRound size={18} /><strong>{rows.length}</strong><span>{search ? "encontrados" : "na base"}</span></div>
+          {canManage && <Link className="button button--primary product-heading__action" href="/app/clientes?novo=1">Novo cliente</Link>}
         </header>
 
         <div className={`customers-layout ${canManage ? "" : "customers-layout--single"}`}>
@@ -91,7 +93,10 @@ export default async function CustomersPage({ searchParams }) {
               </div>
             )}
           </section>
-          {canManage && <aside className="customer-form-card"><CustomerForm /></aside>}
+          {canManage && <aside className={`customer-form-card mobile-sheet ${newCustomerRequested ? "is-requested" : ""}`}>
+            {newCustomerRequested && <Link className="mobile-sheet__close" href="/app/clientes" aria-label="Fechar">Fechar</Link>}
+            <CustomerForm />
+          </aside>}
         </div>
       </div>
     </AppShell>

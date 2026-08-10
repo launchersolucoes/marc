@@ -161,6 +161,16 @@ export default async function AgendaPage({ searchParams }) {
                 <span>{appointmentCount} {appointmentCount === 1 ? "atendimento" : "atendimentos"}</span>
               </div>
               {activeProfessionals.length ? (
+                <>
+                <div className="schedule-mobile" aria-label="Atendimentos do dia">
+                  {appointments?.length ? appointments.map((appointment) => (
+                    <Link className={`schedule-mobile__item is-${appointment.status}`} href={`/app/agenda?date=${selectedDate}&appointment=${appointment.id}`} key={appointment.id}>
+                      <time>{new Intl.DateTimeFormat("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: "America/Sao_Paulo" }).format(new Date(appointment.starts_at))}</time>
+                      <span><strong>{appointment.customer.full_name}</strong><small>{appointment.professional_service.service.name} · {appointment.professional.display_name}</small></span>
+                      <em>{statusLabels[appointment.status]}</em>
+                    </Link>
+                  )) : <div className="schedule-mobile__empty"><CalendarDays size={24} /><strong>Nenhum atendimento neste dia.</strong><span>O próximo horário criado aparecerá aqui.</span></div>}
+                </div>
                 <div className="schedule-scroll">
                   <div className="schedule-grid" style={{ "--professional-count": activeProfessionals.length }}>
                     <div className="schedule-corner"><Clock3 size={15} /></div>
@@ -192,6 +202,7 @@ export default async function AgendaPage({ searchParams }) {
                     ))}
                   </div>
                 </div>
+                </>
               ) : (
                 <div className="agenda-teach-empty"><UserRound size={26} /><h2>Cadastre um profissional primeiro.</h2><p>A agenda precisa de alguém para receber serviços e horários.</p><Link className="button button--secondary" href="/app/equipe">Abrir equipe</Link></div>
               )}

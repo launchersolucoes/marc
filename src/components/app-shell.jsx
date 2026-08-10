@@ -4,7 +4,6 @@ import {
   CircleHelp,
   CircleDollarSign,
   CreditCard,
-  ExternalLink,
   LayoutDashboard,
   LogOut,
   ListTodo,
@@ -12,7 +11,6 @@ import {
   Percent,
   Plus,
   Scissors,
-  Search,
   Settings,
   UserRound,
   UsersRound,
@@ -109,8 +107,8 @@ export default function AppShell({ active, membership, user, children, allowRest
               <summary><Plus size={17} /> <span>Ações rápidas</span></summary>
               <div>
                 <Link href="/app/agenda?novo=1"><CalendarDays size={17} /><span><strong>Novo agendamento</strong><small>Abrir a agenda e cadastrar um horário</small></span></Link>
-                <Link href="/app/clientes"><Search size={17} /><span><strong>Buscar cliente</strong><small>Consultar contato e histórico</small></span></Link>
-                <Link href={`/agendar/${establishment.slug}`} target="_blank"><ExternalLink size={17} /><span><strong>Página pública</strong><small>Ver como o cliente encontra horários</small></span></Link>
+                <Link href="/app/clientes?novo=1"><UserRound size={17} /><span><strong>Novo cliente</strong><small>Cadastrar um contato rapidamente</small></span></Link>
+                <Link href="/app/servicos?novo=1"><Scissors size={17} /><span><strong>Novo serviço</strong><small>Definir valor e duração</small></span></Link>
               </div>
             </details>
             <AppThemeToggle />
@@ -121,7 +119,7 @@ export default function AppShell({ active, membership, user, children, allowRest
         {children}
       </section>
 
-      <nav className="app-mobile-nav" aria-label="Navegação rápida">
+      <nav className="app-mobile-nav" aria-label="Navegação principal">
         {mobileNavigation.map(([key, href, Icon, label]) => (
           <Link className={active === key ? "is-active" : ""} href={href} key={key}>
             <Icon size={20} /><span>{label === "Visão geral" ? "Início" : label}</span>

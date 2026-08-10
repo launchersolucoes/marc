@@ -6,7 +6,9 @@ import { getAppContext } from "../../../lib/app-context";
 
 export const metadata = { title: "Serviços — Marc" };
 
-export default async function ServicesPage() {
+export default async function ServicesPage({ searchParams }) {
+  const query = await searchParams;
+  const newServiceRequested = query?.novo === "1";
   const { supabase, user, membership, professional } = await getAppContext();
 
   const { data: services } = await supabase
@@ -24,7 +26,7 @@ export default async function ServicesPage() {
             <h1>Serviços</h1>
             <p>Consulte o catálogo do estabelecimento e defina o que aparece na sua própria agenda.</p>
           </div>
-          <div className="heading-stat"><Scissors size={18} /><strong>{services?.length || 0}</strong><span>no catálogo</span></div>
+          {professional && <Link className="button button--primary product-heading__action" href="/app/servicos?novo=1">Novo serviço</Link>}
         </header>
         <div className="service-page__layout">
         <section className="service-list">
@@ -50,7 +52,8 @@ export default async function ServicesPage() {
             </div>
           )}
         </section>
-        <aside className="service-form-card">
+        <aside className={`service-form-card mobile-sheet ${newServiceRequested ? "is-requested" : ""}`}>
+          {newServiceRequested && <Link className="mobile-sheet__close" href="/app/servicos" aria-label="Fechar">Fechar</Link>}
           {professional
             ? <ServiceForm />
             : <div className="service-professional-required"><Scissors size={23} /><span>Regras do profissional</span><h2>Serviços, valores e duração são definidos por quem atende.</h2><p>Seu acesso pode consultar o catálogo, mas precisa estar conectado a um perfil profissional para alterar essas regras.</p><Link className="button button--secondary" href="/app/equipe">Abrir equipe</Link></div>}

@@ -112,24 +112,6 @@ export default async function AppHomePage() {
             </Link>
           </header>
 
-          <section className="dashboard-summary" aria-label="Resumo da operação">
-            <article>
-              <span>Atendimentos hoje</span>
-              <strong>{appointmentsCount || 0}</strong>
-              <small><Clock3 size={14} /> Nenhum conflito</small>
-            </article>
-            <article>
-              <span>Profissionais ativos</span>
-              <strong>{professionalsCount || 0}</strong>
-              <small><UserRound size={14} /> Equipe conectada</small>
-            </article>
-            <article>
-              <span>Serviços disponíveis</span>
-              <strong>{servicesCount || 0}</strong>
-              <small><Scissors size={14} /> Catálogo atual</small>
-            </article>
-          </section>
-
           <div className="dashboard-grid">
             <section className="today-panel">
               <div className="panel-heading">
@@ -182,6 +164,18 @@ export default async function AppHomePage() {
               </ul>
             </aside>
           </div>
+
+          <nav className="dashboard-quick-create" aria-label="Ações rápidas">
+            <Link href="/app/agenda?novo=1"><CalendarDays size={18} /><span><strong>Novo agendamento</strong><small>Reservar um horário</small></span><ArrowRight size={16} /></Link>
+            <Link href="/app/clientes?novo=1"><UserRound size={18} /><span><strong>Novo cliente</strong><small>Adicionar contato</small></span><ArrowRight size={16} /></Link>
+            <Link href="/app/servicos?novo=1"><Scissors size={18} /><span><strong>Novo serviço</strong><small>Valor e duração</small></span><ArrowRight size={16} /></Link>
+          </nav>
+
+          <section className="dashboard-summary" aria-label="Resumo da operação">
+            <article><span>Atendimentos hoje</span><strong>{appointmentsCount || 0}</strong><small><Clock3 size={14} /> Agenda do dia</small></article>
+            <article><span>Profissionais ativos</span><strong>{professionalsCount || 0}</strong><small><UserRound size={14} /> Equipe disponível</small></article>
+            <article><span>Serviços disponíveis</span><strong>{servicesCount || 0}</strong><small><Scissors size={14} /> Catálogo atual</small></article>
+          </section>
       </div>
     </AppShell>
   );
