@@ -1,5 +1,4 @@
 import { CalendarClock, Clock3, ListTodo, Phone, Scissors, UserRound } from "lucide-react";
-import AppShell from "../../../components/app-shell";
 import WaitlistScheduleForm from "../../../components/waitlist-schedule-form";
 import { getAppContext } from "../../../lib/app-context";
 
@@ -39,7 +38,6 @@ export default async function WaitlistPage() {
   );
 
   return (
-    <AppShell active="lista-espera" membership={membership} user={user}>
       <div className="app-content waitlist-page">
         <header className="product-heading">
           <div>
@@ -83,7 +81,5 @@ export default async function WaitlistPage() {
           </section>
         )}
       </div>
-    </AppShell>
   );
 }
-

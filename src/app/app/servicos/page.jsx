@@ -1,7 +1,7 @@
 import { Check, Clock3, Scissors } from "lucide-react";
 import Link from "next/link";
-import AppShell from "../../../components/app-shell";
 import ServiceForm from "../../../components/service-form";
+import MobileRouteSheet from "../../../components/mobile-route-sheet";
 import { getAppContext } from "../../../lib/app-context";
 
 export const metadata = { title: "Serviços — Marc" };
@@ -18,7 +18,6 @@ export default async function ServicesPage({ searchParams }) {
     .order("created_at", { ascending: false });
 
   return (
-    <AppShell active="servicos" membership={membership} user={user}>
       <div className="app-content service-page">
         <header className="product-heading service-page__heading">
           <div>
@@ -52,14 +51,12 @@ export default async function ServicesPage({ searchParams }) {
             </div>
           )}
         </section>
-        <aside className={`service-form-card mobile-sheet ${newServiceRequested ? "is-requested" : ""}`}>
-          {newServiceRequested && <Link className="mobile-sheet__close" href="/app/servicos" aria-label="Fechar">Fechar</Link>}
+        <MobileRouteSheet className="service-form-card" open={newServiceRequested} closeHref="/app/servicos" title="Novo serviço">
           {professional
             ? <ServiceForm />
             : <div className="service-professional-required"><Scissors size={23} /><span>Regras do profissional</span><h2>Serviços, valores e duração são definidos por quem atende.</h2><p>Seu acesso pode consultar o catálogo, mas precisa estar conectado a um perfil profissional para alterar essas regras.</p><Link className="button button--secondary" href="/app/equipe">Abrir equipe</Link></div>}
-        </aside>
+        </MobileRouteSheet>
         </div>
       </div>
-    </AppShell>
   );
 }

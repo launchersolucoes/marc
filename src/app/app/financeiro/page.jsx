@@ -8,7 +8,6 @@ import {
 } from "lucide-react";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import AppShell from "../../../components/app-shell";
 import ExpenseForm from "../../../components/expense-form";
 import { getAppContext } from "../../../lib/app-context";
 
@@ -71,7 +70,6 @@ export default async function FinancePage() {
   const expenseCount = list.filter((item) => item.type === "expense").length;
 
   return (
-    <AppShell active="financeiro" membership={membership} user={user}>
       <div className="app-content finance-page">
         <header className="product-heading">
           <div>
@@ -109,6 +107,5 @@ export default async function FinancePage() {
           <aside className="finance-expense-card"><ExpenseForm defaultDateTime={brazilDate()} /></aside>
         </div>
       </div>
-    </AppShell>
   );
 }

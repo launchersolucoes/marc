@@ -1,7 +1,7 @@
 import { CalendarDays, Search, UserPlus } from "lucide-react";
 import Link from "next/link";
-import AppShell from "../../../components/app-shell";
 import CustomerForm from "../../../components/customer-form";
+import MobileRouteSheet from "../../../components/mobile-route-sheet";
 import { getAppContext } from "../../../lib/app-context";
 
 export const metadata = { title: "Clientes — Marc" };
@@ -39,7 +39,6 @@ export default async function CustomersPage({ searchParams }) {
   });
 
   return (
-    <AppShell active="clientes" membership={membership} user={user}>
       <div className="app-content customers-page">
         <header className="product-heading">
           <div>
@@ -93,12 +92,10 @@ export default async function CustomersPage({ searchParams }) {
               </div>
             )}
           </section>
-          {canManage && <aside className={`customer-form-card mobile-sheet ${newCustomerRequested ? "is-requested" : ""}`}>
-            {newCustomerRequested && <Link className="mobile-sheet__close" href="/app/clientes" aria-label="Fechar">Fechar</Link>}
+          {canManage && <MobileRouteSheet className="customer-form-card" open={newCustomerRequested} closeHref="/app/clientes" title="Novo cliente">
             <CustomerForm />
-          </aside>}
+          </MobileRouteSheet>}
         </div>
       </div>
-    </AppShell>
   );
 }

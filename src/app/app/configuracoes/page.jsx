@@ -6,7 +6,6 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import Link from "next/link";
-import AppShell from "../../../components/app-shell";
 import {
   EstablishmentSettingsForm,
   ProfileSettingsForm,
@@ -34,7 +33,6 @@ export default async function SettingsPage({ searchParams }) {
   const canManage = ["owner", "manager"].includes(membership.role);
 
   return (
-    <AppShell active="configuracoes" membership={membership} user={user}>
       <div className="app-content settings-page">
         <header className="product-heading">
           <div>
@@ -69,6 +67,5 @@ export default async function SettingsPage({ searchParams }) {
           </aside>
         </div>
       </div>
-    </AppShell>
   );
 }

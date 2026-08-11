@@ -6,7 +6,6 @@ import {
   UserRound,
 } from "lucide-react";
 import { redirect } from "next/navigation";
-import AppShell from "../../../components/app-shell";
 import CommissionForm from "../../../components/commission-form";
 import { getAppContext } from "../../../lib/app-context";
 
@@ -85,7 +84,6 @@ export default async function CommissionsPage() {
   const breakdown = [...byProfessional.values()].sort((a, b) => b.commission - a.commission);
 
   return (
-    <AppShell active="comissoes" membership={membership} user={user}>
       <div className="app-content commissions-page">
         <header className="product-heading">
           <div>
@@ -140,6 +138,5 @@ export default async function CommissionsPage() {
           )}
         </div>
       </div>
-    </AppShell>
   );
 }

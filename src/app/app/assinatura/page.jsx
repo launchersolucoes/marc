@@ -1,5 +1,4 @@
 import { CalendarClock, Check, CreditCard, Database, LockKeyhole, ShieldCheck } from "lucide-react";
-import AppShell from "../../../components/app-shell";
 import { getBillingConfiguration } from "../../../lib/billing/config";
 import { commercialPlans, subscriptionPlanLabels, subscriptionStatusLabels } from "../../../lib/subscription";
 import { getAppContext } from "../../../lib/app-context";
@@ -36,7 +35,6 @@ export default async function SubscriptionPage({ searchParams }) {
   const currentPlan = commercialPlans[subscription?.plan_code || "starter"];
 
   return (
-    <AppShell active="assinatura" membership={membership} user={user} allowRestricted>
       <div className="app-content subscription-page">
         <header className="product-heading">
           <div>
@@ -114,6 +112,5 @@ export default async function SubscriptionPage({ searchParams }) {
           </aside>
         </div>
       </div>
-    </AppShell>
   );
 }

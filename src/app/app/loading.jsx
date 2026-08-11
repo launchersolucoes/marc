@@ -1,21 +1,11 @@
-import Image from "next/image";
-
 export default function AppLoading() {
   return (
-    <main className="route-loading app-route-loading" aria-busy="true" aria-live="polite">
-      <Image src="/assets/marc-logo-cropped.png" alt="Marc" width={208} height={90} priority />
-      <div className="route-loading__content">
-        <span className="route-loading__pulse" aria-hidden="true" />
-        <div>
-          <strong>Organizando sua operação</strong>
-          <small>Carregando agenda, equipe e indicadores…</small>
-        </div>
+    <div className="app-content app-native-loading" aria-busy="true" aria-live="polite" aria-label="Carregando conteúdo">
+      <div className="app-native-loading__title" aria-hidden="true"><span /><span /></div>
+      <div className="app-native-loading__summary" aria-hidden="true"><span /><span /><span /></div>
+      <div className="app-native-loading__list" aria-hidden="true">
+        <span /><span /><span /><span />
       </div>
-      <div className="route-loading__skeleton" aria-hidden="true">
-        <span />
-        <span />
-        <span />
-      </div>
-    </main>
+    </div>
   );
 }

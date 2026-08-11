@@ -8,7 +8,6 @@ import {
   UserRound,
 } from "lucide-react";
 import Link from "next/link";
-import AppShell from "../../components/app-shell";
 import { getAppContext } from "../../lib/app-context";
 
 export const metadata = { title: "Painel — Marc" };
@@ -99,7 +98,6 @@ export default async function AppHomePage() {
         };
 
   return (
-    <AppShell active="home" membership={membership} user={user}>
       <div className="app-content">
           <header className="dashboard-heading">
             <div>
@@ -107,10 +105,16 @@ export default async function AppHomePage() {
               <h1>{greeting}, {firstName}.</h1>
               <p>{completedSteps === setupSteps.length ? "Acompanhe o dia e mantenha a operação em movimento." : "Conclua os primeiros passos para abrir sua agenda aos clientes."}</p>
             </div>
-            <Link className="button button--primary" href="/app/agenda">
+            <Link className="button button--primary" href="/app/agenda?novo=1">
               <CalendarDays size={18} /> Novo agendamento
             </Link>
           </header>
+
+          <section className="dashboard-summary" aria-label="Resumo da operação">
+            <article className="is-emphasis"><span>Atendimentos hoje</span><strong>{appointmentsCount || 0}</strong><small><Clock3 size={14} /> Agenda do dia</small></article>
+            <article><span>Profissionais ativos</span><strong>{professionalsCount || 0}</strong><small><UserRound size={14} /> Equipe disponível</small></article>
+            <article><span>Serviços disponíveis</span><strong>{servicesCount || 0}</strong><small><Scissors size={14} /> Catálogo atual</small></article>
+          </section>
 
           <div className="dashboard-grid">
             <section className="today-panel">
@@ -171,12 +175,6 @@ export default async function AppHomePage() {
             <Link href="/app/servicos?novo=1"><Scissors size={18} /><span><strong>Novo serviço</strong><small>Valor e duração</small></span><ArrowRight size={16} /></Link>
           </nav>
 
-          <section className="dashboard-summary" aria-label="Resumo da operação">
-            <article><span>Atendimentos hoje</span><strong>{appointmentsCount || 0}</strong><small><Clock3 size={14} /> Agenda do dia</small></article>
-            <article><span>Profissionais ativos</span><strong>{professionalsCount || 0}</strong><small><UserRound size={14} /> Equipe disponível</small></article>
-            <article><span>Serviços disponíveis</span><strong>{servicesCount || 0}</strong><small><Scissors size={14} /> Catálogo atual</small></article>
-          </section>
       </div>
-    </AppShell>
   );
 }

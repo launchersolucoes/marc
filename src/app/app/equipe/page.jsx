@@ -1,5 +1,4 @@
 import { Clock3, Mail, Phone, ShieldCheck, UserRound, UsersRound } from "lucide-react";
-import AppShell from "../../../components/app-shell";
 import InviteForm from "../../../components/invite-form";
 import ProfessionalForm from "../../../components/professional-form";
 import { getAppContext } from "../../../lib/app-context";
@@ -28,7 +27,6 @@ export default async function TeamPage() {
   const roleLabels = { manager: "Gerente", receptionist: "Recepção", professional: "Profissional" };
 
   return (
-    <AppShell active="equipe" membership={membership} user={user}>
       <div className="app-content team-page">
         <header className="product-heading">
           <div>
@@ -88,6 +86,5 @@ export default async function TeamPage() {
           )}
         </div>
       </div>
-    </AppShell>
   );
 }

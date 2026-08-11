@@ -9,12 +9,12 @@ import {
   UserRound,
 } from "lucide-react";
 import Link from "next/link";
-import AppShell from "../../../components/app-shell";
 import AppointmentActions from "../../../components/appointment-actions";
 import AppointmentForm from "../../../components/appointment-form";
 import AvailabilityForm from "../../../components/availability-form";
 import TimeOffForm from "../../../components/time-off-form";
 import RescheduleForm from "../../../components/reschedule-form";
+import MobileRouteSheet from "../../../components/mobile-route-sheet";
 import { getAppContext } from "../../../lib/app-context";
 
 export const metadata = { title: "Agenda — Marc" };
@@ -126,7 +126,6 @@ export default async function AgendaPage({ searchParams }) {
   const hours = Array.from({ length: 13 }, (_, index) => index + 8);
 
   return (
-    <AppShell active="agenda" membership={membership} user={user}>
       <div className="app-content agenda-page">
         <header className="product-heading agenda-heading">
           <div>
@@ -207,8 +206,11 @@ export default async function AgendaPage({ searchParams }) {
                 <div className="agenda-teach-empty"><UserRound size={26} /><h2>Cadastre um profissional primeiro.</h2><p>A agenda precisa de alguém para receber serviços e horários.</p><Link className="button button--secondary" href="/app/equipe">Abrir equipe</Link></div>
               )}
             </section>
-            <aside
-              className={`appointment-form-card ${selectedAppointment || newAppointmentRequested ? "is-requested" : ""}`}
+            <MobileRouteSheet
+              className="appointment-form-card"
+              open={Boolean(selectedAppointment || newAppointmentRequested)}
+              closeHref={`/app/agenda?date=${selectedDate}`}
+              title={selectedAppointment ? "Atendimento" : "Novo atendimento"}
               id="novo-atendimento"
             >
               {selectedAppointment ? (
@@ -240,7 +242,7 @@ export default async function AgendaPage({ searchParams }) {
               ) : activeProfessionals.length
                 ? <AppointmentForm professionals={activeProfessionals} defaultDate={selectedDate} />
                 : <div className="inline-note">Adicione um profissional para criar atendimentos.</div>}
-            </aside>
+            </MobileRouteSheet>
           </div>
         ) : (
           <div className="availability-layout">
@@ -269,6 +271,5 @@ export default async function AgendaPage({ searchParams }) {
           </div>
         )}
       </div>
-    </AppShell>
   );
 }

@@ -9,7 +9,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import AppShell from "../../../components/app-shell";
 import { getAppContext } from "../../../lib/app-context";
 
 export const metadata = { title: "Relatórios — Marc" };
@@ -134,7 +133,6 @@ export default async function ReportsPage({ searchParams }) {
   }).format(new Date(`${selectedMonth}-01T12:00:00Z`));
 
   return (
-    <AppShell active="relatorios" membership={membership} user={user}>
       <div className="app-content reports-page">
         <header className="product-heading reports-heading">
           <div>
@@ -218,6 +216,5 @@ export default async function ReportsPage({ searchParams }) {
           </section>
         </div>
       </div>
-    </AppShell>
   );
 }
