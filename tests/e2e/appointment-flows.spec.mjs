@@ -71,7 +71,7 @@ test.describe("ciclo operacional por papel", () => {
       await expect(page.getByText("Status atualizado.", { exact: true })).toBeVisible();
       await page.getByLabel("Forma de pagamento").selectOption("pix");
       await page.getByRole("button", { name: "Concluir e lançar" }).click();
-      await expect(page.getByText("Concluído", { exact: true })).toBeVisible();
+      await expect(page.getByLabel("Atendimento", { exact: true }).getByText("Concluído", { exact: true })).toBeVisible();
 
       await page.goto("/app/financeiro");
       await expect(page.getByText("Atendimento do profissional piloto", { exact: true }).first()).toBeVisible();
@@ -96,7 +96,7 @@ test.describe("ciclo operacional por papel", () => {
       await expect(page.getByText("Atendimento reagendado com sucesso.", { exact: true })).toBeVisible();
       await expect(page.getByRole("definition").filter({ hasText: "11:00" })).toBeVisible();
       await page.getByRole("button", { name: "Cancelar" }).click();
-      await expect(page.getByText("Cancelado", { exact: true })).toBeVisible();
+      await expect(page.getByLabel("Atendimento", { exact: true }).getByText("Cancelado", { exact: true })).toBeVisible();
     } finally {
       await cleanupPilotCustomer(phone);
     }

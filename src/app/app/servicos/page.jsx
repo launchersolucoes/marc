@@ -1,4 +1,4 @@
-import { Check, Clock3, Scissors } from "lucide-react";
+import { Check, Clock3, Pencil, Scissors } from "lucide-react";
 import Link from "next/link";
 import ServiceForm from "../../../components/service-form";
 import MobileRouteSheet from "../../../components/mobile-route-sheet";
@@ -9,6 +9,7 @@ export const metadata = { title: "Serviços — Marc" };
 export default async function ServicesPage({ searchParams }) {
   const query = await searchParams;
   const newServiceRequested = query?.novo === "1";
+  const editServiceId = typeof query?.editar === "string" ? query.editar : "";
   const { supabase, user, membership, professional } = await getAppContext();
 
   const { data: services } = await supabase
@@ -16,6 +17,18 @@ export default async function ServicesPage({ searchParams }) {
     .select("id, name, description, is_active, professional_services(price_cents, duration_minutes, is_active, professional_id)")
     .eq("establishment_id", membership.establishment_id)
     .order("created_at", { ascending: false });
+
+  const editableService = (services || []).map((service) => {
+    const offering = service.professional_services?.find((item) => item.professional_id === professional?.id && item.is_active);
+    return offering ? {
+      id: service.id,
+      name: service.name,
+      description: service.description,
+      price_cents: offering.price_cents,
+      duration_minutes: offering.duration_minutes,
+    } : null;
+  }).find((service) => service?.id === editServiceId) || null;
+  const serviceSheetOpen = newServiceRequested || Boolean(editableService);
 
   return (
       <div className="app-content service-page">
@@ -38,7 +51,10 @@ export default async function ServicesPage({ searchParams }) {
                 <article key={service.id}>
                   <div><Scissors size={18} /></div>
                   <span><strong>{service.name}</strong><small>{ownOffering ? `${ownOffering.duration_minutes} min · ${new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(ownOffering.price_cents / 100)}` : service.description || "Disponível no catálogo"}</small></span>
-                  <em><Check size={14} /> {ownOffering ? "Na sua agenda" : "Catálogo"}</em>
+                  <span className="service-list__actions">
+                    <em><Check size={14} /> {ownOffering ? "Na sua agenda" : "Catálogo"}</em>
+                    {ownOffering && <Link href={`/app/servicos?editar=${service.id}`} aria-label={`Editar ${service.name}`}><Pencil size={14} /> Editar</Link>}
+                  </span>
                 </article>
                 );
               })}
@@ -51,9 +67,9 @@ export default async function ServicesPage({ searchParams }) {
             </div>
           )}
         </section>
-        <MobileRouteSheet className="service-form-card" open={newServiceRequested} closeHref="/app/servicos" title="Novo serviço">
+        <MobileRouteSheet className="service-form-card" open={serviceSheetOpen} closeHref="/app/servicos" title={editableService ? "Editar serviço" : "Novo serviço"}>
           {professional
-            ? <ServiceForm />
+            ? <ServiceForm key={editableService?.id || "new"} service={editableService} />
             : <div className="service-professional-required"><Scissors size={23} /><span>Regras do profissional</span><h2>Serviços, valores e duração são definidos por quem atende.</h2><p>Seu acesso pode consultar o catálogo, mas precisa estar conectado a um perfil profissional para alterar essas regras.</p><Link className="button button--secondary" href="/app/equipe">Abrir equipe</Link></div>}
         </MobileRouteSheet>
         </div>

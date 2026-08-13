@@ -36,7 +36,8 @@ test("critical dynamic surfaces expose explicit loading feedback", async () => {
   ]);
 
   assert.match(appLoading, /aria-busy="true"/);
-  assert.match(appLoading, /Organizando sua operação/);
+  assert.match(appLoading, /app-native-loading__summary/);
+  assert.match(appLoading, /app-native-loading__list/);
   assert.match(bookingLoading, /Buscando horários disponíveis/);
 });
 

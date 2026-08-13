@@ -73,6 +73,12 @@ test.describe("matriz de papéis do estabelecimento", () => {
     await expect(page.getByText("Operação Piloto Marc", { exact: true })).toHaveCount(0);
     await page.goto("/app/servicos");
     await expect(page.getByRole("button", { name: "Cadastrar serviço" })).toBeVisible();
+    await page.getByRole("link", { name: /Editar / }).first().click();
+    const editDialog = page.getByRole("dialog", { name: "Editar serviço" });
+    await expect(editDialog).toBeVisible();
+    await expect(editDialog.getByLabel("Nome do serviço")).toHaveAttribute("readonly", "");
+    await editDialog.getByRole("button", { name: "Salvar alterações" }).click();
+    await expect(editDialog.getByText("Serviço e regras atualizados.", { exact: false })).toBeVisible();
     await page.goto("/app/financeiro");
     await expect(page).toHaveURL(/\/app$/);
   });

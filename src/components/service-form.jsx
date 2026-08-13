@@ -7,38 +7,42 @@ import { createService } from "../app/app/servicos/actions";
 
 const initialState = { error: "", success: "" };
 
-function SubmitButton() {
+function SubmitButton({ editing }) {
   const { pending } = useFormStatus();
   return (
     <button className="button button--primary service-submit" type="submit" disabled={pending}>
       {pending
         ? <><LoaderCircle className="spin" size={18} /> Salvando serviço</>
-        : <>Cadastrar serviço <ArrowRight size={18} /></>}
+        : <>{editing ? "Salvar alterações" : "Cadastrar serviço"} <ArrowRight size={18} /></>}
     </button>
   );
 }
 
-export default function ServiceForm() {
+export default function ServiceForm({ service = null }) {
   const [state, action] = useActionState(createService, initialState);
+  const editing = Boolean(service);
 
   return (
     <form className="service-form" action={action}>
       <div className="service-form__heading">
-        <h2>Novo serviço</h2>
-        <p>Defina o serviço, o valor e a duração usados especificamente na sua agenda.</p>
+        <h2>{editing ? "Editar serviço" : "Novo serviço"}</h2>
+        <p>{editing ? "Atualize o valor e a duração usados na sua agenda." : "Defina o serviço, o valor e a duração usados especificamente na sua agenda."}</p>
       </div>
       <div className="field">
         <label htmlFor="serviceName">Nome do serviço</label>
-        <input id="serviceName" name="name" placeholder="Ex.: Corte masculino" minLength={2} maxLength={80} required />
+        <input id="serviceName" name="name" placeholder="Ex.: Corte masculino" defaultValue={service?.name || ""} minLength={2} maxLength={80} readOnly={editing} required />
       </div>
-      <div className="field">
-        <label htmlFor="serviceDescription">Descrição <span>opcional</span></label>
-        <input id="serviceDescription" name="description" placeholder="Uma frase para orientar o cliente" maxLength={180} />
-      </div>
+      {!editing && (
+        <div className="field">
+          <label htmlFor="serviceDescription">Descrição <span>opcional</span></label>
+          <input id="serviceDescription" name="description" placeholder="Uma frase para orientar o cliente" maxLength={180} />
+        </div>
+      )}
+      {editing && <input type="hidden" name="description" value={service?.description || ""} />}
       <div className="field-grid">
         <div className="field">
           <label htmlFor="serviceDuration">Duração</label>
-          <select id="serviceDuration" name="duration" defaultValue="30" required>
+          <select id="serviceDuration" name="duration" defaultValue={String(service?.duration_minutes || 30)} required>
             <option value="15">15 minutos</option>
             <option value="30">30 minutos</option>
             <option value="45">45 minutos</option>
@@ -49,7 +53,7 @@ export default function ServiceForm() {
         </div>
         <div className="field">
           <label htmlFor="servicePrice">Valor</label>
-          <div className="money-field"><span>R$</span><input id="servicePrice" name="price" inputMode="decimal" placeholder="50,00" required /></div>
+          <div className="money-field"><span>R$</span><input id="servicePrice" name="price" inputMode="decimal" defaultValue={service ? (service.price_cents / 100).toFixed(2).replace(".", ",") : ""} placeholder="50,00" required /></div>
         </div>
       </div>
       {state.error && <p className="form-message form-message--error" role="alert">{state.error}</p>}
@@ -58,7 +62,7 @@ export default function ServiceForm() {
           <CheckCircle2 size={18} /><span>{state.success}</span>
         </div>
       )}
-      <SubmitButton />
+      <SubmitButton editing={editing} />
     </form>
   );
 }
