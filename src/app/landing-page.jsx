@@ -48,8 +48,8 @@ const essentialFeatures = [
   [CheckCircle2, "Confirmação automática", "O cliente confirma o horário com um clique, sem ligação."],
   [Clock3, "Serviços e preços", "Duração e valor definidos para a agenda calcular tudo sozinha."],
   [Link2, "Link próprio de agendamento", "Uma página profissional para sua bio, Google e redes sociais."],
-  [History, "Histórico de clientes", "Veja quem voltou, quem sumiu e quando é hora de reengajar."],
-  [WalletCards, "Caixa diário", "Entradas, saídas e faturamento em tempo real no mesmo lugar."],
+  [History, "Histórico de clientes", "Consulte contatos e atendimentos anteriores sem procurar em conversas."],
+  [WalletCards, "Caixa mensal", "Atendimentos concluídos viram entradas e as saídas ficam no mesmo lugar."],
 ];
 
 const teamFeatures = [
@@ -57,7 +57,7 @@ const teamFeatures = [
   [CalendarClock, "Folgas e bloqueios", "A disponibilidade fica certa antes de o cliente escolher."],
   [Coins, "Comissões automáticas", "Cálculo por serviço e profissional, sem planilhas paralelas."],
   [BarChart3, "Dashboard de faturamento", "Resultado consolidado por profissional, período e serviço."],
-  [BellRing, "Lista de espera", "Um cancelamento pode virar um novo agendamento automaticamente."],
+  [BellRing, "Lista de espera", "Organize quem aguarda uma vaga e converta a solicitação em atendimento."],
   [Gift, "Aniversário do cliente", "Crie uma lembrança que ajuda a trazer o cliente de volta."],
   [UserCog, "Usuários e permissões", "Administração, recepção e profissionais veem apenas o necessário."],
 ];
@@ -144,10 +144,10 @@ const productFlow = [
     text: "O agendamento acontece pelo link do estabelecimento, sem instalar aplicativo.",
   },
   {
-    icon: MessageCircleMore,
+    icon: ShieldCheck,
     moment: "Marc",
-    title: "Prepara a confirmação pelo WhatsApp",
-    text: "A automação está em preparação para conectar lembrete, resposta e agenda da equipe.",
+    title: "Valida disponibilidade e evita conflitos",
+    text: "O horário só entra quando respeita a agenda, os bloqueios e a duração configurada.",
   },
   {
     icon: UsersRound,
@@ -488,6 +488,17 @@ export default function LandingPage() {
           duration: 0.62,
         });
         reveal({
+          trigger: ".product-demo__gallery",
+          targets: select(".product-capture"),
+          from: (index) => ({
+            autoAlpha: 0,
+            x: index === 0 ? -distance : distance,
+            clipPath: "inset(3% 3% 3% 3% round 16px)",
+          }),
+          stagger: 0.1,
+          duration: 0.78,
+        });
+        reveal({
           trigger: ".product-flow",
           targets: select(".product-flow__step"),
           from: { autoAlpha: 0, y: distance * 0.7 },
@@ -571,35 +582,36 @@ export default function LandingPage() {
               <div className="hero__eyebrow"><Sparkles size={15} /> Gestão feita para quem atende pessoas</div>
               <h1>Sua agenda trabalha. <em>Você atende.</em></h1>
               <p className="hero__lead">
-                O Marc organiza agendamentos e finanças da sua barbearia, salão ou esmalteria. A automação pelo WhatsApp está em preparação.
+                Agenda, clientes, equipe, serviços e financeiro conectados para sua barbearia, salão ou esmalteria funcionar sem controles espalhados.
               </p>
               <div className="hero__actions">
                 <ButtonLink>Começar teste grátis de 14 dias <ArrowRight size={17} /></ButtonLink>
                 <ButtonLink href="#como-funciona" variant="secondary">Ver como funciona</ButtonLink>
               </div>
               <div className="hero__proof">
-                <span><CalendarCheck2 size={16} /> Agenda</span>
-                <span><MessageCircleMore size={16} /> WhatsApp em preparação</span>
-                <span><WalletCards size={16} /> Financeiro</span>
+                <span><CalendarCheck2 size={16} /> Agenda e lista de espera</span>
+                <span><UsersRound size={16} /> Equipe e permissões</span>
+                <span><WalletCards size={16} /> Caixa e comissões</span>
               </div>
             </div>
 
-            <div className="hero__visual" aria-label="Demonstração ilustrativa do painel Marc">
+            <div className="hero__visual hero__visual--product" aria-label="Tela real do painel Marc com dados demonstrativos">
               <div className="hero__visual-glow" />
               <Image
-                src="/assets/marc-dashboard-hero.png"
-                alt="Painel do Marc com agenda e resumo financeiro"
-                width={1536}
-                height={1024}
+                src="/assets/marc-product-overview.png"
+                alt="Visão geral do Marc com resumo da operação, agenda e atalhos"
+                width={1265}
+                height={712}
+                unoptimized
                 priority
               />
               <div className="floating-note floating-note--top">
                 <span><Check size={14} /></span>
-                <div><strong>Confirmação preparada</strong><small>Automação pelo WhatsApp em evolução</small></div>
+                <div><strong>Agenda sem conflito</strong><small>Disponibilidade e bloqueios validados</small></div>
               </div>
               <div className="floating-note floating-note--bottom">
                 <span><BarChart3 size={14} /></span>
-                <div><strong>Operação em um só lugar</strong><small>Agenda, equipe e financeiro</small></div>
+                <div><strong>Resultado conectado</strong><small>Caixa, comissões e relatórios</small></div>
               </div>
             </div>
           </div>
@@ -628,7 +640,7 @@ export default function LandingPage() {
                 <span className="contrast-panel__label">Com o Marc</span>
                 <h3>A operação trabalha junto com você.</h3>
                 <ul>
-                  <li><Check size={17} /> A equipe acompanha confirmações na agenda</li>
+                  <li><Check size={17} /> A equipe acompanha cada status na agenda</li>
                   <li><Check size={17} /> Cada profissional tem sua agenda certa</li>
                   <li><Check size={17} /> Faturamento e comissões ficam visíveis</li>
                   <li><Check size={17} /> O cliente agenda a qualquer hora</li>
@@ -651,15 +663,15 @@ export default function LandingPage() {
               <div className="hub-search"><Search size={17} /> Próximo horário disponível</div>
             </div>
             <div className="spotlight-copy">
-              <span className="section-tag">Exclusivo Marc</span>
-              <h2>Uma agenda cheia pode começar na agenda do vizinho.</h2>
+              <span className="section-tag">Evolução planejada</span>
+              <h2>No futuro, uma vaga próxima poderá virar um novo cliente.</h2>
               <p>
-                Se o cliente não encontra vaga no lugar favorito, o Hub Marc sugere outro estabelecimento parceiro próximo. Quem já está procurando um serviço encontra você dentro da própria rede.
+                O Hub Marc está planejado para sugerir estabelecimentos parceiros quando o cliente não encontrar vaga no lugar favorito. Esta experiência ainda não faz parte do teste atual.
               </p>
               <ul className="check-list">
                 <li><Check size={17} /> Descoberta por proximidade e disponibilidade</li>
-                <li><Check size={17} /> Visibilidade dentro da própria rede Marc</li>
-                <li><Check size={17} /> Um caminho extra para preencher horários vagos</li>
+                <li><Check size={17} /> Visibilidade entre estabelecimentos parceiros</li>
+                <li><Check size={17} /> Recurso separado da operação já disponível</li>
               </ul>
               <ButtonLink href="#demonstracao">Ver o fluxo completo <ArrowRight size={17} /></ButtonLink>
             </div>
@@ -707,9 +719,19 @@ export default function LandingPage() {
         <section className="product-demo" id="demonstracao" aria-labelledby="product-demo-title">
           <div className="container">
             <div className="product-demo__header">
-              <span className="section-tag">Demonstração do produto</span>
-              <h2 id="product-demo-title">Um agendamento. Quatro etapas conectadas.</h2>
-              <p>Veja, passo a passo, como o Marc conecta cliente, equipe e gestão em um único fluxo.</p>
+              <span className="section-tag">Produto em funcionamento</span>
+              <h2 id="product-demo-title">O que você vê aqui já existe no Marc.</h2>
+              <p>Telas reais do estabelecimento piloto, usando dados demonstrativos para mostrar a operação completa.</p>
+            </div>
+            <div className="product-demo__gallery" aria-label="Telas reais do produto">
+              <figure className="product-capture product-capture--agenda">
+                <figcaption><span>Agenda interna</span><small>Equipe, horários e novo atendimento</small></figcaption>
+                <Image src="/assets/marc-product-agenda.png" alt="Agenda interna do Marc com profissionais, horários e formulário de atendimento" width={1265} height={712} unoptimized />
+              </figure>
+              <figure className="product-capture product-capture--booking">
+                <figcaption><span>Agendamento público</span><small>Sem aplicativo para o cliente</small></figcaption>
+                <Image src="/assets/marc-product-booking-mobile.png" alt="Página pública de agendamento do Marc em um celular" width={366} height={712} unoptimized />
+              </figure>
             </div>
             <div className="product-flow">
               {productFlow.map(({ icon: Icon, moment, title, text }, index) => (
@@ -761,25 +783,25 @@ export default function LandingPage() {
         <section className="section evidence-section">
           <div className="container">
             <SectionHeader
-              tag="O que você pode conferir"
-              title="O valor aparece em cada etapa do produto."
-              description="Cada demonstração abaixo corresponde a uma capacidade prevista para a plataforma."
+              tag="Operação conectada"
+              title="O atendimento termina. A gestão já está atualizada."
+              description="As capacidades abaixo já estão disponíveis no teste gratuito, com dados persistidos e permissões por perfil."
             />
             <div className="evidence-grid">
               <article className="evidence-item">
                 <CalendarCheck2 size={24} />
-                <span>Agenda conectada</span>
-                <h3>O horário escolhido pelo cliente entra na agenda do profissional.</h3>
+                <span>Agenda protegida</span>
+                <h3>Disponibilidade, bloqueios e conflitos são validados antes de confirmar o horário.</h3>
               </article>
               <article className="evidence-item">
-                <MessageCircleMore size={24} />
-                <span>Confirmação conectada</span>
-                <h3>Prévia de como a resposta do WhatsApp atualizará o status da equipe.</h3>
+                <UsersRound size={24} />
+                <span>Acesso por função</span>
+                <h3>Gerência e recepção operam a equipe; cada profissional acompanha a própria agenda.</h3>
               </article>
               <article className="evidence-item">
                 <CircleDollarSign size={24} />
-                <span>Gestão conectada</span>
-                <h3>O atendimento concluído alimenta caixa, faturamento e comissão.</h3>
+                <span>Financeiro conectado</span>
+                <h3>O atendimento concluído gera entrada, comissão e dados para os relatórios.</h3>
               </article>
             </div>
           </div>

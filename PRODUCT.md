@@ -107,7 +107,9 @@ A proposta não é apenas substituir uma agenda digital, mas conectar aquisiçã
 - `prompt.md`: estrutura e conteúdo pretendidos para a landing page.
 - `design.md`: identidade visual, tokens, tipografia e tom de voz existentes.
 - `src/app/landing-page.jsx`: implementação da landing page e demonstração das capacidades do produto.
-- `public/assets/marc-dashboard-hero.png`: mockup ilustrativo do produto.
+- `public/assets/marc-product-overview.png`: captura real da visão geral do estabelecimento piloto, com dados demonstrativos.
+- `public/assets/marc-product-agenda.png`: captura real da agenda interna do estabelecimento piloto, com dados demonstrativos.
+- `public/assets/marc-product-booking-mobile.png`: captura real do agendamento público em viewport móvel, com dados demonstrativos.
 - `public/assets/marc-whatsapp-reminder.png`: mockup ilustrativo do fluxo de lembretes.
 
 Os preços mensais e o teste grátis de 14 dias estão confirmados. Métricas, nomes de estabelecimentos, fotografias, depoimentos e limites de planos presentes na landing page continuam ilustrativos até nova confirmação.
