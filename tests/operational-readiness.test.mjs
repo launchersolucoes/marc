@@ -52,3 +52,14 @@ test("incomplete onboarding accounts can switch users and cannot skip required s
   assert.match(form, /reportValidity\(\)/);
   assert.match(form, /onClick=\{continueToAddress\}/);
 });
+
+test("health endpoint verifies Supabase availability without exposing configuration", async () => {
+  const health = await read("src/app/api/health/route.js");
+
+  assert.match(health, /\/auth\/v1\/health/);
+  assert.match(health, /method: "GET"/);
+  assert.match(health, /AbortSignal\.timeout\(5000\)/);
+  assert.match(health, /Cache-Control/);
+  assert.match(health, /status: "degraded"/);
+  assert.doesNotMatch(health, /Response\.json\([^)]*(supabaseUrl|publishableKey)/);
+});

@@ -2,6 +2,12 @@
 
 Este documento organiza a construção da plataforma (não só a landing page) por ordem de prioridade: primeiro o que é vital para o negócio funcionar, depois o que aumenta retenção e receita, depois o que permite escalar.
 
+## Estado atual e fonte de verdade
+
+O núcleo do MVP já está implementado e em endurecimento para piloto assistido: autenticação por e-mail, onboarding, equipe e permissões, serviços, disponibilidade, agenda, clientes, agendamento público, lista de espera, financeiro, comissões, relatórios, trial e painel Master.
+
+`PRODUCT.md` é a fonte de verdade para decisões atuais. WhatsApp, OTP por telefone, Hub, multiunidades, estoque, fidelidade e cobrança automática permanecem fora do caminho crítico do piloto até que as contas, credenciais e regras comerciais necessárias sejam confirmadas.
+
 ---
 
 ## 1. Autenticação
@@ -50,19 +56,19 @@ Pré-requisito de tudo. Sem isso, nada mais funciona.
 - Modelagem de dados (usuários, estabelecimentos, profissionais, serviços, agendamentos)
 - Autenticação (Google, e-mail/senha, WhatsApp + OTP) e definição de papéis
 - Design system aplicado (tema claro/escuro, componentes base)
-- Infraestrutura de envio de WhatsApp (provedor de mensageria/API oficial)
+- Infraestrutura de envio de WhatsApp (em espera até existir conta empresarial e número dedicado)
 
 ### Fase 1 — MVP vital (equivalente ao plano Starter)
 O mínimo para um estabelecimento sair do caderno/WhatsApp manual e o Marc já gerar valor real.
 1. Cadastro de serviços e preços
 2. Agendamento online 24h (página pública do estabelecimento)
 3. Confirmação automática de agendamento
-4. Lembretes automáticos no WhatsApp *(maior redutor de faltas — prioridade máxima dentro do MVP)*
+4. Lembretes automáticos no WhatsApp *(evolução posterior; não bloqueia o piloto assistido)*
 5. Gestão financeira básica (caixa diário)
 6. Histórico de clientes
 7. Página de agendamento personalizada (link próprio)
 
-> Critério de saída da Fase 1: um estabelecimento sozinho consegue operar 100% pelo Marc sem depender de nenhuma ferramenta paralela.
+> Critério atual de saída da Fase 1: um estabelecimento consegue operar agenda, clientes e financeiro pelo Marc; lembretes continuam manuais até a ativação do WhatsApp.
 
 ### Fase 2 — Gestão de time (equivalente ao plano Pro)
 Necessário assim que o estabelecimento tem mais de um profissional.
@@ -101,7 +107,7 @@ Depende de já haver uma base de estabelecimentos ativos (Fases 1–2 em produç
 
 ## 5. Resumo de priorização
 
-**Vital primeiro, sempre:** autenticação + agendamento online + lembrete no WhatsApp + financeiro básico. É isso que resolve a dor mais cara (falta de cliente e caos de agenda) e paga o plano Starter desde o primeiro mês.
+**Vital primeiro, sempre:** autenticação + agendamento online + agenda interna + financeiro básico. O lembrete pelo WhatsApp continua importante, mas foi separado do piloto até a infraestrutura oficial estar disponível.
 
 **Depois:** tudo que envolve gerenciar um time (Pro) — só é urgente quando o estabelecimento já tem mais de 1 profissional.
 

@@ -28,6 +28,20 @@ export function nextSundayDate() {
 
 const authenticatedClients = new Map();
 
+function isFutureJwtError(error) {
+  return error?.code === "PGRST303" && /jwt issued at future/i.test(error?.message || "");
+}
+
+async function retryTransientAuthSkew(operation, attempts = 4) {
+  let result;
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    result = await operation();
+    if (!isFutureJwtError(result?.error) || attempt === attempts - 1) return result;
+    await new Promise((resolve) => setTimeout(resolve, 750 * (attempt + 1)));
+  }
+  return result;
+}
+
 function authenticatedClient(email, password) {
   if (authenticatedClients.has(email)) return authenticatedClients.get(email);
   const supabase = createClient(
@@ -52,12 +66,12 @@ export async function getPilotOwnerContext() {
   const { data: authData, error: authError } = await supabase.auth.getUser();
   if (authError) throw authError;
 
-  const { data: membership, error: membershipError } = await supabase
+  const { data: membership, error: membershipError } = await retryTransientAuthSkew(() => supabase
     .from("establishment_memberships")
     .select("establishment_id")
     .eq("user_id", authData.user.id)
     .eq("status", "active")
-    .single();
+    .single());
   if (membershipError) throw membershipError;
 
   return { supabase, establishmentId: membership.establishment_id };
@@ -71,26 +85,26 @@ export async function cleanupPilotCustomers(customerPhones) {
   if (!pilotEmail || !pilotPassword) return;
   const { supabase, establishmentId } = await getPilotOwnerContext();
 
-  const { data: customers, error: customerReadError } = await supabase
+  const { data: customers, error: customerReadError } = await retryTransientAuthSkew(() => supabase
     .from("customers")
     .select("id")
     .eq("establishment_id", establishmentId)
-    .in("phone", customerPhones);
+    .in("phone", customerPhones));
   if (customerReadError) throw customerReadError;
 
   const customerIds = (customers || []).map((customer) => customer.id);
   if (!customerIds.length) return;
 
-  const { error: appointmentError } = await supabase
+  const { error: appointmentError } = await retryTransientAuthSkew(() => supabase
     .from("appointments")
     .delete()
-    .in("customer_id", customerIds);
+    .in("customer_id", customerIds));
   if (appointmentError) throw appointmentError;
 
-  const { error: customerDeleteError } = await supabase
+  const { error: customerDeleteError } = await retryTransientAuthSkew(() => supabase
     .from("customers")
     .delete()
-    .in("id", customerIds);
+    .in("id", customerIds));
   if (customerDeleteError) throw customerDeleteError;
 }
 

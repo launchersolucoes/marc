@@ -25,3 +25,12 @@ test("escapes establishment content in invitation html", () => {
   assert.doesNotMatch(message.html, /<script>/);
   assert.match(message.html, /&lt;script&gt;/);
 });
+
+test("transactional delivery times out safely and logs no recipient data", async () => {
+  const source = await import("node:fs/promises").then(({ readFile }) => readFile("src/lib/email.js", "utf8"));
+
+  assert.match(source, /AbortSignal\.timeout\(8000\)/);
+  assert.match(source, /marc_email_delivery_failed/);
+  assert.doesNotMatch(source, /logDeliveryFailure\([^)]*to/);
+  assert.doesNotMatch(source, /console\.error\([^)]*(subject|html|text)/);
+});

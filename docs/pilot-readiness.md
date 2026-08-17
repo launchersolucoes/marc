@@ -26,6 +26,23 @@ Este checklist define o mínimo necessário para colocar um primeiro estabelecim
 - [ ] Testar recepção e profissional em celulares reais antes de compartilhar o link com clientes.
 - [ ] Definir uma pessoa da Launcher para suporte durante a primeira semana.
 
+## Acompanhamento do piloto
+
+### Primeiro dia
+
+- [ ] Registrar quem será o dono operacional e quem acionará o suporte.
+- [ ] Acompanhar cadastro, onboarding e primeiro agendamento sem executar ações pelo cliente.
+- [ ] Conferir o primeiro atendimento concluído no caixa, na comissão e no relatório.
+- [ ] Registrar bloqueios, dúvidas e tarefas repetitivas com horário e papel do usuário.
+
+### Primeira semana
+
+- [ ] Revisar diariamente falhas de login, conflitos, cancelamentos e agendamentos não concluídos.
+- [ ] Separar defeitos que impedem operação de melhorias cosméticas ou comerciais.
+- [ ] Confirmar que profissionais e recepção conseguem operar pelo próprio celular.
+- [ ] Realizar uma conversa curta de fechamento com o responsável pelo estabelecimento.
+- [ ] Decidir se o piloto continua, precisa de correção ou está pronto para ampliar.
+
 ## Integrações que não bloqueiam o piloto assistido
 
 - Cobrança automática pelo Stripe: a fundação está pronta; ativar seguindo `docs/stripe-activation.md` quando produtos, chaves e webhook estiverem disponíveis.
@@ -42,3 +59,4 @@ npm run test:all
 
 Os testes autenticados usam exclusivamente o estabelecimento piloto configurado nas variáveis `E2E_*`. O cenário de conclusão financeira exige `E2E_FINANCIAL_MUTATION_CONFIRM=complete-pilot-appointment`.
 
+O procedimento de release, monitoramento e recuperação está em `docs/production-operations.md`.
