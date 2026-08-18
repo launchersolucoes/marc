@@ -1,11 +1,16 @@
-import { Clock3, Mail, Phone, ShieldCheck, UserRound, UsersRound } from "lucide-react";
+import { Clock3, Mail, Pencil, Phone, ShieldCheck, UserRound, UsersRound } from "lucide-react";
+import Link from "next/link";
 import InviteForm from "../../../components/invite-form";
+import InvitationActions from "../../../components/invitation-actions";
+import MobileRouteSheet from "../../../components/mobile-route-sheet";
 import ProfessionalForm from "../../../components/professional-form";
 import { getAppContext } from "../../../lib/app-context";
 
 export const metadata = { title: "Equipe — Marc" };
 
-export default async function TeamPage() {
+export default async function TeamPage({ searchParams }) {
+  const query = await searchParams;
+  const editProfessionalId = typeof query?.editar === "string" ? query.editar : "";
   const { supabase, user, membership, establishment } = await getAppContext();
   const canManage = ["owner", "manager"].includes(membership.role);
   const [{ data: professionals }, { data: invitations }] = await Promise.all([
@@ -24,6 +29,7 @@ export default async function TeamPage() {
       : Promise.resolve({ data: [] }),
   ]);
   const unlinkedProfessionals = (professionals || []).filter((item) => !item.user_id);
+  const editableProfessional = canManage ? (professionals || []).find((item) => item.id === editProfessionalId) || null : null;
   const roleLabels = { manager: "Gerente", receptionist: "Recepção", professional: "Profissional" };
 
   return (
@@ -55,7 +61,10 @@ export default async function TeamPage() {
                     {professional.contact_phone && <span><Phone size={14} /> {professional.contact_phone}</span>}
                     <span>Comissão: {Number(professional.commission_percent || 0).toLocaleString("pt-BR")}%</span>
                   </div>
-                  <em>{professional.is_active ? "Ativo" : "Inativo"}</em>
+                  <div className="team-row-actions">
+                    <em className={professional.is_active ? "" : "is-muted"}>{professional.is_active ? "Ativo" : "Inativo"}</em>
+                    {canManage && <Link href={`/app/equipe?editar=${professional.id}`} aria-label={`Editar ${professional.display_name}`}><Pencil size={14} /> Editar</Link>}
+                  </div>
                 </article>
               ))}
             </div>
@@ -73,6 +82,7 @@ export default async function TeamPage() {
                     <Clock3 size={16} />
                     <div><strong>{invitation.email}</strong><span>{roleLabels[invitation.role]}</span></div>
                     <time>até {new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short" }).format(new Date(invitation.expires_at))}</time>
+                    <InvitationActions invitationId={invitation.id} />
                   </article>
                 ))}
               </div>
@@ -85,6 +95,9 @@ export default async function TeamPage() {
             </aside>
           )}
         </div>
+        {canManage && editableProfessional && <MobileRouteSheet className="team-form-card team-edit-sheet" open closeHref="/app/equipe" title="Editar profissional">
+          <ProfessionalForm professional={editableProfessional} />
+        </MobileRouteSheet>}
       </div>
   );
 }

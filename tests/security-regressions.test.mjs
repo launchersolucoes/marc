@@ -28,3 +28,15 @@ test("public booking limits abuse and audit events exclude customer data", async
   assert.match(sql, /revoke all on table public\.operational_audit_events from public, anon, authenticated/);
   assert.doesNotMatch(sql, /audit_metadata[\s\S]{0,120}(phone|email|full_name)/i);
 });
+
+test("entity lifecycle preserves history and keeps professional rules under professional control", async () => {
+  const sql = await readFile("supabase/migrations/20260818120000_entity_lifecycle_management.sql", "utf8");
+
+  assert.match(sql, /add column if not exists is_active boolean not null default true/i);
+  assert.match(sql, /update_professional_profile[\s\S]*professional_active/i);
+  assert.match(sql, /update_customer_record[\s\S]*customer_active/i);
+  assert.match(sql, /set_own_service_offering_active[\s\S]*where user_id = \(select auth\.uid\(\)\)/i);
+  assert.match(sql, /alter policy "Professionals manage their service rules"[\s\S]*public\.owns_professional/i);
+  assert.match(sql, /reactivate_customer_on_appointment/i);
+  assert.doesNotMatch(sql, /delete from public\.(professionals|customers|services|professional_services)/i);
+});

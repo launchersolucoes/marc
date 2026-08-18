@@ -74,6 +74,7 @@ A proposta não é apenas substituir uma agenda digital, mas conectar aquisiçã
 - A base permanente é uma aplicação Next.js conectada ao Supabase, com autenticação, banco relacional e políticas de acesso por estabelecimento.
 - Cadastro por e-mail e senha, onboarding do estabelecimento, serviços, equipe, disponibilidade, agenda interna, clientes e agendamento público já persistem dados reais.
 - O ciclo do atendimento já permite confirmar, iniciar, concluir, cancelar e registrar falta. Atendimentos concluídos geram uma entrada financeira vinculada e dono/gerência podem registrar despesas no caixa mensal.
+- Profissionais e clientes podem ser editados, desativados ou arquivados sem apagar o histórico; convites podem ser renovados ou revogados, e cada profissional pode pausar ou reativar suas próprias ofertas. Pessoas com atendimentos futuros não podem ser arquivadas até que esses horários sejam tratados.
 - Comissões por profissional são configuráveis por dono ou gerente, registradas como fotografia da taxa no momento da conclusão e exibidas em um relatório mensal; profissionais visualizam somente o próprio resultado.
 - Donos e gerentes possuem relatórios mensais de faturamento, ticket médio, comparecimento, origem dos agendamentos, serviços e desempenho da equipe.
 - Clientes podem entrar em uma lista de espera por serviço, profissional e data quando não houver vaga; a equipe converte solicitações em horários confirmados. Atendimentos pendentes ou confirmados podem ser reagendados com nova validação de disponibilidade, bloqueios e conflitos.

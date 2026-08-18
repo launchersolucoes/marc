@@ -8,6 +8,27 @@ function value(formData, name) {
 }
 
 export async function createService(_previousState, formData) {
+  const intent = value(formData, "intent") || "save";
+  const serviceId = value(formData, "serviceId");
+  if (["activate", "deactivate"].includes(intent)) {
+    if (!serviceId) return { error: "Serviço inválido.", success: "" };
+    const { supabase } = await getActionContext();
+    const { error } = await supabase.rpc("set_own_service_offering_active", {
+      target_service_id: serviceId,
+      offering_active: intent === "activate",
+    });
+    if (error) return { error: "Não foi possível alterar esse serviço.", success: "" };
+    revalidatePath("/app");
+    revalidatePath("/app/servicos");
+    revalidatePath("/agendar", "layout");
+    return {
+      error: "",
+      success: intent === "activate"
+        ? "Serviço voltou para sua agenda."
+        : "Serviço pausado. O histórico foi preservado.",
+    };
+  }
+
   const name = value(formData, "name");
   const description = value(formData, "description");
   const duration = Number(value(formData, "duration"));

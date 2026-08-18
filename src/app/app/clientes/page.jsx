@@ -1,4 +1,4 @@
-import { CalendarDays, Search, UserPlus } from "lucide-react";
+import { Archive, CalendarDays, Pencil, Search, UserPlus } from "lucide-react";
 import Link from "next/link";
 import CustomerForm from "../../../components/customer-form";
 import MobileRouteSheet from "../../../components/mobile-route-sheet";
@@ -14,13 +14,16 @@ export default async function CustomersPage({ searchParams }) {
   const query = await searchParams;
   const search = String(query?.busca || "").trim().replace(/[,%()]/g, "").slice(0, 80);
   const newCustomerRequested = query?.novo === "1";
+  const editCustomerId = typeof query?.editar === "string" ? query.editar : "";
+  const showArchived = query?.arquivados === "1";
   const { supabase, user, membership, establishment } = await getAppContext();
   const canManage = ["owner", "manager", "receptionist"].includes(membership.role);
 
   let customersQuery = supabase
     .from("customers")
-    .select("id, full_name, phone, email, notes, created_at, appointments(id, starts_at, status, price_cents, professional:professionals(display_name), professional_service:professional_services(service:services(name)))")
+    .select("id, full_name, phone, email, notes, is_active, created_at, appointments(id, starts_at, status, price_cents, professional:professionals(display_name), professional_service:professional_services(service:services(name)))")
     .eq("establishment_id", establishment.id)
+    .eq("is_active", !showArchived)
     .order("updated_at", { ascending: false })
     .limit(100);
 
@@ -37,6 +40,7 @@ export default async function CustomersPage({ searchParams }) {
       lastAppointment: appointments[0] || null,
     };
   });
+  const editableCustomer = canManage ? rows.find((customer) => customer.id === editCustomerId) || null : null;
 
   return (
       <div className="app-content customers-page">
@@ -53,9 +57,14 @@ export default async function CustomersPage({ searchParams }) {
           <section className="customers-panel">
             <form className="customer-search" action="/app/clientes">
               <Search size={18} />
+              {showArchived && <input type="hidden" name="arquivados" value="1" />}
               <input name="busca" defaultValue={search} placeholder="Buscar por nome, telefone ou e-mail" aria-label="Buscar clientes" />
               <button className="button button--secondary" type="submit">Buscar</button>
             </form>
+            <div className="customer-view-toggle">
+              <Link className={!showArchived ? "is-active" : ""} href="/app/clientes">Ativos</Link>
+              <Link className={showArchived ? "is-active" : ""} href="/app/clientes?arquivados=1"><Archive size={14} /> Arquivados</Link>
+            </div>
 
             {rows.length ? (
               <div className="customer-list">
@@ -81,19 +90,23 @@ export default async function CustomersPage({ searchParams }) {
                       <strong>{money(customer.totalSpent)}</strong>
                       <span>{customer.completedCount} {customer.completedCount === 1 ? "concluído" : "concluídos"}</span>
                     </div>
+                    {canManage && <Link className="customer-edit" href={`/app/clientes?${showArchived ? "arquivados=1&" : ""}editar=${customer.id}`} aria-label={`Editar ${customer.full_name}`}><Pencil size={14} /> Editar</Link>}
                   </article>
                 ))}
               </div>
             ) : (
               <div className="team-empty">
                 <UserPlus size={25} />
-                <h3>{search ? "Nenhum cliente encontrado." : "Sua base começa no primeiro atendimento."}</h3>
-                <p>{search ? "Tente buscar por outro nome ou telefone." : "Clientes agendados entram automaticamente. Você também pode cadastrar contatos recebidos pelo WhatsApp."}</p>
+                <h3>{search ? "Nenhum cliente encontrado." : showArchived ? "Nenhum cliente arquivado." : "Sua base começa no primeiro atendimento."}</h3>
+                <p>{search ? "Tente buscar por outro nome ou telefone." : showArchived ? "Clientes arquivados aparecem aqui e podem ser restaurados a qualquer momento." : "Clientes agendados entram automaticamente. Você também pode cadastrar contatos recebidos fora do sistema."}</p>
               </div>
             )}
           </section>
           {canManage && <MobileRouteSheet className="customer-form-card" open={newCustomerRequested} closeHref="/app/clientes" title="Novo cliente">
             <CustomerForm />
+          </MobileRouteSheet>}
+          {canManage && editableCustomer && <MobileRouteSheet className="customer-form-card customer-edit-sheet" open closeHref={showArchived ? "/app/clientes?arquivados=1" : "/app/clientes"} title="Editar cliente">
+            <CustomerForm customer={editableCustomer} />
           </MobileRouteSheet>}
         </div>
       </div>

@@ -19,13 +19,14 @@ export default async function ServicesPage({ searchParams }) {
     .order("created_at", { ascending: false });
 
   const editableService = (services || []).map((service) => {
-    const offering = service.professional_services?.find((item) => item.professional_id === professional?.id && item.is_active);
+    const offering = service.professional_services?.find((item) => item.professional_id === professional?.id);
     return offering ? {
       id: service.id,
       name: service.name,
       description: service.description,
       price_cents: offering.price_cents,
       duration_minutes: offering.duration_minutes,
+      is_active: offering.is_active,
     } : null;
   }).find((service) => service?.id === editServiceId) || null;
   const serviceSheetOpen = newServiceRequested || Boolean(editableService);
@@ -46,13 +47,13 @@ export default async function ServicesPage({ searchParams }) {
           {services?.length ? (
             <div className="service-list__items">
               {services.map((service) => {
-                const ownOffering = service.professional_services?.find((offering) => offering.professional_id === professional?.id && offering.is_active);
+                const ownOffering = service.professional_services?.find((offering) => offering.professional_id === professional?.id);
                 return (
                 <article key={service.id}>
                   <div><Scissors size={18} /></div>
                   <span><strong>{service.name}</strong><small>{ownOffering ? `${ownOffering.duration_minutes} min · ${new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(ownOffering.price_cents / 100)}` : service.description || "Disponível no catálogo"}</small></span>
                   <span className="service-list__actions">
-                    <em><Check size={14} /> {ownOffering ? "Na sua agenda" : "Catálogo"}</em>
+                    <em className={ownOffering && !ownOffering.is_active ? "is-muted" : ""}><Check size={14} /> {ownOffering ? (ownOffering.is_active ? "Na sua agenda" : "Pausado") : "Catálogo"}</em>
                     {ownOffering && <Link href={`/app/servicos?editar=${service.id}`} aria-label={`Editar ${service.name}`}><Pencil size={14} /> Editar</Link>}
                   </span>
                 </article>

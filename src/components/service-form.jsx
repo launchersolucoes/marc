@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowRight, CheckCircle2, LoaderCircle } from "lucide-react";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { createService } from "../app/app/servicos/actions";
 
@@ -21,6 +21,7 @@ function SubmitButton({ editing }) {
 export default function ServiceForm({ service = null }) {
   const [state, action] = useActionState(createService, initialState);
   const editing = Boolean(service);
+  const [confirming, setConfirming] = useState(false);
 
   return (
     <form className="service-form" action={action}>
@@ -28,6 +29,7 @@ export default function ServiceForm({ service = null }) {
         <h2>{editing ? "Editar serviço" : "Novo serviço"}</h2>
         <p>{editing ? "Atualize o valor e a duração usados na sua agenda." : "Defina o serviço, o valor e a duração usados especificamente na sua agenda."}</p>
       </div>
+      {editing && <input type="hidden" name="serviceId" value={service.id} />}
       <div className="field">
         <label htmlFor="serviceName">Nome do serviço</label>
         <input id="serviceName" name="name" placeholder="Ex.: Corte masculino" defaultValue={service?.name || ""} minLength={2} maxLength={80} readOnly={editing} required />
@@ -63,6 +65,14 @@ export default function ServiceForm({ service = null }) {
         </div>
       )}
       <SubmitButton editing={editing} />
+      {editing && (service.is_active ? (
+        confirming ? (
+          <div className="lifecycle-confirm" role="group" aria-label="Confirmar pausa do serviço">
+            <button className="button button--danger" type="submit" name="intent" value="deactivate">Confirmar pausa</button>
+            <button className="button button--quiet" type="button" onClick={() => setConfirming(false)}>Manter na agenda</button>
+          </div>
+        ) : <button className="button button--quiet lifecycle-trigger" type="button" onClick={() => setConfirming(true)}>Pausar na minha agenda</button>
+      ) : <button className="button button--secondary" type="submit" name="intent" value="activate">Reativar na minha agenda</button>)}
     </form>
   );
 }
