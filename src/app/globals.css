@@ -2736,6 +2736,9 @@ html[data-theme="light"] .public-booking-header img { filter: brightness(0); }
 
 .reports-heading { align-items: flex-start; }
 .report-filter { min-width: 300px; display: grid; gap: 7px; }
+.report-heading__tools { display: grid; justify-items: end; gap: 10px; }
+.report-export-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.report-export-actions .button { min-height: 42px; padding-inline: 13px; font-size: 11px; }
 .report-filter > label { color: var(--text-muted); font-size: 11px; font-weight: 700; }
 .report-filter > div { display: grid; grid-template-columns: minmax(150px, 1fr) auto; gap: 8px; }
 .report-filter input { min-height: 42px; padding: 0 11px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); color: var(--text-primary); color-scheme: light dark; }
@@ -3173,6 +3176,9 @@ html[data-theme="light"] .public-booking-header img { filter: brightness(0); }
   .commission-form__identity { grid-column: 1 / -1; }
   .commission-form__submit { align-self: end; }
   .report-filter { width: 100%; min-width: 0; }
+  .report-heading__tools, .report-export-actions { width: 100%; justify-items: stretch; }
+  .report-export-actions { display: flex; flex-wrap: nowrap; }
+  .report-export-actions .button { min-width: 0; flex: 1 1 0; justify-content: center; padding-inline: 7px; font-size: 10px; }
   .report-period { align-items: flex-start; flex-direction: column; padding-bottom: 12px; }
   .report-summary { grid-template-columns: 1fr; }
   .finance-list article { grid-template-columns: 38px 1fr auto; padding: 12px 0; }
@@ -3210,6 +3216,28 @@ html[data-theme="light"] .public-booking-header img { filter: brightness(0); }
   .reschedule-form .button, .waitlist-actions .button { width: 100%; }
   .waitlist-board { padding: 20px; }
   .waitlist-list dl { grid-template-columns: 1fr; padding-left: 56px; }
+}
+
+@media print {
+  @page { size: A4 portrait; margin: 12mm; }
+  html, body { background: #fff !important; color: #111 !important; }
+  .app-sidebar,
+  .app-topbar,
+  .app-mobile-nav,
+  .subscription-notice,
+  .report-heading__tools,
+  .report-period a,
+  .app-route-progress { display: none !important; }
+  .app-layout, .app-main { min-height: auto; display: block; background: #fff !important; }
+  .app-content.reports-page { width: 100%; max-width: none; padding: 0; color: #111; }
+  .reports-page :is(h1, h2, strong, span, p, small, em) { color: #111 !important; }
+  .report-summary article,
+  .report-volume,
+  .report-table { break-inside: avoid; border-color: #ccc !important; background: #fff !important; box-shadow: none !important; }
+  .report-breakdowns { grid-template-columns: 1fr; }
+  .report-bars i { background: #ddd !important; }
+  .report-bars b { background: #ffa500 !important; }
+  .reports-page * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
 }
 
 /* Keep mobile product rules last in the cascade. */

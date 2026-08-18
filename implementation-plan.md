@@ -10,6 +10,8 @@ O ciclo de vida operacional de profissionais, convites, clientes e ofertas tamb�
 
 A experiência PWA agora possui manifesto instalável, atalhos de agenda, instalação guiada no Android/iOS, shell seguro para falta de conexão e registro de service worker. Páginas autenticadas e dados operacionais continuam sempre dependentes da rede e não são gravados no cache do dispositivo.
 
+Relatórios mensais podem ser exportados como planilha compatível com Excel e impressos ou salvos em PDF. A exportação é isolada por estabelecimento, restrita a dono/gerente e neutraliza conteúdo que poderia ser interpretado como fórmula pela planilha.
+
 `PRODUCT.md` é a fonte de verdade para decisões atuais. WhatsApp, OTP por telefone, Hub, multiunidades, estoque, fidelidade e cobrança automática permanecem fora do caminho crítico do piloto até que as contas, credenciais e regras comerciais necessárias sejam confirmadas.
 
 ---

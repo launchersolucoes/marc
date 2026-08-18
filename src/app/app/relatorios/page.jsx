@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import ReportExportActions from "../../../components/report-export-actions";
 import { getAppContext } from "../../../lib/app-context";
 
 export const metadata = { title: "Relatórios — Marc" };
@@ -140,13 +141,16 @@ export default async function ReportsPage({ searchParams }) {
             <h1>Relatórios</h1>
             <p>Entenda o movimento do mês, os serviços mais procurados e o resultado de cada profissional.</p>
           </div>
-          <form className="report-filter">
-            <label htmlFor="reportMonth">Período</label>
-            <div>
-              <input id="reportMonth" name="month" type="month" defaultValue={selectedMonth} max={currentMonth()} />
-              <button className="button button--secondary" type="submit">Atualizar</button>
-            </div>
-          </form>
+          <div className="report-heading__tools">
+            <form className="report-filter">
+              <label htmlFor="reportMonth">Período</label>
+              <div>
+                <input id="reportMonth" name="month" type="month" defaultValue={selectedMonth} max={currentMonth()} />
+                <button className="button button--secondary" type="submit">Atualizar</button>
+              </div>
+            </form>
+            <ReportExportActions month={selectedMonth} />
+          </div>
         </header>
 
         <div className="report-period">
