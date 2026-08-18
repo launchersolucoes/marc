@@ -1,8 +1,15 @@
 import "@fontsource-variable/instrument-sans";
 import "./globals.css";
+import PwaRegistration from "../components/pwa-registration";
 
 export const metadata = {
   metadataBase: new URL("https://usemarc.com.br"),
+  applicationName: "Marc",
+  manifest: "/manifest.webmanifest",
+  icons: {
+    icon: "/icon.png",
+    apple: "/icon.png",
+  },
   title: "Marc — Sua agenda sempre cheia",
   description:
     "Agendamento online, lembretes no WhatsApp e gestão completa para barbearias, salões e esmalterias.",
@@ -20,6 +27,24 @@ export const metadata = {
     description: "Agendamento online, WhatsApp e gestão no mesmo lugar.",
     images: ["/og.png"],
   },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Marc",
+  },
+  formatDetection: {
+    telephone: false,
+  },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#F8F9FA" },
+    { media: "(prefers-color-scheme: dark)", color: "#1A1A1A" },
+  ],
 };
 
 const themeScript = `
@@ -45,7 +70,10 @@ export default function RootLayout({ children }) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <PwaRegistration />
+      </body>
     </html>
   );
 }

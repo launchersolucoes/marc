@@ -63,3 +63,25 @@ test("health endpoint verifies Supabase availability without exposing configurat
   assert.match(health, /status: "degraded"/);
   assert.doesNotMatch(health, /Response\.json\([^)]*(supabaseUrl|publishableKey)/);
 });
+
+test("PWA is installable and keeps authenticated documents out of offline caches", async () => {
+  const [layout, manifest, registration, worker, settings] = await Promise.all([
+    read("src/app/layout.jsx"),
+    read("src/app/manifest.js"),
+    read("src/components/pwa-registration.jsx"),
+    read("public/sw.js"),
+    read("src/components/pwa-install-card.jsx"),
+  ]);
+
+  assert.match(layout, /manifest: "\/manifest\.webmanifest"/);
+  assert.match(layout, /appleWebApp/);
+  assert.match(layout, /apple: "\/icon\.png"/);
+  assert.match(manifest, /display: "standalone"/);
+  assert.match(manifest, /start_url: "\/app"/);
+  assert.match(registration, /serviceWorker\.register\("\/sw\.js"/);
+  assert.match(worker, /request\.mode === "navigate"/);
+  assert.match(worker, /fetch\(request\)\.catch\(\(\) => caches\.match\(OFFLINE_URL\)\)/);
+  assert.doesNotMatch(worker, /request\.mode === "navigate"[\s\S]{0,240}cache\.put/);
+  assert.match(settings, /beforeinstallprompt/);
+  assert.match(settings, /Adicionar à Tela de Início/);
+});

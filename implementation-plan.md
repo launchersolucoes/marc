@@ -8,6 +8,8 @@ O núcleo do MVP já está implementado e em endurecimento para piloto assistido
 
 O ciclo de vida operacional de profissionais, convites, clientes e ofertas também está implementado: edição, desativação ou arquivamento sem apagar histórico, renovação e revogação de convites e proteção contra arquivar pessoas com atendimentos futuros. A migração `20260818120000_entity_lifecycle_management.sql` foi aplicada e registrada no Supabase de produção.
 
+A experiência PWA agora possui manifesto instalável, atalhos de agenda, instalação guiada no Android/iOS, shell seguro para falta de conexão e registro de service worker. Páginas autenticadas e dados operacionais continuam sempre dependentes da rede e não são gravados no cache do dispositivo.
+
 `PRODUCT.md` é a fonte de verdade para decisões atuais. WhatsApp, OTP por telefone, Hub, multiunidades, estoque, fidelidade e cobrança automática permanecem fora do caminho crítico do piloto até que as contas, credenciais e regras comerciais necessárias sejam confirmadas.
 
 ---

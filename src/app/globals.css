@@ -2792,6 +2792,27 @@ html[data-theme="light"] .public-booking-header img { filter: brightness(0); }
 .field input[readonly] { background: var(--surface-elevated); color: var(--text-muted); cursor: not-allowed; }
 .settings-access { display: grid; gap: 15px; }
 .settings-access .button { width: 100%; margin-top: 3px; }
+.pwa-install-status {
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 2px 0 0;
+  padding: 0 13px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface-elevated));
+  color: var(--accent-strong);
+  font-size: 12px;
+  font-weight: 720;
+}
+.pwa-install-steps { display: grid; gap: 3px; margin: 1px 0 0; padding: 0; list-style: none; }
+.pwa-install-steps li { min-height: 54px; display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: center; gap: 10px; padding: 7px 0; }
+.pwa-install-steps li + li { border-top: 1px solid var(--border); }
+.pwa-install-steps li > span { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 9px; background: var(--surface-elevated); color: var(--accent-strong); font-size: 20px; font-weight: 600; }
+.pwa-install-steps li > div { display: grid; gap: 2px; }
+.pwa-install-steps strong { font-size: 12px; }
+.pwa-install-steps small, .pwa-install-hint { color: var(--text-muted); font-size: 11px; line-height: 1.5; }
+.pwa-install-hint { margin: 0; padding-top: 2px; }
 .settings-public-link { min-height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 14px 17px; }
 .settings-public-link > div { display: flex; align-items: center; gap: 10px; min-width: 0; }
 .settings-public-link > div > svg { flex: 0 0 auto; color: var(--accent-strong); }

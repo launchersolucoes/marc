@@ -10,6 +10,7 @@ import {
   EstablishmentSettingsForm,
   ProfileSettingsForm,
 } from "../../../components/settings-forms";
+import PwaInstallCard from "../../../components/pwa-install-card";
 import { getAppContext } from "../../../lib/app-context";
 
 export const metadata = { title: "Configurações — Marc" };
@@ -54,6 +55,7 @@ export default async function SettingsPage({ searchParams }) {
 
           <aside className="settings-aside">
             <ProfileSettingsForm profile={profile} email={user.email} />
+            <PwaInstallCard />
             <section className="settings-access">
               <div className="settings-profile-mark"><KeyRound size={19} /></div>
               <h2>Segurança do acesso</h2>
