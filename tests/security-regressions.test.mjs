@@ -40,3 +40,12 @@ test("entity lifecycle preserves history and keeps professional rules under prof
   assert.match(sql, /reactivate_customer_on_appointment/i);
   assert.doesNotMatch(sql, /delete from public\.(professionals|customers|services|professional_services)/i);
 });
+
+test("pilot operations stay behind platform admin RPCs and exclude customer payloads", async () => {
+  const migration = await readFile(new URL("../supabase/migrations/20260818170000_platform_pilot_operations.sql", import.meta.url), "utf8");
+  assert.match(migration, /if not public\.is_platform_admin\(\)/g);
+  assert.match(migration, /revoke all on table public\.platform_pilot_programs from public, anon, authenticated/);
+  assert.match(migration, /revoke all on table public\.platform_pilot_issues from public, anon, authenticated/);
+  assert.match(migration, /get_platform_pilot_dashboard/);
+  assert.doesNotMatch(migration, /customer_name|customer_phone|customer_email|metadata'/);
+});

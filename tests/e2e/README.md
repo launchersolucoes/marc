@@ -54,3 +54,9 @@ removê-la. Os contatos usados nesses cenários são apagados ao final do teste.
 `booking-resilience.spec.mjs` força concorrência no mesmo horário, repetição de
 pedidos, ocupação durante o preenchimento e falha temporária de rede. A suíte
 confirma que o banco impede duplicidade e que a página oferece recuperação.
+
+O roteiro humano das três rodadas e a política P1/P2/P3 estão em
+`docs/pilot-runbook.md`. Se uma execução for interrompida, a limpeza explícita
+`PILOT_RESET_CONFIRM=reset-known-e2e-data npm run pilot:reset` remove somente
+os contatos e bloqueios reservados pelos testes, preservando auditoria,
+financeiro, configuração e matriz de papéis.

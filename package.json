@@ -9,6 +9,7 @@
     "start": "next start",
     "pilot:provision": "node scripts/provision-e2e-account.mjs",
     "pilot:roles": "node scripts/provision-role-matrix.mjs",
+    "pilot:reset": "node scripts/reset-pilot-data.mjs",
     "test:admin": "node --test tests/platform-admin.test.mjs",
     "test:billing": "node --test tests/billing.test.mjs",
     "test:email": "node --test tests/email.test.mjs",

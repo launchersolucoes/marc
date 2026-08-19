@@ -2194,6 +2194,77 @@ html[data-theme="light"] .form-message--success { color: #167a4a; }
 .master-empty > svg { color: var(--accent-strong); }
 .master-empty h3 { margin: 16px 0 6px; }
 .master-empty p { max-width: 42ch; margin: 0; color: var(--text-muted); font-size: 13px; line-height: 1.5; }
+.master-pilot { margin-bottom: 20px; overflow: hidden; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); }
+.master-pilot__heading { display: flex; align-items: end; justify-content: space-between; gap: 28px; padding: 24px; border-bottom: 1px solid var(--border); }
+.master-pilot__title { display: flex; align-items: center; gap: 10px; }
+.master-pilot__title svg { color: var(--accent-strong); }
+.master-pilot__title h2 { margin: 0; font-size: 24px; letter-spacing: -.025em; }
+.master-pilot__heading p { max-width: 64ch; margin: 7px 0 0; color: var(--text-muted); font-size: 12px; line-height: 1.5; }
+.master-pilot-picker { min-width: min(100%, 390px); display: grid; grid-template-columns: minmax(160px, 1fr) auto; gap: 6px 8px; }
+.master-pilot-picker label { grid-column: 1 / -1; color: var(--text-muted); font-size: 10px; font-weight: 700; }
+.master-pilot-picker select, .master-pilot-command :is(select, input), .pilot-checklist-list form :is(select, input), .pilot-issue-create :is(select, input, textarea), .pilot-issue-list form :is(select, input) { width: 100%; min-height: 40px; padding: 0 10px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface); color: var(--text-primary); font: inherit; }
+.pilot-issue-create textarea { min-height: 70px; padding-block: 10px; resize: vertical; }
+.master-pilot__pulse { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 20px 24px; background: var(--surface-elevated); }
+.master-pilot__pulse > div { min-width: 0; display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 4px 10px; }
+.master-pilot__pulse > div > strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.master-pilot__pulse > div > small { grid-column: 2; color: var(--text-muted); font-size: 10px; }
+.pilot-state { grid-row: 1 / span 2; display: inline-flex; align-items: center; gap: 5px; padding: 6px 8px; border-radius: 999px; background: color-mix(in srgb, var(--accent) 12%, var(--surface)); color: var(--accent-strong); font-size: 9px; font-weight: 800; white-space: nowrap; }
+.pilot-state.is-testing, .pilot-state.is-ready { background: color-mix(in srgb, #42b883 12%, var(--surface)); color: #3da473; }
+.pilot-state.is-paused { background: color-mix(in srgb, var(--danger) 9%, var(--surface)); color: var(--danger); }
+.master-pilot__pulse dl { display: flex; align-items: center; gap: 30px; margin: 0; }
+.master-pilot__pulse dl > div { display: grid; gap: 3px; }
+.master-pilot__pulse dt { color: var(--text-muted); font-size: 9px; }
+.master-pilot__pulse dd { margin: 0; font-size: 17px; font-weight: 820; font-variant-numeric: tabular-nums; }
+.master-pilot__pulse dd.is-danger { color: var(--danger); }
+.master-pilot__pulse dd.is-warning { color: var(--accent-strong); }
+.master-pilot-command { display: grid; grid-template-columns: minmax(150px, .55fr) minmax(180px, .75fr) minmax(260px, 1.5fr) auto; gap: 10px; align-items: end; padding: 18px 24px; border-bottom: 1px solid var(--border); }
+.master-pilot-command label, .pilot-issue-create label { min-width: 0; display: grid; gap: 6px; color: var(--text-muted); font-size: 10px; font-weight: 700; }
+.master-pilot-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(280px, .65fr); border-bottom: 1px solid var(--border); }
+.pilot-checklist { min-width: 0; padding: 24px; border-right: 1px solid var(--border); }
+.pilot-activity { min-width: 0; padding: 24px; }
+.pilot-section-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; }
+.pilot-section-heading h3 { margin: 0; font-size: 17px; letter-spacing: -.015em; }
+.pilot-section-heading p { margin: 5px 0 0; color: var(--text-muted); font-size: 10px; line-height: 1.45; }
+.pilot-section-heading > svg { color: var(--accent-strong); }
+.pilot-section-heading > span { color: var(--text-muted); font-size: 10px; font-weight: 760; }
+.pilot-checklist-list { margin-top: 16px; }
+.pilot-checklist-list > article { min-height: 70px; display: grid; grid-template-columns: 28px minmax(160px, 1fr) minmax(210px, .85fr); align-items: center; gap: 10px; border-top: 1px solid var(--border); }
+.pilot-check { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 8px; background: var(--surface-elevated); color: var(--text-muted); }
+.pilot-check.is-passed { background: color-mix(in srgb, #42b883 12%, var(--surface)); color: #3da473; }
+.pilot-check.is-failed { background: color-mix(in srgb, var(--danger) 10%, var(--surface)); color: var(--danger); }
+.pilot-checklist-list > article > div { min-width: 0; display: grid; gap: 3px; }
+.pilot-checklist-list strong { font-size: 11px; }
+.pilot-checklist-list p { margin: 0; color: var(--text-muted); font-size: 9px; line-height: 1.4; }
+.pilot-checklist-list small { color: var(--accent-strong); font-size: 9px; }
+.pilot-checklist-list > article > em { justify-self: end; color: var(--text-muted); font-size: 9px; font-style: normal; font-weight: 760; }
+.pilot-checklist-list form { display: grid; grid-template-columns: 92px minmax(90px, 1fr) auto; gap: 6px; }
+.pilot-checklist-list form :is(select, input) { min-height: 34px; font-size: 9px; }
+.pilot-checklist-list form button, .pilot-issue-list form button { min-height: 34px; padding: 0 9px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-elevated); color: var(--text-primary); font-size: 9px; font-weight: 760; cursor: pointer; }
+.pilot-activity ol { display: grid; gap: 0; margin: 14px 0 0; padding: 0; list-style: none; }
+.pilot-activity li { min-height: 50px; display: grid; grid-template-columns: 12px minmax(0, 1fr); align-items: center; gap: 8px; border-top: 1px solid var(--border); }
+.pilot-activity li > span { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+.pilot-activity li > div { min-width: 0; display: grid; gap: 2px; }
+.pilot-activity li strong { overflow: hidden; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.pilot-activity li small { color: var(--text-muted); font-size: 9px; }
+.pilot-activity-empty, .pilot-issues-empty { min-height: 160px; display: grid; place-items: center; align-content: center; gap: 7px; color: var(--text-muted); text-align: center; }
+.pilot-activity-empty svg, .pilot-issues-empty svg { color: var(--accent-strong); }
+.pilot-activity-empty span, .pilot-issues-empty span { max-width: 30ch; font-size: 10px; line-height: 1.45; }
+.pilot-issues { padding: 24px; }
+.pilot-issue-create { display: grid; grid-template-columns: minmax(180px, 1.5fr) minmax(120px, .6fr) minmax(150px, .7fr) auto; gap: 10px; align-items: end; margin-top: 18px; padding: 16px; background: var(--surface-elevated); border-radius: 12px; }
+.pilot-issue-create label.is-wide:first-of-type { grid-column: span 2; }
+.pilot-issue-create label.is-wide:nth-of-type(4) { grid-column: span 3; }
+.pilot-issue-list { margin-top: 18px; }
+.pilot-issue-list > article { display: grid; grid-template-columns: minmax(220px, .8fr) minmax(180px, 1fr) minmax(300px, 1.2fr); align-items: center; gap: 18px; padding: 16px 0; border-top: 1px solid var(--border); }
+.pilot-issue-summary { min-width: 0; display: flex; align-items: center; gap: 10px; }
+.pilot-issue-summary > span { width: 34px; min-height: 28px; display: grid; place-items: center; border-radius: 8px; background: var(--surface-elevated); color: var(--text-muted); font-size: 9px; font-weight: 850; }
+.pilot-issue-summary > span.is-p1 { background: color-mix(in srgb, var(--danger) 12%, var(--surface)); color: var(--danger); }
+.pilot-issue-summary > span.is-p2 { background: color-mix(in srgb, var(--accent) 12%, var(--surface)); color: var(--accent-strong); }
+.pilot-issue-summary > div { min-width: 0; display: grid; gap: 3px; }
+.pilot-issue-summary strong { overflow: hidden; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+.pilot-issue-summary small { color: var(--text-muted); font-size: 9px; }
+.pilot-issue-list > article > p { margin: 0; color: var(--text-secondary); font-size: 10px; line-height: 1.45; }
+.pilot-issue-list form { display: grid; grid-template-columns: 112px minmax(100px, 1fr) auto; gap: 6px; }
+.pilot-issue-list form :is(select, input) { min-height: 34px; font-size: 9px; }
 .master-establishments { display: grid; }
 .master-establishments > article { display: grid; grid-template-columns: minmax(220px, 1.2fr) minmax(230px, .8fr) minmax(220px, .9fr); gap: 18px 26px; align-items: center; padding: 22px 24px; border-bottom: 1px solid var(--border); }
 .master-establishments > article:last-child { border-bottom: 0; }
@@ -3402,4 +3473,30 @@ html[data-theme="light"] .public-booking-header img { filter: brightness(0); }
 @media (max-width: 360px) {
   .app-theme-toggle { display: none; }
   .business-switcher > div { max-width: 138px; }
+}
+
+/* Master pilot responsiveness must remain after the desktop master rules. */
+@media (max-width: 1180px) {
+  .master-pilot-grid { grid-template-columns: 1fr; }
+  .pilot-checklist { border-right: 0; border-bottom: 1px solid var(--border); }
+  .pilot-issue-list > article { grid-template-columns: minmax(220px, .8fr) minmax(0, 1fr); }
+  .pilot-issue-list form { grid-column: 1 / -1; }
+}
+
+@media (max-width: 700px) {
+  .master-pilot__heading { align-items: stretch; flex-direction: column; padding: 20px; }
+  .master-pilot-picker { min-width: 0; grid-template-columns: 1fr; }
+  .master-pilot-picker label { grid-column: auto; }
+  .master-pilot__pulse { align-items: stretch; flex-direction: column; padding: 18px 20px; }
+  .master-pilot__pulse dl { justify-content: space-between; gap: 12px; }
+  .master-pilot-command { grid-template-columns: 1fr; padding: 18px 20px; }
+  .pilot-checklist, .pilot-activity, .pilot-issues { padding: 20px; }
+  .pilot-checklist-list > article { grid-template-columns: 28px minmax(0, 1fr); padding: 12px 0; }
+  .pilot-checklist-list > article > em, .pilot-checklist-list form { grid-column: 2; justify-self: stretch; }
+  .pilot-checklist-list > article > em { justify-self: start; }
+  .pilot-checklist-list form { grid-template-columns: 1fr; }
+  .pilot-issue-create { grid-template-columns: 1fr; padding: 14px; }
+  .pilot-issue-create label.is-wide:first-of-type, .pilot-issue-create label.is-wide:nth-of-type(4) { grid-column: auto; }
+  .pilot-issue-list > article { grid-template-columns: 1fr; gap: 10px; }
+  .pilot-issue-list form { grid-column: auto; grid-template-columns: 1fr; }
 }
