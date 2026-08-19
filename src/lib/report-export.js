@@ -81,3 +81,54 @@ export function buildAppointmentsCsv(appointments = []) {
 
   return `\uFEFF${rows.map((row) => row.map(csvCell).join(";")).join("\r\n")}`;
 }
+
+const closingMethods = [
+  ["cash", "Dinheiro"],
+  ["pix", "Pix"],
+  ["credit_card", "Crédito"],
+  ["debit_card", "Débito"],
+  ["other", "Outros"],
+];
+
+function csvMoney(value) {
+  return (Number(value || 0) / 100).toFixed(2).replace(".", ",");
+}
+
+export function buildReportCsv(appointments = [], closings = []) {
+  const appointmentCsv = buildAppointmentsCsv(appointments).slice(1);
+  if (!closings.length) return `\uFEFF${appointmentCsv}`;
+
+  const rows = [
+    [],
+    ["Fechamentos do caixa"],
+    [
+      "Data",
+      "Status",
+      ...closingMethods.flatMap(([, label]) => [`Sistema - ${label} (R$)`, `Conferido - ${label} (R$)`, `Diferença - ${label} (R$)`]),
+      "Saídas (R$)",
+      "Diferença absoluta (R$)",
+      "Observação",
+    ],
+  ];
+
+  closings.forEach((closing) => {
+    const differenceTotal = closingMethods.reduce(
+      (sum, [key]) => sum + Math.abs(Number(closing.difference_totals?.[key] || 0)),
+      0,
+    );
+    rows.push([
+      new Intl.DateTimeFormat("pt-BR", { timeZone: "UTC" }).format(new Date(`${closing.business_date}T12:00:00Z`)),
+      closing.status === "closed" ? "Fechado" : "Reaberto",
+      ...closingMethods.flatMap(([key]) => [
+        csvMoney(closing.expected_totals?.[key]),
+        csvMoney(closing.declared_totals?.[key]),
+        csvMoney(closing.difference_totals?.[key]),
+      ]),
+      csvMoney(closing.expense_total_cents),
+      csvMoney(differenceTotal),
+      closing.notes || "",
+    ]);
+  });
+
+  return `\uFEFF${appointmentCsv}\r\n${rows.map((row) => row.map(csvCell).join(";")).join("\r\n")}`;
+}

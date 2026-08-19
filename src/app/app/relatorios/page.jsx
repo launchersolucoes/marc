@@ -1,8 +1,11 @@
 import {
   ArrowLeft,
+  ArrowRight,
+  BadgeCheck,
   CalendarCheck2,
   ChartNoAxesCombined,
   CircleDollarSign,
+  LockKeyhole,
   Percent,
   TicketCheck,
   UserRound,
@@ -49,25 +52,35 @@ export default async function ReportsPage({ searchParams }) {
   const selectedMonth = /^\d{4}-(0[1-9]|1[0-2])$/.test(query?.month || "") ? query.month : currentMonth();
   const bounds = monthBounds(selectedMonth);
 
-  const { data: appointments } = await supabase
-    .from("appointments")
-    .select(`
-      id,
-      starts_at,
-      status,
-      source,
-      price_cents,
-      professional:professionals(id, display_name, color),
-      professional_service:professional_services(
-        service:services(id, name)
-      )
-    `)
-    .eq("establishment_id", establishment.id)
-    .gte("starts_at", bounds.start)
-    .lt("starts_at", bounds.end)
-    .order("starts_at");
+  const [appointmentsResult, closingsResult] = await Promise.all([
+    supabase
+      .from("appointments")
+      .select(`
+        id,
+        starts_at,
+        status,
+        source,
+        price_cents,
+        professional:professionals(id, display_name, color),
+        professional_service:professional_services(
+          service:services(id, name)
+        )
+      `)
+      .eq("establishment_id", establishment.id)
+      .gte("starts_at", bounds.start)
+      .lt("starts_at", bounds.end)
+      .order("starts_at"),
+    supabase
+      .from("financial_day_closings")
+      .select("id, business_date, status, expected_totals, declared_totals, difference_totals, expense_total_cents")
+      .eq("establishment_id", establishment.id)
+      .gte("business_date", bounds.start.slice(0, 10))
+      .lt("business_date", bounds.end.slice(0, 10))
+      .order("business_date", { ascending: false }),
+  ]);
 
-  const list = appointments || [];
+  const list = appointmentsResult.data || [];
+  const closings = closingsResult.data || [];
   const completed = list.filter((item) => item.status === "completed");
   const cancelled = list.filter((item) => item.status === "cancelled").length;
   const noShow = list.filter((item) => item.status === "no_show").length;
@@ -75,6 +88,12 @@ export default async function ReportsPage({ searchParams }) {
   const revenue = completed.reduce((sum, item) => sum + item.price_cents, 0);
   const averageTicket = completed.length ? Math.round(revenue / completed.length) : 0;
   const publicBookings = list.filter((item) => item.source === "public_booking").length;
+  const closedDays = closings.filter((item) => item.status === "closed");
+  const reconciledDays = closedDays.filter((closing) => Object.values(closing.difference_totals || {}).every((value) => Number(value || 0) === 0)).length;
+  const totalClosingDifference = closedDays.reduce(
+    (total, closing) => total + Object.values(closing.difference_totals || {}).reduce((sum, value) => sum + Math.abs(Number(value || 0)), 0),
+    0,
+  );
 
   const servicesMap = new Map();
   const professionalsMap = new Map();
@@ -185,6 +204,38 @@ export default async function ReportsPage({ searchParams }) {
             </div>
           ) : (
             <div className="report-empty report-empty--compact"><ChartNoAxesCombined size={25} /><h2>Este período ainda não tem movimento.</h2><p>Os dados aparecem aqui assim que o primeiro horário do mês for registrado.</p></div>
+          )}
+        </section>
+
+        <section className="report-closings" aria-label="Conferências de caixa do período">
+          <div className="section-title">
+            <div><h2>Conferência de caixa</h2><p>Fechamentos preservados com valores esperados, declarados e diferenças.</p></div>
+            <LockKeyhole size={20} />
+          </div>
+          <div className="report-closing-overview">
+            <span><strong>{closedDays.length}</strong> {closedDays.length === 1 ? "dia fechado" : "dias fechados"}</span>
+            <span><BadgeCheck size={15} /><strong>{reconciledDays}</strong> sem diferenças</span>
+            <span><strong>{money(totalClosingDifference)}</strong> em diferenças absolutas</span>
+          </div>
+          {closings.length ? (
+            <div className="report-closing-list">
+              {closings.map((closing) => {
+                const expected = Object.values(closing.expected_totals || {}).reduce((sum, value) => sum + Number(value || 0), 0);
+                const difference = Object.values(closing.difference_totals || {}).reduce((sum, value) => sum + Math.abs(Number(value || 0)), 0);
+                return (
+                  <Link href={`/app/financeiro?fechamento=${closing.business_date}`} key={closing.id}>
+                    <time>{new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short", timeZone: "UTC" }).format(new Date(`${closing.business_date}T12:00:00Z`))}</time>
+                    <span className={closing.status === "closed" ? "is-closed" : "is-open"}>{closing.status === "closed" ? "Fechado" : "Reaberto"}</span>
+                    <span><small>Recebimentos</small><strong>{money(expected)}</strong></span>
+                    <span><small>Saídas</small><strong>{money(closing.expense_total_cents)}</strong></span>
+                    <em className={difference ? "is-different" : ""}>{difference ? `${money(difference)} em diferenças` : "Conferido"}</em>
+                    <ArrowRight size={15} />
+                  </Link>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="report-closing-empty"><CalendarCheck2 size={20} /><span>Nenhum fechamento registrado neste período.</span><Link href="/app/financeiro">Conferir caixa</Link></div>
           )}
         </section>
 

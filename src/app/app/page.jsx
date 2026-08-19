@@ -3,6 +3,7 @@ import {
   CalendarDays,
   Check,
   Clock3,
+  LockKeyhole,
   Scissors,
   Sparkles,
   UserRound,
@@ -27,8 +28,10 @@ export default async function AppHomePage() {
   const tomorrowDate = new Date(`${today}T12:00:00Z`);
   tomorrowDate.setUTCDate(tomorrowDate.getUTCDate() + 1);
   const tomorrow = tomorrowDate.toISOString().slice(0, 10);
+  const monthStart = `${today.slice(0, 7)}-01T00:00:00-03:00`;
+  const canManageFinance = ["owner", "manager"].includes(membership.role);
 
-  const [{ count: servicesCount }, { count: professionalsCount }, appointmentsResult, { count: availabilityCount }] =
+  const [{ count: servicesCount }, { count: professionalsCount }, appointmentsResult, { count: availabilityCount }, movementResult, closingsResult] =
     await Promise.all([
       supabase
         .from("services")
@@ -50,9 +53,39 @@ export default async function AppHomePage() {
       supabase
         .from("availability_rules")
         .select("*", { count: "exact", head: true }),
+      canManageFinance
+        ? supabase
+            .from("financial_entries")
+            .select("occurred_at")
+            .eq("establishment_id", establishment.id)
+            .gte("occurred_at", monthStart)
+            .lt("occurred_at", `${today}T00:00:00-03:00`)
+            .is("voided_at", null)
+            .order("occurred_at")
+        : Promise.resolve({ data: [] }),
+      canManageFinance
+        ? supabase
+            .from("financial_day_closings")
+            .select("business_date, status")
+            .eq("establishment_id", establishment.id)
+            .gte("business_date", today.slice(0, 7) + "-01")
+            .lt("business_date", today)
+        : Promise.resolve({ data: [] }),
     ]);
   const appointmentsCount = appointmentsResult.count || 0;
   const todayAppointments = appointmentsResult.data || [];
+  const movementDates = [...new Set((movementResult.data || []).map((entry) => new Intl.DateTimeFormat("en-CA", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    timeZone: "America/Sao_Paulo",
+  }).format(new Date(entry.occurred_at))))].sort();
+  const closedDates = new Set((closingsResult.data || []).filter((closing) => closing.status === "closed").map((closing) => closing.business_date));
+  const pendingClosingDates = movementDates.filter((date) => !closedDates.has(date));
+  const firstPendingClosing = pendingClosingDates[0] || null;
+  const pendingClosingLabel = firstPendingClosing
+    ? new Intl.DateTimeFormat("pt-BR", { day: "numeric", month: "long", timeZone: "UTC" }).format(new Date(`${firstPendingClosing}T12:00:00Z`))
+    : "";
 
   const setupSteps = [
     { label: "Estabelecimento criado", done: true, href: "/app" },
@@ -109,6 +142,17 @@ export default async function AppHomePage() {
               <CalendarDays size={18} /> Novo agendamento
             </Link>
           </header>
+
+          {firstPendingClosing && (
+            <aside className="dashboard-closing-alert" aria-label="Fechamento de caixa pendente">
+              <LockKeyhole size={19} />
+              <div>
+                <strong>{pendingClosingDates.length === 1 ? "Fechamento pendente" : `${pendingClosingDates.length} fechamentos pendentes`}</strong>
+                <span>Comece pelo caixa de {pendingClosingLabel}, que já possui movimentações.</span>
+              </div>
+              <Link href={`/app/financeiro?fechamento=${firstPendingClosing}`}>Conferir agora <ArrowRight size={15} /></Link>
+            </aside>
+          )}
 
           <section className="dashboard-summary" aria-label="Resumo da operação">
             <article className="is-emphasis"><span>Atendimentos hoje</span><strong>{appointmentsCount || 0}</strong><small><Clock3 size={14} /> Agenda do dia</small></article>
