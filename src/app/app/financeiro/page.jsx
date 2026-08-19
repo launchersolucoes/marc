@@ -1,14 +1,16 @@
 import {
   ArrowDownRight,
   ArrowUpRight,
+  Ban,
   ChartNoAxesCombined,
-  CircleDollarSign,
+  Pencil,
   ReceiptText,
   WalletCards,
 } from "lucide-react";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import ExpenseForm from "../../../components/expense-form";
+import MobileRouteSheet from "../../../components/mobile-route-sheet";
 import { getAppContext } from "../../../lib/app-context";
 
 export const metadata = { title: "Financeiro — Marc" };
@@ -39,8 +41,24 @@ function brazilDate() {
   return `${get("year")}-${get("month")}-${get("day")}T${get("hour")}:${get("minute")}`;
 }
 
-export default async function FinancePage() {
-  const { supabase, user, membership, establishment } = await getAppContext();
+function localDateTime(value) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: "America/Sao_Paulo",
+  }).formatToParts(new Date(value));
+  const get = (type) => parts.find((part) => part.type === type)?.value;
+  return `${get("year")}-${get("month")}-${get("day")}T${get("hour")}:${get("minute")}`;
+}
+
+export default async function FinancePage({ searchParams }) {
+  const query = await searchParams;
+  const editExpenseId = typeof query?.editar === "string" ? query.editar : "";
+  const { supabase, membership, establishment } = await getAppContext();
   if (!["owner", "manager"].includes(membership.role)) redirect("/app");
 
   const now = new Date();
@@ -56,18 +74,20 @@ export default async function FinancePage() {
 
   const { data: entries } = await supabase
     .from("financial_entries")
-    .select("id, type, category, description, amount_cents, payment_method, occurred_at")
+    .select("id, appointment_id, type, category, description, amount_cents, payment_method, occurred_at, voided_at, void_reason")
     .eq("establishment_id", establishment.id)
     .gte("occurred_at", monthStart)
     .lt("occurred_at", nextMonth)
     .order("occurred_at", { ascending: false });
 
   const list = entries || [];
-  const income = list.filter((item) => item.type === "income").reduce((sum, item) => sum + item.amount_cents, 0);
-  const expense = list.filter((item) => item.type === "expense").reduce((sum, item) => sum + item.amount_cents, 0);
+  const activeList = list.filter((item) => !item.voided_at);
+  const income = activeList.filter((item) => item.type === "income").reduce((sum, item) => sum + item.amount_cents, 0);
+  const expense = activeList.filter((item) => item.type === "expense").reduce((sum, item) => sum + item.amount_cents, 0);
   const balance = income - expense;
-  const incomeCount = list.filter((item) => item.type === "income").length;
-  const expenseCount = list.filter((item) => item.type === "expense").length;
+  const incomeCount = activeList.filter((item) => item.type === "income").length;
+  const expenseCount = activeList.filter((item) => item.type === "expense").length;
+  const editableExpense = list.find((item) => item.id === editExpenseId && item.type === "expense" && !item.appointment_id && !item.voided_at) || null;
 
   return (
       <div className="app-content finance-page">
@@ -92,11 +112,14 @@ export default async function FinancePage() {
             {list.length ? (
               <div className="finance-list">
                 {list.map((entry) => (
-                  <article key={entry.id}>
-                    <div className={`finance-entry-icon is-${entry.type}`}>{entry.type === "income" ? <ArrowUpRight size={17} /> : <ArrowDownRight size={17} />}</div>
-                    <div><strong>{entry.description}</strong><span>{entry.category} · {paymentLabels[entry.payment_method] || "Não informado"}</span></div>
+                  <article className={entry.voided_at ? "is-voided" : ""} key={entry.id}>
+                    <div className={`finance-entry-icon is-${entry.voided_at ? "voided" : entry.type}`}>{entry.voided_at ? <Ban size={17} /> : entry.type === "income" ? <ArrowUpRight size={17} /> : <ArrowDownRight size={17} />}</div>
+                    <div><strong>{entry.description}</strong><span>{entry.voided_at ? `Estornada · ${entry.void_reason}` : `${entry.category} · ${paymentLabels[entry.payment_method] || "Não informado"}`}</span></div>
                     <time>{new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "America/Sao_Paulo" }).format(new Date(entry.occurred_at))}</time>
-                    <em className={`is-${entry.type}`}>{entry.type === "income" ? "+" : "−"} {money(entry.amount_cents)}</em>
+                    <div className="finance-entry-actions">
+                      <em className={`is-${entry.voided_at ? "voided" : entry.type}`}>{entry.voided_at ? "Estornado" : `${entry.type === "income" ? "+" : "−"} ${money(entry.amount_cents)}`}</em>
+                      {entry.type === "expense" && !entry.appointment_id && !entry.voided_at && <Link href={`/app/financeiro?editar=${entry.id}`} aria-label={`Corrigir ${entry.description}`}><Pencil size={13} /> Corrigir</Link>}
+                    </div>
                   </article>
                 ))}
               </div>
@@ -104,7 +127,10 @@ export default async function FinancePage() {
               <div className="finance-empty"><ReceiptText size={26} /><h2>O caixa começa com o primeiro atendimento.</h2><p>Conclua um atendimento na agenda ou registre uma saída para iniciar o histórico financeiro.</p></div>
             )}
           </section>
-          <aside className="finance-expense-card"><ExpenseForm defaultDateTime={brazilDate()} /></aside>
+          {!editableExpense && <aside className="finance-expense-card"><ExpenseForm defaultDateTime={brazilDate()} /></aside>}
+          {editableExpense && <MobileRouteSheet className="finance-expense-card finance-edit-sheet" open closeHref="/app/financeiro" title="Corrigir saída">
+            <ExpenseForm expense={editableExpense} defaultDateTime={localDateTime(editableExpense.occurred_at)} />
+          </MobileRouteSheet>}
         </div>
       </div>
   );

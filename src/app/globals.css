@@ -2676,17 +2676,24 @@ html[data-theme="light"] .public-booking-header img { filter: brightness(0); }
 .finance-ledger { min-width: 0; padding: 24px; }
 .finance-expense-card { padding: 24px; }
 .finance-list { display: grid; }
-.finance-list article { min-height: 72px; display: grid; grid-template-columns: 40px minmax(170px, 1fr) 100px 110px; align-items: center; gap: 12px; border-top: 1px solid var(--border); }
+.finance-list article { min-height: 72px; display: grid; grid-template-columns: 40px minmax(170px, 1fr) 100px 120px; align-items: center; gap: 12px; border-top: 1px solid var(--border); }
 .finance-entry-icon { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 11px; }
 .finance-entry-icon.is-income { background: color-mix(in srgb, #22c55e 13%, var(--surface-elevated)); color: #22c55e; }
 .finance-entry-icon.is-expense { background: color-mix(in srgb, #ef4444 11%, var(--surface-elevated)); color: #ef4444; }
+.finance-entry-icon.is-voided { background: var(--surface-elevated); color: var(--text-muted); }
 .finance-list article > div:nth-child(2) { display: grid; gap: 4px; min-width: 0; }
 .finance-list article strong { overflow: hidden; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
 .finance-list article span, .finance-list time { color: var(--text-muted); font-size: 10px; }
+.finance-list article.is-voided strong { color: var(--text-muted); text-decoration: line-through; text-decoration-thickness: 1px; }
+.finance-list article.is-voided span { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
 .finance-list time { text-align: right; }
 .finance-list em { text-align: right; font-size: 12px; font-style: normal; font-weight: 750; }
 .finance-list em.is-income { color: #22c55e; }
 .finance-list em.is-expense { color: #ef4444; }
+.finance-list em.is-voided { color: var(--text-muted); font-size: 10px; }
+.finance-entry-actions { display: grid; justify-items: end; gap: 7px; min-width: 0; }
+.finance-entry-actions a { display: inline-flex; align-items: center; gap: 5px; color: var(--text-secondary); font-size: 10px; font-weight: 700; text-decoration: none; text-underline-offset: 3px; }
+.finance-entry-actions a:hover { color: var(--accent-strong); text-decoration: underline; }
 .finance-empty { min-height: 350px; display: grid; place-items: center; align-content: center; text-align: center; }
 .finance-empty svg { color: var(--accent); }
 .finance-empty h2 { max-width: 20ch; margin: 17px 0 7px; font-size: 20px; }
@@ -2694,6 +2701,8 @@ html[data-theme="light"] .public-booking-header img { filter: brightness(0); }
 .expense-form { display: grid; gap: 18px; }
 .expense-form .field-grid { grid-template-columns: 1fr; margin: 0; }
 .expense-submit { width: 100%; }
+.expense-void-confirm { display: grid; gap: 12px; padding-top: 16px; border-top: 1px solid var(--border); }
+.expense-void-confirm > p { margin: 0; color: var(--text-muted); font-size: 11px; line-height: 1.5; }
 
 .commission-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 20px; }
 .commission-summary--personal { grid-template-columns: repeat(2, 1fr); }
@@ -3183,7 +3192,8 @@ html[data-theme="light"] .public-booking-header img { filter: brightness(0); }
   .report-summary { grid-template-columns: 1fr; }
   .finance-list article { grid-template-columns: 38px 1fr auto; padding: 12px 0; }
   .finance-list time { grid-column: 2; text-align: left; }
-  .finance-list em { grid-column: 3; grid-row: 1 / span 2; }
+  .finance-entry-actions { grid-column: 3; grid-row: 1 / span 2; }
+  .finance-list em { grid-column: auto; grid-row: auto; }
   .settings-primary, .settings-form--compact, .settings-access { padding: 20px; }
   .settings-grid { grid-template-columns: 1fr; }
   .settings-span-2 { grid-column: auto; }

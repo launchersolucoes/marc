@@ -32,3 +32,71 @@ export async function createExpense(_previousState, formData) {
   revalidatePath("/app/financeiro");
   return { error: "", success: "Despesa registrada no caixa." };
 }
+
+export async function updateExpense(_previousState, formData) {
+  const { supabase, membership } = await getActionContext();
+
+  if (!membership || !["owner", "manager"].includes(membership.role)) {
+    return { error: "Seu acesso não permite corrigir despesas.", success: "" };
+  }
+
+  const expenseId = value(formData, "expenseId");
+  const intent = value(formData, "intent") || "save";
+  if (!expenseId) return { error: "Essa despesa não foi encontrada.", success: "" };
+
+  if (intent === "void") {
+    const reason = value(formData, "voidReason");
+    if (reason.length < 3 || reason.length > 240) {
+      return { error: "Explique o motivo do estorno em pelo menos 3 caracteres.", success: "" };
+    }
+
+    const { error } = await supabase.rpc("void_manual_financial_expense", {
+      target_entry_id: expenseId,
+      reason,
+    });
+    if (error) {
+      const message = error.message.toLowerCase();
+      return {
+        error: message.includes("already voided")
+          ? "Essa despesa já foi estornada."
+          : message.includes("only manual")
+            ? "Entradas de atendimentos não podem ser alteradas manualmente."
+            : "Não foi possível estornar essa despesa.",
+        success: "",
+      };
+    }
+
+    revalidatePath("/app/financeiro");
+    return { error: "", success: "Despesa estornada. O lançamento permanece no histórico sem afetar o saldo." };
+  }
+
+  const description = value(formData, "description");
+  const amount = Number(value(formData, "amount").replace(",", "."));
+  if (description.length < 2 || description.length > 160 || !Number.isFinite(amount) || amount <= 0) {
+    return { error: "Informe uma descrição e um valor válido.", success: "" };
+  }
+
+  const { error } = await supabase.rpc("update_manual_financial_expense", {
+    target_entry_id: expenseId,
+    expense_description: description,
+    expense_category: value(formData, "category"),
+    expense_amount_cents: Math.round(amount * 100),
+    expense_payment_method: value(formData, "paymentMethod"),
+    local_occurred_at: value(formData, "occurredAt"),
+  });
+
+  if (error) {
+    const message = error.message.toLowerCase();
+    return {
+      error: message.includes("voided")
+        ? "Despesas estornadas não podem mais ser editadas."
+        : message.includes("only manual")
+          ? "Entradas de atendimentos não podem ser alteradas manualmente."
+          : "Não foi possível salvar essa correção.",
+      success: "",
+    };
+  }
+
+  revalidatePath("/app/financeiro");
+  return { error: "", success: "Despesa atualizada e alteração registrada no histórico." };
+}

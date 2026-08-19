@@ -44,6 +44,19 @@ test("appointment lifecycle remains serialized and only allows valid transitions
   assert.match(lifecycle, /on conflict \(appointment_id\) do nothing/i);
 });
 
+test("manual expense corrections are auditable and never rewrite appointment income", async () => {
+  const corrections = await read("../supabase/migrations/20260818140000_financial_entry_corrections.sql");
+
+  assert.match(corrections, /create table if not exists public\.financial_entry_events/i);
+  assert.match(corrections, /event_type in \('updated', 'voided'\)/i);
+  assert.match(corrections, /entry_record\.type <> 'expense' or entry_record\.appointment_id is not null/i);
+  assert.match(corrections, /drop policy if exists "Managers can create financial entries"/i);
+  assert.match(corrections, /revoke insert on table public\.financial_entries from authenticated/i);
+  assert.match(corrections, /for update/i);
+  assert.match(corrections, /voided_at = now\(\)/i);
+  assert.doesNotMatch(corrections, /delete from public\.financial_entries/i);
+});
+
 test("role helpers keep operators and professionals in their intended scopes", async () => {
   const access = await read("../supabase/migrations/20260730001500_auth_onboarding_and_access.sql");
 
