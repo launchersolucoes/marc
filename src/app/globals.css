@@ -2671,10 +2671,24 @@ html[data-theme="light"] .public-booking-header img { filter: brightness(0); }
 .finance-summary small { color: var(--text-muted); font-size: 11px; }
 .finance-summary .is-balance { background: var(--accent); color: var(--text-on-accent); }
 .finance-summary .is-balance span, .finance-summary .is-balance small, .finance-summary .is-balance span svg { color: color-mix(in srgb, var(--text-on-accent) 75%, transparent); }
+.finance-heading-actions { display: flex; align-items: center; gap: 10px; }
+.finance-closing-history { margin-bottom: 20px; padding: 20px 24px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); }
+.finance-closing-history .section-title { margin-bottom: 12px; }
+.finance-closing-history .section-title > svg { color: var(--accent-strong); }
+.closing-history-list { display: grid; }
+.closing-history-list > a { min-height: 50px; display: grid; grid-template-columns: 90px 90px minmax(0, 1fr); align-items: center; gap: 12px; border-top: 1px solid var(--border); color: var(--text-primary); text-decoration: none; }
+.closing-history-list > a:hover em { color: var(--accent-strong); }
+.closing-history-list span { font-size: 12px; font-weight: 750; text-transform: capitalize; }
+.closing-history-list strong { width: fit-content; padding: 4px 8px; border-radius: 999px; font-size: 9px; }
+.closing-history-list strong.is-closed { background: color-mix(in srgb, #22c55e 13%, var(--surface-elevated)); color: #22c55e; }
+.closing-history-list strong.is-open { background: color-mix(in srgb, var(--accent) 16%, var(--surface-elevated)); color: var(--accent-strong); }
+.closing-history-list em { min-width: 0; overflow: hidden; color: var(--text-muted); font-size: 10px; font-style: normal; text-align: right; text-overflow: ellipsis; white-space: nowrap; }
+.closing-history-empty { min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 16px; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 11px; }
+.closing-history-empty a { color: var(--accent-strong); font-weight: 750; text-decoration: none; }
 .finance-layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(340px, .75fr); gap: 20px; align-items: start; }
-.finance-ledger, .finance-expense-card { border: 1px solid var(--border); border-radius: 16px; background: var(--surface); }
+.finance-ledger, .finance-expense-card, .finance-closing-sheet { border: 1px solid var(--border); border-radius: 16px; background: var(--surface); }
 .finance-ledger { min-width: 0; padding: 24px; }
-.finance-expense-card { padding: 24px; }
+.finance-expense-card, .finance-closing-sheet { padding: 24px; }
 .finance-list { display: grid; }
 .finance-list article { min-height: 72px; display: grid; grid-template-columns: 40px minmax(170px, 1fr) 100px 120px; align-items: center; gap: 12px; border-top: 1px solid var(--border); }
 .finance-entry-icon { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 11px; }
@@ -2703,6 +2717,21 @@ html[data-theme="light"] .public-booking-header img { filter: brightness(0); }
 .expense-submit { width: 100%; }
 .expense-void-confirm { display: grid; gap: 12px; padding-top: 16px; border-top: 1px solid var(--border); }
 .expense-void-confirm > p { margin: 0; color: var(--text-muted); font-size: 11px; line-height: 1.5; }
+.closing-form, .closing-form__intro, .closing-fields, .closing-reopen { display: grid; gap: 18px; }
+.closing-form__intro { gap: 7px; }
+.closing-form__intro h2 { margin: 0; font-size: 22px; letter-spacing: -.025em; }
+.closing-form__intro p { margin: 0; color: var(--text-muted); font-size: 12px; line-height: 1.55; }
+.closing-system-totals, .closing-result { display: grid; margin: 0; }
+.closing-system-totals > div, .closing-result > div { min-height: 38px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid var(--border); }
+.closing-system-totals dt, .closing-result span { color: var(--text-secondary); font-size: 11px; }
+.closing-system-totals dd { margin: 0; font-size: 12px; font-weight: 750; }
+.closing-system-totals .is-expense dd { color: var(--danger); }
+.closing-value label { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.closing-value label small { color: var(--text-muted); font-size: 9px; font-weight: 550; }
+.closing-result strong { font-size: 10px; }
+.closing-result strong.is-ok { color: #22c55e; }
+.closing-result strong.is-different { color: var(--danger); }
+.closing-note { display: grid; gap: 4px; margin: 0; padding: 12px 0; border-block: 1px solid var(--border); color: var(--text-secondary); font-size: 11px; line-height: 1.5; overflow-wrap: anywhere; }
 
 .commission-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 20px; }
 .commission-summary--personal { grid-template-columns: repeat(2, 1fr); }
@@ -3178,7 +3207,11 @@ html[data-theme="light"] .public-booking-header img { filter: brightness(0); }
   .subscription-billing-form > div { align-items: stretch; flex-direction: column; }
   .subscription-billing-form select, .subscription-billing-form .button { width: 100%; }
   .team-roster, .team-form-card, .appointment-form-card, .availability-card, .time-off-card { padding: 20px; }
-  .finance-ledger, .finance-expense-card { padding: 20px; }
+  .finance-ledger, .finance-expense-card, .finance-closing-sheet { padding: 20px; }
+  .finance-heading-actions { width: 100%; display: grid; grid-template-columns: 1fr 1fr; }
+  .finance-heading-actions .button { width: 100%; min-width: 0; justify-content: center; padding-inline: 10px; }
+  .finance-closing-history { padding: 18px 20px; }
+  .closing-history-list > a { grid-template-columns: 62px 74px minmax(0, 1fr); gap: 8px; }
   .commission-breakdown, .commission-settings { padding: 20px; }
   .report-volume, .report-table { padding: 20px; }
   .commission-form { grid-template-columns: 1fr 82px; }

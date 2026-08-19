@@ -1,4 +1,4 @@
-const STATIC_CACHE = "marc-static-v1";
+const STATIC_CACHE = "marc-static-v2";
 const OFFLINE_URL = "/offline";
 const APP_SHELL = [OFFLINE_URL, "/icon.png", "/manifest.webmanifest"];
 

@@ -79,7 +79,10 @@ test("PWA is installable and keeps authenticated documents out of offline caches
   assert.match(manifest, /display: "standalone"/);
   assert.match(manifest, /start_url: "\/app"/);
   assert.match(registration, /serviceWorker\.register\("\/sw\.js"/);
+  assert.match(registration, /process\.env\.NODE_ENV !== "production"/);
+  assert.match(registration, /registration\.unregister\(\)/);
   assert.match(worker, /request\.mode === "navigate"/);
+  assert.match(worker, /marc-static-v2/);
   assert.match(worker, /fetch\(request\)\.catch\(\(\) => caches\.match\(OFFLINE_URL\)\)/);
   assert.doesNotMatch(worker, /request\.mode === "navigate"[\s\S]{0,240}cache\.put/);
   assert.match(settings, /beforeinstallprompt/);

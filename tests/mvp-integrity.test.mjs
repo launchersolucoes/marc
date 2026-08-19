@@ -57,6 +57,20 @@ test("manual expense corrections are auditable and never rewrite appointment inc
   assert.doesNotMatch(corrections, /delete from public\.financial_entries/i);
 });
 
+test("daily financial closings snapshot every payment method and require an audit reason to reopen", async () => {
+  const closing = await read("../supabase/migrations/20260818150000_financial_day_closing.sql");
+
+  assert.match(closing, /unique \(establishment_id, business_date\)/i);
+  assert.match(closing, /payment_method = 'cash'/i);
+  assert.match(closing, /payment_method = 'pix'/i);
+  assert.match(closing, /payment_method = 'credit_card'/i);
+  assert.match(closing, /payment_method = 'debit_card'/i);
+  assert.match(closing, /difference_totals/i);
+  assert.match(closing, /event_type in \('closed', 'reopened'\)/i);
+  assert.match(closing, /length\(trim\(reason\)\) not between 3 and 240/i);
+  assert.doesNotMatch(closing, /delete from public\.financial_day_closings/i);
+});
+
 test("role helpers keep operators and professionals in their intended scopes", async () => {
   const access = await read("../supabase/migrations/20260730001500_auth_onboarding_and_access.sql");
 

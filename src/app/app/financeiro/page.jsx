@@ -2,7 +2,9 @@ import {
   ArrowDownRight,
   ArrowUpRight,
   Ban,
+  CalendarCheck2,
   ChartNoAxesCombined,
+  LockKeyhole,
   Pencil,
   ReceiptText,
   WalletCards,
@@ -10,6 +12,7 @@ import {
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import ExpenseForm from "../../../components/expense-form";
+import FinancialClosingForm from "../../../components/financial-closing-form";
 import MobileRouteSheet from "../../../components/mobile-route-sheet";
 import { getAppContext } from "../../../lib/app-context";
 
@@ -55,9 +58,21 @@ function localDateTime(value) {
   return `${get("year")}-${get("month")}-${get("day")}T${get("hour")}:${get("minute")}`;
 }
 
+function localBusinessDate(value) {
+  return new Intl.DateTimeFormat("en-CA", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    timeZone: "America/Sao_Paulo",
+  }).format(new Date(value));
+}
+
 export default async function FinancePage({ searchParams }) {
   const query = await searchParams;
   const editExpenseId = typeof query?.editar === "string" ? query.editar : "";
+  const today = localBusinessDate(new Date());
+  const closingRequested = typeof query?.fechamento === "string" && /^\d{4}-\d{2}-\d{2}$/.test(query.fechamento);
+  const selectedBusinessDate = closingRequested ? query.fechamento : today;
   const { supabase, membership, establishment } = await getAppContext();
   if (!["owner", "manager"].includes(membership.role)) redirect("/app");
 
@@ -80,6 +95,13 @@ export default async function FinancePage({ searchParams }) {
     .lt("occurred_at", nextMonth)
     .order("occurred_at", { ascending: false });
 
+  const { data: closings } = await supabase
+    .from("financial_day_closings")
+    .select("id, business_date, status, expected_totals, declared_totals, difference_totals, expense_total_cents, notes, closed_at, reopened_at, reopen_reason")
+    .eq("establishment_id", establishment.id)
+    .gte("business_date", `${currentMonth}-01`)
+    .order("business_date", { ascending: false });
+
   const list = entries || [];
   const activeList = list.filter((item) => !item.voided_at);
   const income = activeList.filter((item) => item.type === "income").reduce((sum, item) => sum + item.amount_cents, 0);
@@ -88,6 +110,10 @@ export default async function FinancePage({ searchParams }) {
   const incomeCount = activeList.filter((item) => item.type === "income").length;
   const expenseCount = activeList.filter((item) => item.type === "expense").length;
   const editableExpense = list.find((item) => item.id === editExpenseId && item.type === "expense" && !item.appointment_id && !item.voided_at) || null;
+  const selectedClosing = (closings || []).find((item) => item.business_date === selectedBusinessDate) || null;
+  const selectedEntries = activeList.filter((item) => localBusinessDate(item.occurred_at) === selectedBusinessDate);
+  const expectedTotals = Object.fromEntries(Object.keys(paymentLabels).map((method) => [method, selectedEntries.filter((item) => item.type === "income" && item.payment_method === method).reduce((sum, item) => sum + item.amount_cents, 0)]));
+  const selectedExpenseTotal = selectedEntries.filter((item) => item.type === "expense").reduce((sum, item) => sum + item.amount_cents, 0);
 
   return (
       <div className="app-content finance-page">
@@ -97,13 +123,28 @@ export default async function FinancePage({ searchParams }) {
             <h1>Financeiro</h1>
             <p>Atendimentos concluídos viram entradas automaticamente. Registre as saídas para acompanhar o saldo real.</p>
           </div>
-          <Link className="button button--secondary" href="/app/relatorios"><ChartNoAxesCombined size={16} /> Ver relatórios</Link>
+          <div className="finance-heading-actions">
+            <Link className="button button--secondary" href="/app/relatorios"><ChartNoAxesCombined size={16} /> Relatórios</Link>
+            <Link className="button button--primary product-heading__action" href={`/app/financeiro?fechamento=${today}`}><LockKeyhole size={16} /> Fechar caixa</Link>
+          </div>
         </header>
 
         <section className="finance-summary" aria-label="Resumo financeiro do mês">
           <article><span><ArrowUpRight size={16} /> Entradas</span><strong>{money(income)}</strong><small>{incomeCount} {incomeCount === 1 ? "lançamento" : "lançamentos"}</small></article>
           <article><span><ArrowDownRight size={16} /> Saídas</span><strong>{money(expense)}</strong><small>{expenseCount} {expenseCount === 1 ? "lançamento" : "lançamentos"}</small></article>
           <article className="is-balance"><span><WalletCards size={16} /> Saldo do mês</span><strong>{money(balance)}</strong><small>Entradas menos saídas</small></article>
+        </section>
+
+        <section className="finance-closing-history" aria-label="Fechamentos do mês">
+          <div className="section-title"><div><h2>Fechamentos do mês</h2><p>Conferências preservadas por dia e meio de pagamento.</p></div><CalendarCheck2 size={20} /></div>
+          {(closings || []).length ? <div className="closing-history-list">{closings.map((closing) => {
+            const difference = Object.values(closing.difference_totals || {}).reduce((sum, amount) => sum + Math.abs(Number(amount || 0)), 0);
+            return <Link href={`/app/financeiro?fechamento=${closing.business_date}`} key={closing.id}>
+              <span>{new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short", timeZone: "UTC" }).format(new Date(`${closing.business_date}T12:00:00Z`))}</span>
+              <strong className={closing.status === "closed" ? "is-closed" : "is-open"}>{closing.status === "closed" ? "Fechado" : "Reaberto"}</strong>
+              <em>{difference === 0 ? "Sem diferenças" : `${money(difference)} em diferenças`}</em>
+            </Link>;
+          })}</div> : <div className="closing-history-empty"><span>Nenhum dia fechado neste mês.</span><Link href={`/app/financeiro?fechamento=${today}`}>Conferir hoje</Link></div>}
         </section>
 
         <div className="finance-layout">
@@ -127,9 +168,12 @@ export default async function FinancePage({ searchParams }) {
               <div className="finance-empty"><ReceiptText size={26} /><h2>O caixa começa com o primeiro atendimento.</h2><p>Conclua um atendimento na agenda ou registre uma saída para iniciar o histórico financeiro.</p></div>
             )}
           </section>
-          {!editableExpense && <aside className="finance-expense-card"><ExpenseForm defaultDateTime={brazilDate()} /></aside>}
+          {!editableExpense && !closingRequested && <aside className="finance-expense-card"><ExpenseForm defaultDateTime={brazilDate()} /></aside>}
           {editableExpense && <MobileRouteSheet className="finance-expense-card finance-edit-sheet" open closeHref="/app/financeiro" title="Corrigir saída">
             <ExpenseForm expense={editableExpense} defaultDateTime={localDateTime(editableExpense.occurred_at)} />
+          </MobileRouteSheet>}
+          {closingRequested && <MobileRouteSheet className="finance-closing-sheet" open closeHref="/app/financeiro" title="Fechamento diário">
+            <FinancialClosingForm key={`${selectedBusinessDate}-${selectedClosing?.status || "new"}`} businessDate={selectedBusinessDate} expected={expectedTotals} expenseTotal={selectedExpenseTotal} closing={selectedClosing} />
           </MobileRouteSheet>}
         </div>
       </div>
