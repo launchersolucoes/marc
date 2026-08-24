@@ -1,0 +1,58 @@
+name: Production health
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: production-health
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    env:
+      HEALTH_URL: https://marc-lemon-six.vercel.app/api/health
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Check application and database twice
+        id: health
+        continue-on-error: true
+        shell: bash
+        run: |
+          for attempt in 1 2; do
+            body="$(curl --fail --silent --show-error --max-time 12 "$HEALTH_URL" || true)"
+            if printf '%s' "$body" | grep --quiet '"status":"ok"'; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 1 ]; then sleep 30; fi
+          done
+          exit 1
+
+      - name: Open a single incident after repeated failure
+        if: steps.health.outcome == 'failure'
+        shell: bash
+        run: |
+          existing="$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --label production-health --json number --jq '.[0].number // empty')"
+          if [ -z "$existing" ]; then
+            gh label create production-health --repo "$GITHUB_REPOSITORY" --color D93F0B --description "Falha automática na saúde de produção" --force
+            gh issue create --repo "$GITHUB_REPOSITORY" --label production-health --title "P1: saúde de produção indisponível" --body "O endpoint de saúde falhou em duas tentativas consecutivas. Verifique Vercel, Supabase e o runbook docs/production-operations.md. Execução: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          fi
+
+      - name: Close health incident after recovery
+        if: steps.health.outcome == 'success'
+        shell: bash
+        run: |
+          gh issue list --repo "$GITHUB_REPOSITORY" --state open --label production-health --json number --jq '.[].number' | while read -r issue; do
+            [ -n "$issue" ] && gh issue close "$issue" --repo "$GITHUB_REPOSITORY" --comment "Produção recuperada e health check validado automaticamente."
+          done
+
+      - name: Keep the workflow red while unhealthy
+        if: steps.health.outcome == 'failure'
+        run: exit 1

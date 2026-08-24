@@ -125,6 +125,12 @@ export default function AuthForm({ mode, externalError = "", nextPath = "" }) {
 
       <SubmitButton mode={mode} />
 
+      {isSignup && (
+        <p className="auth-legal-note">
+          Ao criar sua conta, você concorda com os <Link href="/termos" target="_blank" rel="noreferrer">Termos de Uso</Link> e declara que leu a <Link href="/privacidade" target="_blank" rel="noreferrer">Política de Privacidade</Link>.
+        </p>
+      )}
+
       <p className="auth-switch">
         {isSignup ? "Já possui uma conta?" : "Ainda não possui uma conta?"}{" "}
         <Link href={`${isSignup ? "/entrar" : "/cadastro"}${nextPath ? `?next=${encodeURIComponent(nextPath)}` : ""}`}>

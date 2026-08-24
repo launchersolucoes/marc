@@ -88,3 +88,31 @@ test("PWA is installable and keeps authenticated documents out of offline caches
   assert.match(settings, /beforeinstallprompt/);
   assert.match(settings, /Adicionar à Tela de Início/);
 });
+
+test("public data collection is accompanied by privacy and usage terms", async () => {
+  const [privacy, terms, booking, auth, landing] = await Promise.all([
+    read("src/app/privacidade/page.jsx"),
+    read("src/app/termos/page.jsx"),
+    read("src/components/public-booking-flow.jsx"),
+    read("src/components/auth-form.jsx"),
+    read("src/app/landing-page.jsx"),
+  ]);
+
+  assert.match(privacy, /Quem participa do tratamento/);
+  assert.match(privacy, /Seus direitos/);
+  assert.match(terms, /Responsabilidade do estabelecimento/);
+  assert.match(booking, /dados serão usados pelo estabelecimento/);
+  assert.match(auth, /Ao criar sua conta/);
+  assert.match(landing, /href="\/privacidade"/);
+  assert.match(landing, /href="\/termos"/);
+});
+
+test("external health monitoring retries and opens a single operational incident", async () => {
+  const workflow = await read(".github/workflows/production-health.yml");
+
+  assert.match(workflow, /cron: "\*\/5 \* \* \* \*"/);
+  assert.match(workflow, /for attempt in 1 2/);
+  assert.match(workflow, /production-health/);
+  assert.match(workflow, /gh issue create/);
+  assert.match(workflow, /gh issue close/);
+});

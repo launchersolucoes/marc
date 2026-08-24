@@ -1,6 +1,7 @@
 "use client";
 
 import { CalendarCheck2, Check, ChevronRight, Clock3, ListTodo, LoaderCircle, Scissors, UserRound } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { isValidPhone, normalizePhone } from "../lib/phone";
 import { createClient } from "../lib/supabase/client";
@@ -281,6 +282,9 @@ export default function PublicBookingFlow({ establishment }) {
               ? <><ListTodo size={18} /> Entrar na lista de espera</>
               : <>Escolha um horário <ChevronRight size={18} /></>}
       </button>
+      <p className="booking-privacy-note">
+        Ao continuar, seus dados serão usados pelo estabelecimento para registrar e administrar este atendimento. Consulte a <Link href="/privacidade" target="_blank" rel="noreferrer">Política de Privacidade</Link> e os <Link href="/termos" target="_blank" rel="noreferrer">Termos de Uso</Link>.
+      </p>
     </form>
   );
 }

@@ -857,7 +857,7 @@ export default function LandingPage() {
           </div>
           <div className="footer__links">
             <div><strong>Produto</strong><a href="#como-funciona">Como funciona</a><a href="#demonstracao">Demonstração</a><a href="#funcionalidades">Funcionalidades</a></div>
-            <div><strong>Informações</strong><a href="#hub">Hub Marc</a><a href="#faq">Dúvidas</a><a href="#cadastro">Contato</a></div>
+            <div><strong>Informações</strong><a href="#hub">Hub Marc</a><a href="#faq">Dúvidas</a><Link href="/privacidade">Privacidade</Link><Link href="/termos">Termos de Uso</Link></div>
           </div>
         </div>
         <div className="container footer__bottom">

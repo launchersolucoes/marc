@@ -24,7 +24,8 @@ O cenário que conclui um atendimento e cria lançamento financeiro exige confir
 
 ## Supabase e recuperação
 
-- Antes do primeiro piloto real, confirme no plano contratado do Supabase a política de backups e o período de retenção disponível.
+- **Estado verificado em 24/08/2026:** o projeto `marc-production` está no plano Free do Supabase, que não inclui backups agendados. Este é um bloqueio P0 para dados reais.
+- Antes do primeiro piloto externo, migrar para um plano com backup, confirmar a retenção disponível e registrar a primeira cópia concluída.
 - Antes de migrations destrutivas, gere um backup ou confirme um ponto de recuperação recente.
 - Migrations devem ser aditivas sempre que possível; nenhuma correção de interface justifica alterar dados de produção.
 - Em incidente de integridade, suspenda novos agendamentos, preserve logs e eventos de auditoria e restaure somente após identificar o intervalo afetado.
@@ -42,3 +43,13 @@ O cenário que conclui um atendimento e cria lançamento financeiro exige confir
 - E-mail automático: configurar `RESEND_API_KEY` e `EMAIL_FROM` após validar o domínio remetente.
 - Monitoramento externo: conectar `/api/health` ao serviço escolhido pela Launcher.
 - Stripe, Google e WhatsApp seguem os critérios registrados em `PRODUCT.md` e não bloqueiam o piloto assistido.
+
+## Suporte do piloto
+
+- O protocolo inicial está em `docs/pilot-support.md`.
+- Antes do primeiro piloto externo, confirmar responsável, substituto, horário de cobertura e canal de contingência para P1.
+
+## Transparência e documentos legais
+
+- A aplicação já apresenta Termos de Uso, Política de Privacidade e avisos junto ao cadastro e ao agendamento público.
+- Antes do primeiro piloto externo, substituir a identificação genérica da Launcher pela razão social, CNPJ e endereço aplicáveis e submeter o conteúdo à revisão jurídica. A implementação atual é uma base operacional de transparência, não um parecer jurídico.

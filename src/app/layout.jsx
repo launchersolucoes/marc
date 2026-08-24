@@ -12,7 +12,7 @@ export const metadata = {
   },
   title: "Marc — Sua agenda sempre cheia",
   description:
-    "Agendamento online, lembretes no WhatsApp e gestão completa para barbearias, salões e esmalterias.",
+    "Agendamento online e gestão conectada para barbearias, salões e esmalterias.",
   openGraph: {
     type: "website",
     locale: "pt_BR",
@@ -24,7 +24,7 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Marc — Sua agenda sempre cheia",
-    description: "Agendamento online, WhatsApp e gestão no mesmo lugar.",
+    description: "Agendamento online, agenda, equipe e gestão no mesmo lugar.",
     images: ["/og.png"],
   },
   appleWebApp: {

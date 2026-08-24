@@ -18,6 +18,27 @@ test.describe("superfícies públicas", () => {
     await expect(page.getByLabel("Seu nome")).toHaveAttribute("required", "");
     await expect(page.getByLabel("E-mail")).toHaveAttribute("type", "email");
     await expect(page.locator('input[name="password"]')).toHaveAttribute("minlength", "8");
+    await expect(page.getByText("Ao criar sua conta")).toBeVisible();
+    await expect(page.getByRole("link", { name: "Política de Privacidade" })).toHaveAttribute("href", "/privacidade");
+  });
+
+  test("documentos legais são públicos, legíveis e conectados entre si", async ({ page }) => {
+    for (const document of [
+      { path: "/privacidade", heading: "Política de Privacidade", sibling: "Termos" },
+      { path: "/termos", heading: "Termos de Uso", sibling: "Privacidade" },
+    ]) {
+      await page.goto(document.path);
+
+      await expect(page.getByRole("heading", { level: 1, name: document.heading })).toBeVisible();
+      await expect(page.getByRole("link", { name: document.sibling, exact: true })).toBeVisible();
+      await expect(page.getByRole("complementary").getByRole("link", { name: "launchersolucoes@gmail.com" })).toHaveAttribute("href", "mailto:launchersolucoes@gmail.com");
+
+      const dimensions = await page.evaluate(() => ({
+        viewport: document.documentElement.clientWidth,
+        pageWidth: document.documentElement.scrollWidth,
+      }));
+      expect(dimensions.pageWidth).toBeLessThanOrEqual(dimensions.viewport + 1);
+    }
   });
 
   test("rota autenticada redireciona visitantes e preserva o destino", async ({ page }) => {
