@@ -14,7 +14,7 @@ export default async function ServicesPage({ searchParams }) {
 
   const { data: services } = await supabase
     .from("services")
-    .select("id, name, description, is_active, professional_services(price_cents, duration_minutes, is_active, professional_id)")
+    .select("id, name, description, is_active, professional_services(price_cents, duration_minutes, buffer_before_minutes, buffer_after_minutes, is_active, professional_id)")
     .eq("establishment_id", membership.establishment_id)
     .order("created_at", { ascending: false });
 
@@ -26,6 +26,8 @@ export default async function ServicesPage({ searchParams }) {
       description: service.description,
       price_cents: offering.price_cents,
       duration_minutes: offering.duration_minutes,
+      buffer_before_minutes: offering.buffer_before_minutes,
+      buffer_after_minutes: offering.buffer_after_minutes,
       is_active: offering.is_active,
     } : null;
   }).find((service) => service?.id === editServiceId) || null;
@@ -51,7 +53,7 @@ export default async function ServicesPage({ searchParams }) {
                 return (
                 <article key={service.id}>
                   <div><Scissors size={18} /></div>
-                  <span><strong>{service.name}</strong><small>{ownOffering ? `${ownOffering.duration_minutes} min · ${new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(ownOffering.price_cents / 100)}` : service.description || "Disponível no catálogo"}</small></span>
+                  <span><strong>{service.name}</strong><small>{ownOffering ? `${ownOffering.duration_minutes} min · ${new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(ownOffering.price_cents / 100)}${ownOffering.buffer_before_minutes || ownOffering.buffer_after_minutes ? ` · ${ownOffering.buffer_before_minutes + ownOffering.buffer_after_minutes} min de intervalo` : ""}` : service.description || "Disponível no catálogo"}</small></span>
                   <span className="service-list__actions">
                     <em className={ownOffering && !ownOffering.is_active ? "is-muted" : ""}><Check size={14} /> {ownOffering ? (ownOffering.is_active ? "Na sua agenda" : "Pausado") : "Catálogo"}</em>
                     {ownOffering && <Link href={`/app/servicos?editar=${service.id}`} aria-label={`Editar ${service.name}`}><Pencil size={14} /> Editar</Link>}
@@ -68,9 +70,16 @@ export default async function ServicesPage({ searchParams }) {
             </div>
           )}
         </section>
-        <MobileRouteSheet className="service-form-card" open={serviceSheetOpen} closeHref="/app/servicos" title={editableService ? "Editar serviço" : "Novo serviço"}>
+        <MobileRouteSheet
+          className="service-form-card"
+          open={serviceSheetOpen}
+          closeHref="/app/servicos"
+          title={editableService ? "Editar serviço" : "Novo serviço"}
+          actionLabel={editableService ? "Salvar" : "Criar"}
+          actionForm={professional ? "service-editor" : ""}
+        >
           {professional
-            ? <ServiceForm key={editableService?.id || "new"} service={editableService} />
+            ? <ServiceForm key={editableService?.id || "new"} service={editableService} formId="service-editor" />
             : <div className="service-professional-required"><Scissors size={23} /><span>Regras do profissional</span><h2>Serviços, valores e duração são definidos por quem atende.</h2><p>Seu acesso pode consultar o catálogo, mas precisa estar conectado a um perfil profissional para alterar essas regras.</p><Link className="button button--secondary" href="/app/equipe">Abrir equipe</Link></div>}
         </MobileRouteSheet>
         </div>

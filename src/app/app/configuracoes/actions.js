@@ -78,3 +78,32 @@ export async function updateProfile(_previousState, formData) {
   revalidatePath("/app/configuracoes");
   return { error: "", success: "Seu perfil foi atualizado." };
 }
+
+export async function updateBookingRules(_previousState, formData) {
+  const minimumNotice = Number(value(formData, "minimumNotice"));
+  const maximumDays = Number(value(formData, "maximumDays"));
+  const cancellationWindow = Number(value(formData, "cancellationWindow"));
+  const confirmationMode = value(formData, "confirmationMode");
+
+  if (!Number.isInteger(minimumNotice) || !Number.isInteger(maximumDays)
+    || !Number.isInteger(cancellationWindow) || !["automatic", "manual"].includes(confirmationMode)) {
+    return { error: "Revise as regras de agendamento.", success: "" };
+  }
+
+  const { supabase, membership } = await getActionContext();
+  if (!["owner", "manager"].includes(membership.role)) {
+    return { error: "Seu acesso não permite alterar as regras da agenda.", success: "" };
+  }
+
+  const { error } = await supabase.rpc("update_booking_rules", {
+    minimum_notice_minutes: minimumNotice,
+    maximum_booking_days: maximumDays,
+    cancellation_window_minutes: cancellationWindow,
+    confirmation_mode: confirmationMode,
+  });
+  if (error) return { error: "Não foi possível salvar as regras da agenda.", success: "" };
+
+  revalidatePath("/app/configuracoes");
+  revalidatePath("/agendar/[slug]", "page");
+  return { error: "", success: "Regras atualizadas. Os próximos horários já seguem esta política." };
+}

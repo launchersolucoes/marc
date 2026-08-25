@@ -29,7 +29,9 @@ export default function PublicBookingFlow({ establishment }) {
   const [serviceId, setServiceId] = useState(services[0]?.id || "");
   const serviceOfferings = useMemo(() => offerings.filter((item) => item.service_id === serviceId), [offerings, serviceId]);
   const [offeringId, setOfferingId] = useState(serviceOfferings[0]?.id || "");
-  const [date, setDate] = useState(localDate(1));
+  const maximumBookingDays = establishment.max_booking_days || 60;
+  const manualConfirmation = establishment.booking_confirmation_mode === "manual";
+  const [date, setDate] = useState(localDate());
   const [slots, setSlots] = useState([]);
   const [slot, setSlot] = useState("");
   const [loadingSlots, setLoadingSlots] = useState(false);
@@ -132,6 +134,8 @@ export default function PublicBookingFlow({ establishment }) {
       const message = bookingError.message.toLowerCase();
       setError(message.includes("conflict")
         ? "Esse horário acabou de ser reservado. Escolha outro disponível."
+        : message.includes("notice")
+          ? "Esse horário não respeita a antecedência definida pelo estabelecimento. Escolha outro disponível."
         : message.includes("limit")
           ? "Muitas reservas foram feitas com este WhatsApp. Revise seus horários antes de tentar novamente."
           : "Não foi possível confirmar. Revise seus dados e tente novamente.");
@@ -152,6 +156,7 @@ export default function PublicBookingFlow({ establishment }) {
       professional: selectedOffering.professional_name,
       start: slot,
       name: String(form.get("name") || ""),
+      status: data.appointment_status,
     });
     setSubmitting(false);
   }
@@ -167,18 +172,19 @@ export default function PublicBookingFlow({ establishment }) {
   }
 
   if (confirmed) {
+    const isPending = confirmed.status === "pending";
     return (
       <div className="booking-confirmed" role="status">
         <div><Check size={30} /></div>
-        <span>Horário confirmado</span>
+        <span>{isPending ? "Solicitação enviada" : "Horário confirmado"}</span>
         <h2>Pronto, {confirmed.name.split(" ")[0]}.</h2>
-        <p>Sua reserva já entrou na agenda de {confirmed.professional}.</p>
+        <p>{isPending ? `A equipe de ${confirmed.professional} vai revisar sua solicitação.` : `Sua reserva já entrou na agenda de ${confirmed.professional}.`}</p>
         <dl>
           <div><dt>Serviço</dt><dd>{confirmed.service}</dd></div>
           <div><dt>Quando</dt><dd>{new Intl.DateTimeFormat("pt-BR", { dateStyle: "long", timeStyle: "short" }).format(new Date(confirmed.start))}</dd></div>
         </dl>
         <Link className="button button--primary booking-portal-link" href={`/cliente/${confirmed.portalToken}`}>Ver e gerenciar meus horários</Link>
-        <small>Guarde esta página como confirmação. O lembrete por WhatsApp será ativado em uma próxima etapa do Marc.</small>
+        <small>{isPending ? "Acompanhe esta página para saber quando o horário for confirmado." : "Guarde esta página como confirmação. O lembrete por WhatsApp será ativado em uma próxima etapa do Marc."}</small>
       </div>
     );
   }
@@ -228,7 +234,7 @@ export default function PublicBookingFlow({ establishment }) {
 
       <div className="booking-choice">
         <label htmlFor="publicDate"><CalendarCheck2 size={17} /> Data</label>
-        <input id="publicDate" type="date" min={localDate()} max={localDate(60)} value={date} onChange={(event) => setDate(event.target.value)} />
+        <input id="publicDate" type="date" min={localDate()} max={localDate(maximumBookingDays)} value={date} onChange={(event) => setDate(event.target.value)} />
       </div>
 
       <fieldset className="slot-picker">
@@ -281,7 +287,7 @@ export default function PublicBookingFlow({ establishment }) {
         {submitting
           ? <><LoaderCircle className="spin" size={18} /> Enviando</>
           : slot
-            ? <>Confirmar meu horário <ChevronRight size={18} /></>
+            ? <>{manualConfirmation ? "Solicitar meu horário" : "Confirmar meu horário"} <ChevronRight size={18} /></>
             : canJoinWaitlist
               ? <><ListTodo size={18} /> Entrar na lista de espera</>
               : <>Escolha um horário <ChevronRight size={18} /></>}

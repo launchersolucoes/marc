@@ -1,14 +1,22 @@
 "use client";
 
 import { ArrowRight, CheckCircle2, LoaderCircle } from "lucide-react";
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { createService } from "../app/app/servicos/actions";
+import { useMobileRouteSheetAction } from "./mobile-route-sheet";
 
 const initialState = { error: "", success: "" };
 
 function SubmitButton({ editing }) {
   const { pending } = useFormStatus();
+  const setSheetPending = useMobileRouteSheetAction()?.setPending;
+
+  useEffect(() => {
+    setSheetPending?.(pending);
+    return () => setSheetPending?.(false);
+  }, [pending, setSheetPending]);
+
   return (
     <button className="button button--primary service-submit" type="submit" disabled={pending}>
       {pending
@@ -18,13 +26,13 @@ function SubmitButton({ editing }) {
   );
 }
 
-export default function ServiceForm({ service = null }) {
+export default function ServiceForm({ service = null, formId = undefined }) {
   const [state, action] = useActionState(createService, initialState);
   const editing = Boolean(service);
   const [confirming, setConfirming] = useState(false);
 
   return (
-    <form className="service-form" action={action}>
+    <form className="service-form" id={formId} action={action}>
       <div className="service-form__heading">
         <h2>{editing ? "Editar serviço" : "Novo serviço"}</h2>
         <p>{editing ? "Atualize o valor e a duração usados na sua agenda." : "Defina o serviço, o valor e a duração usados especificamente na sua agenda."}</p>
@@ -56,6 +64,13 @@ export default function ServiceForm({ service = null }) {
         <div className="field">
           <label htmlFor="servicePrice">Valor</label>
           <div className="money-field"><span>R$</span><input id="servicePrice" name="price" inputMode="decimal" defaultValue={service ? (service.price_cents / 100).toFixed(2).replace(".", ",") : ""} placeholder="50,00" required /></div>
+        </div>
+      </div>
+      <div className="service-buffer-fields">
+        <div><strong>Tempo entre clientes</strong><span>Reserve um intervalo para preparar e finalizar o atendimento.</span></div>
+        <div className="field-grid">
+          <div className="field"><label htmlFor="serviceBufferBefore">Antes do serviço</label><select id="serviceBufferBefore" name="bufferBefore" defaultValue={String(service?.buffer_before_minutes || 0)}><option value="0">Sem intervalo</option><option value="5">5 minutos</option><option value="10">10 minutos</option><option value="15">15 minutos</option><option value="30">30 minutos</option><option value="45">45 minutos</option><option value="60">1 hora</option></select></div>
+          <div className="field"><label htmlFor="serviceBufferAfter">Depois do serviço</label><select id="serviceBufferAfter" name="bufferAfter" defaultValue={String(service?.buffer_after_minutes || 0)}><option value="0">Sem intervalo</option><option value="5">5 minutos</option><option value="10">10 minutos</option><option value="15">15 minutos</option><option value="30">30 minutos</option><option value="45">45 minutos</option><option value="60">1 hora</option></select></div>
         </div>
       </div>
       {state.error && <p className="form-message form-message--error" role="alert">{state.error}</p>}

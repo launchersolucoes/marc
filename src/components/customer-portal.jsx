@@ -58,6 +58,11 @@ export default function CustomerPortal({ initialData, token }) {
     [appointments, upcoming],
   );
   const nextAppointment = upcoming[0] || null;
+  const cancellationNoticeMinutes = data.establishment.cancellation_notice_minutes ?? 120;
+  const canManageAppointment = (appointment) => (
+    new Date(appointment.starts_at).getTime() - now >= cancellationNoticeMinutes * 60_000
+  );
+  const canManageNext = nextAppointment ? canManageAppointment(nextAppointment) : false;
   const firstName = data.customer.name.split(" ")[0];
 
   async function refresh(successMessage) {
@@ -83,7 +88,9 @@ export default function CustomerPortal({ initialData, token }) {
     });
     setBusy("");
     if (actionError) {
-      setError("Não foi possível cancelar este horário. Fale com o estabelecimento para receber ajuda.");
+      setError(actionError.message.toLowerCase().includes("window")
+        ? "O prazo para cancelar online terminou. Fale diretamente com o estabelecimento."
+        : "Não foi possível cancelar este horário. Fale com o estabelecimento para receber ajuda.");
       return;
     }
     setCancelId("");
@@ -124,7 +131,12 @@ export default function CustomerPortal({ initialData, token }) {
     });
     setBusy("");
     if (actionError) {
-      setError(actionError.message.toLowerCase().includes("conflict")
+      const detail = actionError.message.toLowerCase();
+      setError(detail.includes("window")
+        ? "O prazo para reagendar online terminou. Fale diretamente com o estabelecimento."
+        : detail.includes("notice")
+          ? "O novo horário não respeita a antecedência mínima do estabelecimento."
+        : detail.includes("conflict")
         ? "Esse horário acabou de ser ocupado. Escolha outro disponível."
         : "Não foi possível reagendar. Fale com o estabelecimento se o problema continuar.");
       return;
@@ -202,10 +214,10 @@ export default function CustomerPortal({ initialData, token }) {
               <span><UserRound size={16} /> {nextAppointment.professional_name}</span>
               <span><Scissors size={16} /> {money(nextAppointment.price_cents)}</span>
             </div>
-            <div className="appointment-pass__actions">
+            {canManageNext ? <div className="appointment-pass__actions">
               <button className="button button--secondary" type="button" onClick={() => openReschedule(nextAppointment)}><RefreshCw size={16} /> Reagendar</button>
               <button className="button button--quiet" type="button" onClick={() => setCancelId(nextAppointment.id)}>Cancelar horário</button>
-            </div>
+            </div> : <p className="appointment-pass__policy">O prazo para alterar online terminou. Fale com o estabelecimento se precisar de ajuda.</p>}
           </div>
         </section>
       ) : (
@@ -231,7 +243,7 @@ export default function CustomerPortal({ initialData, token }) {
           <section className="customer-portal-reschedule">
             <header><div><strong>Escolha o novo horário</strong><span>O horário atual permanece reservado até você confirmar outro.</span></div><button type="button" onClick={() => setRescheduleId("")} aria-label="Fechar reagendamento"><X size={18} /></button></header>
             <label htmlFor="portalRescheduleDate">Nova data</label>
-            <input id="portalRescheduleDate" type="date" min={localDate()} max={localDate(60)} value={date} onChange={(event) => loadSlots(appointment, event.target.value)} />
+            <input id="portalRescheduleDate" type="date" min={localDate()} max={localDate(data.establishment.max_booking_days || 60)} value={date} onChange={(event) => loadSlots(appointment, event.target.value)} />
             {loadingSlots ? <div className="customer-portal-slot-state"><LoaderCircle className="spin" size={17} /> Consultando agenda</div> : slots.length ? (
               <div className="customer-portal-slots">{slots.map((slot) => <button type="button" key={slot} disabled={busy === `reschedule-${appointment.id}`} onClick={() => reschedule(appointment.id, slot)}>{slot.slice(11, 16)}</button>)}</div>
             ) : <div className="customer-portal-slot-state">Escolha uma data para ver os horários livres.</div>}
@@ -255,7 +267,17 @@ export default function CustomerPortal({ initialData, token }) {
         <section className="customer-portal-section">
           <header><div><CalendarDays size={19} /><span><strong>Próximos horários</strong><small>Depois do seu próximo atendimento</small></span></div></header>
           <div className="customer-appointment-list">{upcoming.slice(1).map((item) => (
-            <article key={item.id}><time>{formatDate(item.starts_at, { withTime: true })}</time><div><strong>{item.service_name}</strong><span>{item.professional_name}</span></div><span>{statusLabels[item.status]}</span></article>
+            <article key={item.id}>
+              <time>{formatDate(item.starts_at, { withTime: true })}</time>
+              <div><strong>{item.service_name}</strong><span>{item.professional_name}</span></div>
+              <div className="customer-appointment-list__controls">
+                <span>{statusLabels[item.status]}</span>
+                {canManageAppointment(item) ? <span className="customer-appointment-list__actions">
+                  <button type="button" onClick={() => openReschedule(item)}>Reagendar</button>
+                  <button type="button" onClick={() => setCancelId(item.id)}>Cancelar</button>
+                </span> : <small>Alterações online encerradas</small>}
+              </div>
+            </article>
           ))}</div>
         </section>
       )}

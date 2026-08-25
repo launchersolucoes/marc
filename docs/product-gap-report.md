@@ -107,13 +107,11 @@ Uma conta completa com senha, Google ou WhatsApp deve vir depois, quando fidelid
 
 #### 3.2 Regras de agenda configuráveis
 
-O motor já valida disponibilidade, bloqueios e duração, mas faltam controles administrativos para:
+**Implementado:** dono e gerente configuram antecedência mínima, janela de 14/30/60 dias, prazo de cancelamento/reagendamento e confirmação automática ou manual. Cada profissional configura buffers antes/depois por serviço. As regras são verificadas no banco, inclusive em concorrência, e aparecem no agendamento público e na área do cliente.
 
-- janela máxima e mínima de antecedência do agendamento;
-- prazo de cancelamento e reagendamento;
-- intervalos antes/depois do serviço — as colunas existem no banco, mas não estão expostas no formulário;
+Ainda faltam controles para:
+
 - intervalo de almoço ou múltiplos períodos no mesmo dia;
-- política de confirmação automática/manual;
 - limite de reservas futuras por cliente;
 - fuso horário editável para estabelecimentos fora de São Paulo;
 - recorrência de horários internos, caso seja confirmada como necessária.
@@ -332,9 +330,9 @@ Qualquer função de acesso assistido ou impersonação deve exigir motivo, praz
 
 ### Etapa B — autoatendimento e regras
 
-1. Definir cancelamento, reagendamento e antecedência.
-2. Evoluir a área do cliente já implementada com essas regras e entrega automática do link.
-3. Expor buffers, horários públicos, fuso, logo e link personalizado.
+1. Validar com usuários os defaults já implementados de cancelamento, reagendamento e antecedência.
+2. Evoluir a entrega do link do cliente quando Resend ou WhatsApp estiver disponível.
+3. Expor horários públicos separados, fuso, logo e link personalizado.
 4. Implementar direitos de dados e encerramento de conta.
 
 ### Etapa C — lançamento comercial

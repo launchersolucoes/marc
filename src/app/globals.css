@@ -704,11 +704,13 @@ html[data-gsap-ready="true"] .site-shell :is(
   .mobile-route-sheet__handle span { width: 36px; height: 5px; border-radius: 5px; background: var(--border); }
   .mobile-route-sheet__bar { min-height: 46px; display: grid; grid-template-columns: 72px 1fr 72px; align-items: center; padding: 0 16px 6px; border-bottom: 1px solid var(--border); }
   .mobile-route-sheet__bar button { min-height: 44px; justify-self: start; padding: 0; border: 0; background: transparent; color: var(--accent-strong); font: inherit; font-size: 14px; font-weight: 650; cursor: pointer; }
+  .mobile-route-sheet__bar .mobile-route-sheet__done { justify-self: end; font-weight: 800; }
   .mobile-route-sheet__bar strong { font-size: 15px; text-align: center; }
   .mobile-route-sheet__content { max-height: calc(94dvh - 72px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); display: block; overflow-y: auto; overscroll-behavior: contain; padding: 18px 20px 24px; }
   .mobile-route-sheet .appointment-form__heading { display: none; }
   .mobile-route-sheet :is(.team-form__heading, .service-form__heading) h2 { display: none; }
   .mobile-route-sheet :is(.team-form__heading, .service-form__heading) { margin-bottom: 4px; }
+  .mobile-route-sheet.is-requested .service-submit { display: none; }
 
   .app-content { padding-top: 24px; }
   .dashboard-heading { margin-bottom: 18px; }
@@ -2504,6 +2506,10 @@ html[data-theme="light"] .form-message--success { color: #167a4a; }
 .service-professional-required h2 { max-width: 17ch; margin: 9px 0 12px; font-size: 30px; line-height: 1.06; letter-spacing: -.035em; }
 .service-professional-required p { max-width: 42ch; margin: 0 0 24px; color: var(--text-muted); font-size: 13px; line-height: 1.55; }
 .service-form { display: grid; gap: 20px; }
+.service-buffer-fields { display: grid; gap: 14px; padding-top: 18px; border-top: 1px solid var(--border); }
+.service-buffer-fields > div:first-child { display: grid; gap: 3px; }
+.service-buffer-fields > div:first-child strong { font-size: 13px; }
+.service-buffer-fields > div:first-child span { color: var(--text-muted); font-size: 11px; line-height: 1.45; }
 .service-form__heading { margin-bottom: 5px; }
 .service-form__heading > div { width: 44px; height: 44px; display: grid; place-items: center; margin-bottom: 20px; border-radius: 12px; background: var(--accent); color: var(--text-on-accent); }
 .service-form__heading > span { color: var(--accent-strong); font-size: 12px; font-weight: 750; text-transform: uppercase; letter-spacing: .08em; }
@@ -3024,6 +3030,11 @@ html[data-theme="light"] .public-booking-header img { filter: brightness(0); }
 .settings-primary, .settings-form--compact, .settings-access, .settings-public-link { border: 1px solid var(--border); border-radius: 16px; background: var(--surface); }
 .settings-primary { padding: 28px; }
 .settings-form { display: grid; gap: 20px; }
+.settings-form-separator { height: 1px; margin: 28px 0; background: var(--border); }
+.booking-rules-heading > div { display: flex; align-items: flex-start; gap: 12px; }
+.booking-rules-heading svg { flex: 0 0 auto; margin-top: 2px; color: var(--accent-strong); }
+.booking-rules-heading span { display: block; }
+.booking-rules-note { margin: -2px 0 0; color: var(--text-muted); font-size: 11px; line-height: 1.5; }
 .settings-form--compact, .settings-access { padding: 24px; }
 .settings-section-heading { display: flex; justify-content: space-between; gap: 20px; }
 .settings-section-heading h2, .settings-access h2 { margin: 0; font-size: 20px; letter-spacing: -.025em; }
@@ -3609,6 +3620,7 @@ html[data-theme="light"] .customer-portal-header img { filter: brightness(0); }
 .appointment-pass__facts span { display: inline-flex; align-items: center; gap: 7px; }
 .appointment-pass__facts svg { color: var(--accent-strong); }
 .appointment-pass__actions { display: flex; align-items: center; gap: 10px; margin-top: 26px; padding-top: 20px; border-top: 1px solid var(--border); }
+.appointment-pass__policy { max-width: 62ch; margin: 20px 0 0; padding-top: 18px; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 11px; line-height: 1.5; }
 .appointment-pass__actions .button { min-height: 42px; }
 .customer-portal-confirm, .customer-portal-reschedule { margin-top: 14px; padding: 20px; border-radius: 14px; background: var(--surface-elevated); }
 .customer-portal-confirm { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 12px; }
@@ -3642,6 +3654,12 @@ html[data-theme="light"] .customer-portal-reschedule > input { color-scheme: lig
 .customer-appointment-list article > div strong { font-size: 13px; }
 .customer-appointment-list article > div span { color: var(--text-muted); font-size: 11px; }
 .customer-appointment-list article > span { color: var(--text-secondary); font-size: 11px; font-weight: 700; }
+.customer-appointment-list article > .customer-appointment-list__controls { justify-items: end; gap: 6px; }
+.customer-appointment-list__controls > span:first-child { color: var(--text-secondary); font-size: 11px; font-weight: 700; }
+.customer-appointment-list__controls > small { color: var(--text-muted); font-size: 10px; }
+.customer-appointment-list article .customer-appointment-list__actions { display: flex; align-items: center; gap: 2px; }
+.customer-appointment-list__actions button { min-height: 44px; padding: 0 8px; border: 0; background: transparent; color: var(--text-secondary); font: inherit; font-size: 11px; font-weight: 700; cursor: pointer; }
+.customer-appointment-list__actions button:hover { color: var(--accent-strong); }
 .customer-appointment-list .status-cancelled, .customer-appointment-list .status-no_show { color: var(--danger); }
 .customer-appointment-list .status-completed { color: var(--success); }
 .customer-portal-section__empty { margin: 0; padding: 24px 0; color: var(--text-muted); font-size: 13px; }
@@ -3713,6 +3731,7 @@ html[data-theme="light"] .customer-portal-reschedule > input { color-scheme: lig
   .customer-portal-slots { grid-template-columns: repeat(3, 1fr); }
   .customer-appointment-list article { grid-template-columns: 1fr auto; gap: 6px 12px; padding: 15px 0; }
   .customer-appointment-list time { grid-column: 1 / -1; }
+  .customer-appointment-list article > .customer-appointment-list__controls { grid-column: 1 / -1; width: 100%; display: flex; align-items: center; justify-content: space-between; }
   .customer-waitlist-list article { align-items: flex-start; flex-direction: column; gap: 4px; }
   .customer-profile-section form { grid-template-columns: 1fr; }
   .customer-profile-section form .field:first-child, .customer-profile-section form .button { grid-column: auto; }

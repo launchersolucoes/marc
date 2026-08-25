@@ -61,7 +61,7 @@ export default async function PublicBookingPage({ params }) {
           <p>Escolha o serviço e veja somente os horários que realmente estão livres.</p>
           <div className="booking-trust">
             {location && <div><MapPin size={17} /><span>{location}</span></div>}
-            <div><ShieldCheck size={17} /><span>Reserva confirmada na hora</span></div>
+            <div><ShieldCheck size={17} /><span>{establishment.booking_confirmation_mode === "manual" ? "Solicitação revisada pela equipe" : "Reserva confirmada na hora"}</span></div>
             <div><CalendarCheck2 size={17} /><span>Sem ligação ou troca de mensagens</span></div>
           </div>
         </section>

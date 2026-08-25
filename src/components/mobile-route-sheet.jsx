@@ -1,13 +1,21 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 
-export default function MobileRouteSheet({ open, closeHref, title, className = "", children, id }) {
+const MobileRouteSheetActionContext = createContext(null);
+
+export function useMobileRouteSheetAction() {
+  return useContext(MobileRouteSheetActionContext);
+}
+
+export default function MobileRouteSheet({ open, closeHref, title, className = "", children, id, actionLabel = "", actionForm = "" }) {
   const router = useRouter();
   const sheetRef = useRef(null);
   const startY = useRef(0);
   const [offset, setOffset] = useState(0);
+  const [actionPending, setActionPending] = useState(false);
+  const actionContext = useMemo(() => ({ setPending: setActionPending }), []);
 
   const close = () => router.push(closeHref, { scroll: false });
 
@@ -36,6 +44,10 @@ export default function MobileRouteSheet({ open, closeHref, title, className = "
     };
   }, [open, closeHref]);
 
+  useEffect(() => {
+    if (!open) setActionPending(false);
+  }, [open]);
+
   const beginDrag = (event) => {
     startY.current = event.clientY;
     event.currentTarget.setPointerCapture(event.pointerId);
@@ -51,7 +63,7 @@ export default function MobileRouteSheet({ open, closeHref, title, className = "
   };
 
   return (
-    <>
+    <MobileRouteSheetActionContext.Provider value={actionContext}>
       {open && <button className="mobile-route-sheet__backdrop" type="button" aria-label={`Fechar ${title}`} onClick={close} />}
       <aside
         className={`${className} mobile-route-sheet ${open ? "is-requested" : ""} ${offset ? "is-dragging" : ""}`}
@@ -66,11 +78,17 @@ export default function MobileRouteSheet({ open, closeHref, title, className = "
         {open && (
           <>
             <div className="mobile-route-sheet__handle" aria-hidden="true" onPointerDown={beginDrag} onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={endDrag}><span /></div>
-            <header className="mobile-route-sheet__bar"><button type="button" onClick={close}>Cancelar</button><strong>{title}</strong><span aria-hidden="true" /></header>
+            <header className="mobile-route-sheet__bar">
+              <button type="button" onClick={close}>Cancelar</button>
+              <strong>{title}</strong>
+              {actionLabel && actionForm
+                ? <button className="mobile-route-sheet__done" type="submit" form={actionForm} disabled={actionPending}>{actionPending ? "Salvando…" : actionLabel}</button>
+                : <span aria-hidden="true" />}
+            </header>
           </>
         )}
         <div className="mobile-route-sheet__content">{children}</div>
       </aside>
-    </>
+    </MobileRouteSheetActionContext.Provider>
   );
 }

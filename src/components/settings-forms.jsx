@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  CalendarClock,
   CheckCircle2,
   LoaderCircle,
   Save,
@@ -10,6 +11,7 @@ import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import {
   updateEstablishment,
+  updateBookingRules,
   updateProfile,
 } from "../app/app/configuracoes/actions";
 
@@ -73,6 +75,26 @@ export function ProfileSettingsForm({ profile, email }) {
       <div className="field"><label htmlFor="settingsAccountEmail">E-mail de acesso</label><input id="settingsAccountEmail" value={email || ""} readOnly aria-describedby="account-email-help" /><small id="account-email-help" className="field-help">A alteração de e-mail exigirá reconfirmação e será adicionada em uma próxima etapa.</small></div>
       <Feedback state={state} />
       <Submit label="Salvar perfil" />
+    </form>
+  );
+}
+
+export function BookingRulesForm({ establishment }) {
+  const [state, action] = useActionState(updateBookingRules, initialState);
+  return (
+    <form className="settings-form booking-rules-form" action={action}>
+      <div className="settings-section-heading booking-rules-heading">
+        <div><CalendarClock size={20} /><span><h2>Regras de agendamento</h2><p>Defina até quando o cliente pode reservar, cancelar ou reagendar sozinho.</p></span></div>
+      </div>
+      <div className="field-grid settings-grid">
+        <div className="field"><label htmlFor="minimumNotice">Antecedência para reservar</label><select id="minimumNotice" name="minimumNotice" defaultValue={String(establishment.min_booking_notice_minutes ?? 120)}><option value="0">Sem antecedência mínima</option><option value="60">1 hora</option><option value="120">2 horas</option><option value="240">4 horas</option><option value="720">12 horas</option><option value="1440">1 dia</option></select></div>
+        <div className="field"><label htmlFor="maximumDays">Agenda aberta por</label><select id="maximumDays" name="maximumDays" defaultValue={String(establishment.max_booking_days ?? 60)}><option value="14">14 dias</option><option value="30">30 dias</option><option value="60">60 dias</option></select></div>
+        <div className="field"><label htmlFor="cancellationWindow">Cancelar ou reagendar até</label><select id="cancellationWindow" name="cancellationWindow" defaultValue={String(establishment.cancellation_notice_minutes ?? 120)}><option value="0">Até o horário marcado</option><option value="60">1 hora antes</option><option value="120">2 horas antes</option><option value="240">4 horas antes</option><option value="720">12 horas antes</option><option value="1440">1 dia antes</option><option value="2880">2 dias antes</option></select></div>
+        <div className="field"><label htmlFor="confirmationMode">Confirmação de novas reservas</label><select id="confirmationMode" name="confirmationMode" defaultValue={establishment.booking_confirmation_mode || "automatic"}><option value="automatic">Automática</option><option value="manual">A equipe confirma</option></select></div>
+      </div>
+      <p className="booking-rules-note">Agendamentos criados pela equipe continuam confirmados imediatamente. Tempos de preparação são definidos por profissional em cada serviço.</p>
+      <Feedback state={state} />
+      <Submit label="Salvar regras da agenda" />
     </form>
   );
 }

@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import {
+  BookingRulesForm,
   EstablishmentSettingsForm,
   ProfileSettingsForm,
 } from "../../../components/settings-forms";
@@ -21,7 +22,7 @@ export default async function SettingsPage({ searchParams }) {
   const [{ data: fullEstablishment }, { data: profile }] = await Promise.all([
     supabase
       .from("establishments")
-      .select("id, name, slug, category, phone, email, address_line, address_number, address_complement, neighborhood, city, state, postal_code")
+      .select("id, name, slug, category, phone, email, address_line, address_number, address_complement, neighborhood, city, state, postal_code, min_booking_notice_minutes, max_booking_days, cancellation_notice_minutes, booking_confirmation_mode")
       .eq("id", establishment.id)
       .single(),
     supabase
@@ -37,7 +38,6 @@ export default async function SettingsPage({ searchParams }) {
       <div className="app-content settings-page">
         <header className="product-heading">
           <div>
-            <span>Preferências e identidade</span>
             <h1>Configurações</h1>
             <p>Mantenha os dados públicos do negócio e a segurança do seu acesso em dia.</p>
           </div>
@@ -50,6 +50,8 @@ export default async function SettingsPage({ searchParams }) {
           {canManage && (
             <section className="settings-primary">
               <EstablishmentSettingsForm establishment={fullEstablishment || establishment} />
+              <div className="settings-form-separator" />
+              <BookingRulesForm establishment={fullEstablishment || establishment} />
             </section>
           )}
 

@@ -32,10 +32,14 @@ export async function createService(_previousState, formData) {
   const name = value(formData, "name");
   const description = value(formData, "description");
   const duration = Number(value(formData, "duration"));
+  const bufferBefore = Number(value(formData, "bufferBefore") || "0");
+  const bufferAfter = Number(value(formData, "bufferAfter") || "0");
   const normalizedPrice = value(formData, "price").replace(",", ".");
   const priceCents = Math.round(Number(normalizedPrice) * 100);
 
-  if (name.length < 2 || !Number.isInteger(duration) || duration < 5 || !Number.isInteger(priceCents) || priceCents < 0) {
+  if (name.length < 2 || !Number.isInteger(duration) || duration < 5 || !Number.isInteger(priceCents) || priceCents < 0
+    || !Number.isInteger(bufferBefore) || !Number.isInteger(bufferAfter)
+    || bufferBefore < 0 || bufferBefore > 180 || bufferAfter < 0 || bufferAfter > 180) {
     return { error: "Informe nome, duração e valor válidos." };
   }
 
@@ -45,6 +49,8 @@ export async function createService(_previousState, formData) {
     service_description: description,
     service_price_cents: priceCents,
     service_duration_minutes: duration,
+    service_buffer_before_minutes: bufferBefore,
+    service_buffer_after_minutes: bufferAfter,
   });
 
   if (error) {

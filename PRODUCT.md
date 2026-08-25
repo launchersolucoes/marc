@@ -34,6 +34,7 @@ Os papéis pertencem ao contexto de cada estabelecimento. Uma mesma pessoa pode 
 ## Scheduling Rules
 
 - Cada profissional define os próprios serviços, valores, duração e demais regras de atendimento.
+- Cada profissional também define o intervalo de preparação antes e depois de cada serviço. Dono e gerente definem as regras gerais do estabelecimento: antecedência mínima, janela máxima de reservas, prazo de cancelamento/reagendamento e confirmação automática ou manual.
 - O catálogo pode ser consultado pela equipe, mas somente um acesso conectado a um perfil profissional cria ou altera a própria oferta, valor e duração; recepção e gestão não assumem silenciosamente essas regras.
 - O estabelecimento mantém nome, endereço, telefone, horário de funcionamento, logo, serviços, preços e equipe.
 - A possibilidade de dono ou gerente alterar regras definidas por um profissional ainda depende de confirmação.
@@ -80,6 +81,7 @@ A proposta não é apenas substituir uma agenda digital, mas conectar aquisiçã
 - Donos e gerentes podem exportar os atendimentos do mês em uma planilha compatível com Excel e salvar a visão consolidada do relatório como PDF; os arquivos respeitam o estabelecimento autenticado e neutralizam fórmulas vindas de campos de texto.
 - Clientes podem entrar em uma lista de espera por serviço, profissional e data quando não houver vaga; a equipe converte solicitações em horários confirmados. Atendimentos pendentes ou confirmados podem ser reagendados com nova validação de disponibilidade, bloqueios e conflitos.
 - Cada confirmação pública agora entrega uma área do cliente sem senha por link seguro, revogável e válido por 90 dias. Nela, o cliente consulta próximos horários e histórico, cancela ou reagenda, acompanha e abandona a lista de espera, atualiza os próprios dados e agenda novamente. O banco guarda somente o hash do token; a equipe pode gerar ou substituir o acesso pela ficha do cliente, e as mutações são auditadas sem registrar contatos pessoais nos metadados.
+- Donos e gerentes configuram a antecedência mínima para reservar, a janela de até 60 dias, o prazo de cancelamento/reagendamento e se novas reservas públicas entram confirmadas ou aguardam a equipe. Os defaults são 2 horas, 60 dias, 2 horas e confirmação automática. Buffers antes/depois de cada serviço são definidos pelo profissional e bloqueiam disponibilidade, folgas e conflitos diretamente no banco.
 - A entrega automática desse link continua dependente de Resend ou WhatsApp. Até essas integrações serem ativadas, o link aparece na confirmação do agendamento e pode ser copiado pela equipe.
 - Dono e gerente já podem atualizar os dados públicos do estabelecimento; cada usuário pode atualizar o próprio perfil, solicitar recuperação de senha por e-mail e trocar a senha em uma sessão autenticada.
 - Convites de equipe geram links individuais vinculados ao e-mail e com validade de 7 dias. O envio transacional está preparado para Resend e mantém o link copiável como fallback; a entrega automática passa a funcionar quando `RESEND_API_KEY` e `EMAIL_FROM` forem configurados.
