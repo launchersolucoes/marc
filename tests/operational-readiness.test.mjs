@@ -100,11 +100,25 @@ test("public data collection is accompanied by privacy and usage terms", async (
 
   assert.match(privacy, /Quem participa do tratamento/);
   assert.match(privacy, /Seus direitos/);
+  assert.match(privacy, /58\.199\.674\/0001-47/);
+  assert.match(privacy, /Rua João Marques Ferreira/);
   assert.match(terms, /Responsabilidade do estabelecimento/);
   assert.match(booking, /dados serão usados pelo estabelecimento/);
   assert.match(auth, /Ao criar sua conta/);
   assert.match(landing, /href="\/privacidade"/);
   assert.match(landing, /href="\/termos"/);
+});
+
+test("pilot support records the confirmed owners, coverage and backup decision", async () => {
+  const [support, operations] = await Promise.all([
+    read("docs/pilot-support.md"),
+    read("docs/production-operations.md"),
+  ]);
+
+  assert.match(support, /Calebe Alves e Alan Pires/);
+  assert.match(support, /8h às 22h/);
+  assert.match(operations, /upgrade foi adiado/);
+  assert.match(operations, /dados sintéticos/);
 });
 
 test("external health monitoring retries and opens a single operational incident", async () => {

@@ -25,6 +25,9 @@ export default function LegalPage({ title, summary, updatedAt, children }) {
           <p>{summary}</p>
           <dl>
             <div><dt>Última atualização</dt><dd>{updatedAt}</dd></div>
+            <div><dt>Responsável pela operação</dt><dd>58.199.674 Alan de Souza Pires</dd></div>
+            <div><dt>CNPJ</dt><dd>58.199.674/0001-47</dd></div>
+            <div><dt>Endereço de contato</dt><dd>Rua João Marques Ferreira, 312 — Praça Cruzeiro, Rio Bonito — RJ</dd></div>
             <div><dt>Canal de contato</dt><dd><a href="mailto:launchersolucoes@gmail.com"><Mail size={14} /> launchersolucoes@gmail.com</a></dd></div>
           </dl>
         </aside>

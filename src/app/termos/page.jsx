@@ -14,7 +14,7 @@ export default function TermsPage() {
     >
       <section>
         <h2>1. Sobre o Marc</h2>
-        <p>O Marc é uma plataforma operada pela Launcher Soluções para organizar estabelecimentos de beleza e bem-estar, suas equipes, serviços, agendas, clientes e controles operacionais. Ao criar uma conta ou usar uma página de agendamento, você concorda com estes Termos e com a Política de Privacidade.</p>
+        <p>O Marc é uma plataforma operada por <strong>58.199.674 Alan de Souza Pires</strong>, CNPJ <strong>58.199.674/0001-47</strong>, para organizar estabelecimentos de beleza e bem-estar, suas equipes, serviços, agendas, clientes e controles operacionais. O endereço de contato é Rua João Marques Ferreira, 312 — Praça Cruzeiro, Rio Bonito — RJ. Ao criar uma conta ou usar uma página de agendamento, você concorda com estes Termos e com a Política de Privacidade.</p>
       </section>
 
       <section>
@@ -65,7 +65,7 @@ export default function TermsPage() {
 
       <section>
         <h2>8. Propriedade intelectual</h2>
-        <p>A marca Marc, o software, a interface e seus materiais pertencem à Launcher Soluções ou a seus licenciadores. O uso da plataforma concede somente uma autorização limitada, revogável e não transferível durante a vigência do acesso.</p>
+        <p>A marca Marc, o software, a interface e seus materiais pertencem ao responsável pela operação ou a seus licenciadores. O uso da plataforma concede somente uma autorização limitada, revogável e não transferível durante a vigência do acesso.</p>
       </section>
 
       <section>

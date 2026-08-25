@@ -1,10 +1,12 @@
 # Suporte do piloto Marc
 
-Este é o protocolo operacional inicial. Horários e responsáveis devem ser confirmados pela Launcher antes do primeiro estabelecimento externo.
+Este é o protocolo operacional inicial do piloto assistido.
 
 ## Canal
 
 - Canal registrado: `launchersolucoes@gmail.com`.
+- Responsáveis: Calebe Alves e Alan Pires.
+- Janela de cobertura: das 8h às 22h (horário de Brasília), durante as rodadas combinadas do piloto.
 - Para cada chamado, registrar estabelecimento, horário, papel do usuário, tela, ação e resultado observado.
 - Não enviar senha, token, documento completo, dados financeiros sensíveis ou listas de clientes por e-mail.
 
@@ -23,9 +25,9 @@ Este é o protocolo operacional inicial. Horários e responsáveis devem ser con
 5. Para P1, pausar a rodada e definir responsável pela comunicação.
 6. Após correção, repetir o cenário e registrar a evidência de aceite.
 
-## Decisões pendentes
+## Contingência
 
-- responsável primário e substituto;
-- dias e horário de cobertura;
-- telefone ou grupo de contingência para P1;
-- prazo máximo de atualização ao estabelecimento durante incidentes.
+- Calebe Alves e Alan Pires compartilham a triagem; o primeiro disponível assume o chamado e registra o responsável.
+- O e-mail `launchersolucoes@gmail.com` permanece como registro oficial do incidente.
+- Até existir um telefone ou grupo dedicado, a contingência P1 deve ser combinada previamente com cada participante da rodada.
+- Durante um P1 aberto, atualizar os participantes a cada hora, mesmo quando ainda não houver resolução.

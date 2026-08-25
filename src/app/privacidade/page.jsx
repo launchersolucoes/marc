@@ -14,7 +14,7 @@ export default function PrivacyPage() {
     >
       <section>
         <h2>1. Quem participa do tratamento</h2>
-        <p>O Marc é um produto digital operado pela Launcher Soluções. No uso da plataforma, a responsabilidade sobre os dados depende do contexto:</p>
+        <p>O Marc é um produto digital operado por <strong>58.199.674 Alan de Souza Pires</strong>, CNPJ <strong>58.199.674/0001-47</strong>. Para assuntos de privacidade, o endereço de contato é Rua João Marques Ferreira, 312 — Praça Cruzeiro, Rio Bonito — RJ. No uso da plataforma, a responsabilidade sobre os dados depende do contexto:</p>
         <ul>
           <li><strong>Contas, segurança e assinatura:</strong> o Marc decide como esses dados são usados para disponibilizar e proteger a plataforma.</li>
           <li><strong>Clientes e agendamentos:</strong> o estabelecimento escolhido pelo cliente define a finalidade do atendimento. O Marc fornece a tecnologia e trata os dados para executar essa operação.</li>

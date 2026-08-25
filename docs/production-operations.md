@@ -25,7 +25,8 @@ O cenário que conclui um atendimento e cria lançamento financeiro exige confir
 ## Supabase e recuperação
 
 - **Estado verificado em 24/08/2026:** o projeto `marc-production` está no plano Free do Supabase, que não inclui backups agendados. Este é um bloqueio P0 para dados reais.
-- Antes do primeiro piloto externo, migrar para um plano com backup, confirmar a retenção disponível e registrar a primeira cópia concluída.
+- **Decisão de 24/08/2026:** o upgrade foi adiado. Enquanto não houver backup, limitar as rodadas a contas internas e dados sintéticos; não iniciar operação externa com dados reais.
+- Antes do primeiro piloto externo com dados reais, migrar para um plano com backup, confirmar a retenção disponível e registrar a primeira cópia concluída.
 - Antes de migrations destrutivas, gere um backup ou confirme um ponto de recuperação recente.
 - Migrations devem ser aditivas sempre que possível; nenhuma correção de interface justifica alterar dados de produção.
 - Em incidente de integridade, suspenda novos agendamentos, preserve logs e eventos de auditoria e restaure somente após identificar o intervalo afetado.
@@ -47,9 +48,11 @@ O cenário que conclui um atendimento e cria lançamento financeiro exige confir
 ## Suporte do piloto
 
 - O protocolo inicial está em `docs/pilot-support.md`.
-- Antes do primeiro piloto externo, confirmar responsável, substituto, horário de cobertura e canal de contingência para P1.
+- Calebe Alves e Alan Pires compartilham o suporte das 8h às 22h (horário de Brasília), durante as rodadas combinadas.
+- O e-mail é o registro oficial; a contingência P1 deve ser combinada com cada participante enquanto não houver telefone ou grupo dedicado.
 
 ## Transparência e documentos legais
 
 - A aplicação já apresenta Termos de Uso, Política de Privacidade e avisos junto ao cadastro e ao agendamento público.
-- Antes do primeiro piloto externo, substituir a identificação genérica da Launcher pela razão social, CNPJ e endereço aplicáveis e submeter o conteúdo à revisão jurídica. A implementação atual é uma base operacional de transparência, não um parecer jurídico.
+- A identificação pública usa `58.199.674 Alan de Souza Pires`, CNPJ `58.199.674/0001-47`, e o endereço de contato informado: Rua João Marques Ferreira, 312 — Praça Cruzeiro, Rio Bonito — RJ.
+- Antes do primeiro piloto externo, submeter o conteúdo à revisão jurídica e confirmar se o endereço de contato deve permanecer diferente do endereço cadastral constante no comprovante de CNPJ. A implementação atual é uma base operacional de transparência, não um parecer jurídico.

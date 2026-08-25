@@ -68,10 +68,10 @@ O produto ainda não está completo para lançamento comercial autônomo em esca
 |---|---|---|
 | Executar as três rodadas do piloto | Infraestrutura, contas e checklist existem | Rodar fluxo feliz, erros/permissões e uso diário em celulares reais; encerrar sem P1/P2 aberto. |
 | Monitoramento externo | Workflow externo de 5 minutos implementado, com duas tentativas e incidente único no GitHub | Publicar o workflow, validar a primeira execução e confirmar o responsável pelo alerta. |
-| Backup e recuperação | Verificado em 24/08/2026: o plano Free do Supabase não possui backups agendados; runbook documentado | Migrar para um plano com backup antes de dados reais, confirmar a primeira cópia e testar restauração. |
-| Suporte do piloto | Canal, prioridades, triagem e SLAs propostos em `docs/pilot-support.md` | Confirmar responsável, substituto, horário de cobertura e contingência P1. |
+| Backup e recuperação | Verificado em 24/08/2026: o plano Free do Supabase não possui backups agendados; upgrade adiado por decisão dos responsáveis | Manter somente dados sintéticos nas rodadas internas; migrar para um plano com backup antes de dados reais, confirmar a primeira cópia e testar restauração. |
+| Suporte do piloto | Calebe Alves e Alan Pires, das 8h às 22h, com canal, prioridades, triagem e SLAs em `docs/pilot-support.md` | Combinar a contingência P1 com cada participante enquanto não houver telefone ou grupo dedicado. |
 | Aceite em dispositivos reais | Testes automatizados cobrem breakpoints | Validar iPhone/Android reais, teclado, instalação PWA, retomada, rede instável, sheets e safe areas. |
-| Privacidade mínima | Termos, Política de Privacidade, contato e avisos de coleta implementados | Informar razão social, CNPJ e endereço aplicáveis e concluir revisão jurídica antes do piloto externo. |
+| Privacidade mínima | Termos, Política, avisos de coleta, identificação `58.199.674 Alan de Souza Pires`, CNPJ e endereço de contato implementados | Confirmar a divergência entre endereço de contato e endereço cadastral e concluir revisão jurídica antes do piloto externo. |
 
 Esses itens não exigem WhatsApp, Resend ou Stripe e são o caminho mais curto para colocar um estabelecimento real em operação assistida.
 
