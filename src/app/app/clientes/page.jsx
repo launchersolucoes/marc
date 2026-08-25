@@ -1,6 +1,7 @@
 import { Archive, CalendarDays, Pencil, Search, UserPlus } from "lucide-react";
 import Link from "next/link";
 import CustomerForm from "../../../components/customer-form";
+import CustomerPortalLink from "../../../components/customer-portal-link";
 import MobileRouteSheet from "../../../components/mobile-route-sheet";
 import { getAppContext } from "../../../lib/app-context";
 
@@ -107,6 +108,7 @@ export default async function CustomersPage({ searchParams }) {
           </MobileRouteSheet>}
           {canManage && editableCustomer && <MobileRouteSheet className="customer-form-card customer-edit-sheet" open closeHref={showArchived ? "/app/clientes?arquivados=1" : "/app/clientes"} title="Editar cliente">
             <CustomerForm customer={editableCustomer} />
+            <CustomerPortalLink customerId={editableCustomer.id} />
           </MobileRouteSheet>}
         </div>
       </div>

@@ -10,7 +10,7 @@ O Marc já funciona como **MVP operacional para piloto assistido**. Um estabelec
 O produto ainda não está completo para lançamento comercial autônomo em escala. O que falta se divide em quatro grupos:
 
 1. **Fechamento do piloto e operação de produção:** validação humana em celulares reais, monitoramento externo, backups e processo de suporte.
-2. **Autoatendimento do cliente final:** hoje existe agendamento público, mas não uma área do cliente para consultar, cancelar ou reagendar seus horários.
+2. **Autoatendimento do cliente final:** a primeira área do cliente já está implementada por link seguro; regras comerciais de antecedência e entrega automática do acesso ainda precisam ser definidas.
 3. **Ativação comercial e de comunicação:** Stripe, Resend, Google e WhatsApp têm fundações ou decisões registradas, mas dependem de contas, credenciais e regras externas.
 4. **Expansão de produto:** regras de planos, multiunidades, estoque, fidelidade, sinal antecipado, Google Calendar, Hub e ferramentas globais mais completas no Master.
 
@@ -42,6 +42,7 @@ O produto ainda não está completo para lançamento comercial autônomo em esca
 - Confirmação interna, início, conclusão, cancelamento, falta e reagendamento.
 - Lista de espera e conversão em horário confirmado.
 - Cadastro, busca, histórico, edição e arquivamento de clientes.
+- Área do cliente por link seguro e revogável, com próximos horários, histórico, cancelamento, reagendamento, lista de espera, atualização de dados e ação para agendar novamente.
 
 ### Financeiro e gestão
 
@@ -79,30 +80,28 @@ Esses itens não exigem WhatsApp, Resend ou Stripe e são o caminho mais curto p
 
 #### 3.1 Área do cliente final
 
-**Estado atual:** o cliente agenda publicamente e vê a confirmação apenas naquela sessão. Não existe login, link de gestão ou portal para consultar horários depois.
+**Estado atual:** a primeira versão está implementada. O agendamento público entrega um link individual de 64 caracteres válido por 90 dias; o banco guarda apenas o hash. O cliente consulta próximos horários e histórico, cancela e reagenda, acompanha ou abandona a lista de espera, atualiza nome/telefone/e-mail e agenda novamente. A equipe pode gerar ou rotacionar o link na ficha do cliente, e todas as alterações relevantes deixam auditoria sem PII nos metadados.
 
-**Primeira versão recomendada: portal sem senha por link seguro e revogável.**
+**Controles concluídos:**
 
-Escopo mínimo:
+- rota sem IDs internos e marcada como `noindex`;
+- token criptograficamente aleatório, revogável, rotacionado por cliente e armazenado somente como SHA-256;
+- todas as consultas e mutações limitadas ao estabelecimento e cliente resolvidos pelo token;
+- reagendamento revalida disponibilidade, folgas, duração e conflitos;
+- cancelamento devolve a vaga imediatamente à agenda;
+- link pode ser substituído pela equipe quando houver suspeita de compartilhamento;
+- E2E cobre criação pública, abertura do portal e cancelamento.
 
-- Rota segura de cliente, sem expor IDs internos.
-- Link individual com validade, rotação e revogação.
-- Visualização dos próximos agendamentos e respectivos estados.
-- Cancelamento e reagendamento conforme regras do estabelecimento/profissional.
-- Histórico resumido de atendimentos.
-- Atualização de nome, telefone e e-mail com validação.
-- Situação da lista de espera e opção de desistir.
-- Ação “agendar novamente” reaproveitando serviço e profissional.
-- Registro de auditoria para alterações realizadas pelo cliente.
-- Proteção contra enumeração, compartilhamento indevido e abuso do link.
+**Ainda falta evoluir:**
 
-Dependências de produto:
-
-- antecedência mínima para cancelar ou reagendar;
-- possibilidade de bloquear cancelamento após confirmação;
+- definir e expor antecedência mínima para cancelar ou reagendar;
+- decidir se algum estabelecimento poderá bloquear cancelamento após confirmação;
 - tratamento de sinal pago quando essa função existir;
 - política para cliente marcado como falta;
-- texto de privacidade e suporte.
+- entrega automática e recuperação do link por Resend ou WhatsApp;
+- reaproveitar serviço e profissional diretamente na ação “agendar novamente”;
+- rate limit dedicado às mutações do portal e tela de revogação explícita além da rotação;
+- revisar texto de privacidade e suporte específico do acesso por link.
 
 Uma conta completa com senha, Google ou WhatsApp deve vir depois, quando fidelidade, pagamentos, favoritos e uso em vários estabelecimentos justificarem o atrito adicional.
 
@@ -301,7 +300,7 @@ Qualquer função de acesso assistido ou impersonação deve exigir motivo, praz
 
 ### Testes ainda desejáveis
 
-- E2E do portal do cliente quando implementado.
+- E2E de reagendamento, atualização de perfil, lista de espera e rotação do link do portal do cliente.
 - E2E de fechamento/reabertura e exportação em produção piloto controlada.
 - E2E de assinatura Stripe em modo de teste.
 - testes de migração sobre uma cópia anonimizada do banco.
@@ -334,7 +333,7 @@ Qualquer função de acesso assistido ou impersonação deve exigir motivo, praz
 ### Etapa B — autoatendimento e regras
 
 1. Definir cancelamento, reagendamento e antecedência.
-2. Implementar a primeira área do cliente por link seguro.
+2. Evoluir a área do cliente já implementada com essas regras e entrega automática do link.
 3. Expor buffers, horários públicos, fuso, logo e link personalizado.
 4. Implementar direitos de dados e encerramento de conta.
 

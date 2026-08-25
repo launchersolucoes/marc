@@ -91,7 +91,7 @@ export default function PublicBookingFlow({ establishment }) {
       return;
     }
     if (!slot) {
-      const { data, error: waitlistError } = await supabase.rpc("create_public_waitlist_entry", {
+      const { data, error: waitlistError } = await supabase.rpc("create_public_waitlist_with_portal", {
         establishment_slug: establishment.slug,
         target_professional_service_id: offeringId,
         customer_name: String(form.get("name") || ""),
@@ -108,7 +108,8 @@ export default function PublicBookingFlow({ establishment }) {
         return;
       }
       setWaitlisted({
-        id: data,
+        id: data.waitlist_id,
+        portalToken: data.portal_token,
         name: String(form.get("name") || ""),
         service: selectedOffering.service_name,
         professional: selectedOffering.professional_name,
@@ -117,7 +118,7 @@ export default function PublicBookingFlow({ establishment }) {
       return;
     }
 
-    const { data, error: bookingError } = await supabase.rpc("create_public_appointment", {
+    const { data, error: bookingError } = await supabase.rpc("create_public_appointment_with_portal", {
       establishment_slug: establishment.slug,
       target_professional_service_id: offeringId,
       customer_name: String(form.get("name") || ""),
@@ -145,7 +146,8 @@ export default function PublicBookingFlow({ establishment }) {
     }
 
     setConfirmed({
-      id: data,
+      id: data.appointment_id,
+      portalToken: data.portal_token,
       service: selectedOffering.service_name,
       professional: selectedOffering.professional_name,
       start: slot,
@@ -175,6 +177,7 @@ export default function PublicBookingFlow({ establishment }) {
           <div><dt>Serviço</dt><dd>{confirmed.service}</dd></div>
           <div><dt>Quando</dt><dd>{new Intl.DateTimeFormat("pt-BR", { dateStyle: "long", timeStyle: "short" }).format(new Date(confirmed.start))}</dd></div>
         </dl>
+        <Link className="button button--primary booking-portal-link" href={`/cliente/${confirmed.portalToken}`}>Ver e gerenciar meus horários</Link>
         <small>Guarde esta página como confirmação. O lembrete por WhatsApp será ativado em uma próxima etapa do Marc.</small>
       </div>
     );
@@ -192,6 +195,7 @@ export default function PublicBookingFlow({ establishment }) {
           <div><dt>Profissional</dt><dd>{waitlisted.professional}</dd></div>
           <div><dt>Data desejada</dt><dd>{new Intl.DateTimeFormat("pt-BR", { dateStyle: "long", timeZone: "UTC" }).format(new Date(`${waitlisted.date}T12:00:00Z`))}</dd></div>
         </dl>
+        <Link className="button button--primary booking-portal-link" href={`/cliente/${waitlisted.portalToken}`}>Acompanhar minha solicitação</Link>
         <small>O contato automático por WhatsApp será ativado em uma próxima etapa. Por enquanto, o estabelecimento fará o retorno diretamente.</small>
       </div>
     );

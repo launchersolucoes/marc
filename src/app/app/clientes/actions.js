@@ -90,3 +90,20 @@ export async function updateCustomer(_previousState, formData) {
       : intent === "restore" ? "Cliente restaurado." : "Dados do cliente atualizados.",
   };
 }
+
+export async function createCustomerPortalLink(_previousState, formData) {
+  const customerId = value(formData, "customerId");
+  if (!customerId) return { error: "Cliente não identificado.", path: "" };
+
+  const { supabase, membership } = await getActionContext();
+  if (!["owner", "manager", "receptionist"].includes(membership.role)) {
+    return { error: "Seu acesso não permite gerar links de clientes.", path: "" };
+  }
+
+  const { data, error } = await supabase.rpc("create_customer_portal_access", {
+    target_customer_id: customerId,
+  });
+  if (error || !data) return { error: "Não foi possível gerar o link. Tente novamente.", path: "" };
+
+  return { error: "", path: `/cliente/${data}` };
+}

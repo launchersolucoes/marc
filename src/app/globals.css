@@ -18,6 +18,9 @@ html[data-theme="dark"] {
   --text-on-accent: #1a1a1a;
   --glow: rgba(255, 165, 0, 0.35);
   --danger: #ff8f7f;
+  --danger-soft: color-mix(in srgb, var(--danger) 12%, var(--surface));
+  --success: #6fda8a;
+  --success-soft: color-mix(in srgb, var(--success) 12%, var(--surface));
   --header-bg: rgba(26, 26, 26, 0.82);
 }
 
@@ -38,6 +41,9 @@ html[data-theme="light"] {
   --text-on-accent: #1a1a1a;
   --glow: rgba(255, 165, 0, 0.18);
   --danger: #b52f20;
+  --danger-soft: color-mix(in srgb, var(--danger) 9%, var(--surface));
+  --success: #237a3b;
+  --success-soft: color-mix(in srgb, var(--success) 9%, var(--surface));
   --header-bg: rgba(248, 249, 250, 0.86);
 }
 
@@ -3574,4 +3580,147 @@ html[data-theme="light"] .public-booking-header img { filter: brightness(0); }
   .pilot-issue-create label.is-wide:first-of-type, .pilot-issue-create label.is-wide:nth-of-type(4) { grid-column: auto; }
   .pilot-issue-list > article { grid-template-columns: 1fr; gap: 10px; }
   .pilot-issue-list form { grid-column: auto; grid-template-columns: 1fr; }
+}
+
+/* Customer self-service portal */
+.customer-portal-page { min-height: 100svh; background: var(--bg-primary); }
+.customer-portal-header { height: 76px; display: flex; align-items: center; justify-content: space-between; padding: 0 clamp(20px, 4vw, 60px); border-bottom: 1px solid var(--border); }
+.customer-portal-header > a { width: 116px; }
+.customer-portal-header img { width: 100%; height: auto; filter: brightness(0) invert(1); }
+html[data-theme="light"] .customer-portal-header img { filter: brightness(0); }
+.customer-portal-shell { width: min(900px, calc(100% - 40px)); margin-inline: auto; padding: 58px 0 92px; }
+.customer-portal-intro { margin-bottom: 34px; }
+.customer-portal-back { min-height: 44px; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 36px; color: var(--text-muted); font-size: 12px; font-weight: 720; }
+.customer-portal-back:hover { color: var(--text-primary); }
+.customer-portal-intro h1 { margin: 0 0 8px; font-size: 46px; line-height: 1; letter-spacing: -.035em; }
+.customer-portal-intro p { margin: 0; color: var(--text-secondary); font-size: 15px; line-height: 1.55; }
+.customer-portal-message { display: flex; align-items: center; gap: 9px; margin: 0 0 22px; padding: 13px 15px; border-radius: 12px; font-size: 13px; font-weight: 650; }
+.customer-portal-message.is-success { background: var(--success-soft); color: var(--success); }
+.customer-portal-message.is-error { background: var(--danger-soft); color: var(--danger); }
+.appointment-pass { display: grid; grid-template-columns: 124px minmax(0, 1fr); overflow: hidden; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); }
+.appointment-pass__date { display: grid; place-items: center; align-content: center; padding: 26px 18px; background: var(--accent); color: var(--text-on-accent); text-align: center; }
+.appointment-pass__date span, .appointment-pass__date small { font-size: 12px; font-weight: 780; text-transform: uppercase; }
+.appointment-pass__date strong { margin: 4px 0; font-size: 46px; line-height: .95; font-variant-numeric: tabular-nums; }
+.appointment-pass__body { min-width: 0; padding: 28px 30px 26px; }
+.appointment-pass__status { display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-size: 11px; font-weight: 730; }
+.appointment-pass__status > span { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+.appointment-pass h2 { margin: 9px 0 18px; font-size: 28px; letter-spacing: -.025em; }
+.appointment-pass__facts { display: flex; flex-wrap: wrap; gap: 10px 22px; color: var(--text-secondary); font-size: 12px; }
+.appointment-pass__facts span { display: inline-flex; align-items: center; gap: 7px; }
+.appointment-pass__facts svg { color: var(--accent-strong); }
+.appointment-pass__actions { display: flex; align-items: center; gap: 10px; margin-top: 26px; padding-top: 20px; border-top: 1px solid var(--border); }
+.appointment-pass__actions .button { min-height: 42px; }
+.customer-portal-confirm, .customer-portal-reschedule { margin-top: 14px; padding: 20px; border-radius: 14px; background: var(--surface-elevated); }
+.customer-portal-confirm { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 12px; }
+.customer-portal-confirm > div, .customer-portal-reschedule header > div { display: grid; gap: 4px; }
+.customer-portal-confirm span, .customer-portal-reschedule header span { color: var(--text-muted); font-size: 11px; line-height: 1.45; }
+.customer-portal-reschedule { display: grid; gap: 16px; }
+.customer-portal-reschedule header { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
+.customer-portal-reschedule header > button { width: 44px; height: 44px; display: grid; flex: 0 0 auto; place-items: center; margin: -10px -10px 0 0; border: 0; border-radius: 10px; background: transparent; color: var(--text-secondary); }
+.customer-portal-reschedule header > button:hover { background: var(--surface); color: var(--text-primary); }
+.customer-portal-reschedule > label { color: var(--text-secondary); font-size: 12px; font-weight: 700; }
+.customer-portal-reschedule > input { width: 100%; min-height: 46px; padding: 0 13px; border: 1px solid var(--border); border-radius: 11px; background: var(--surface); color: var(--text-primary); color-scheme: dark; }
+html[data-theme="light"] .customer-portal-reschedule > input { color-scheme: light; }
+.customer-portal-slots { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.customer-portal-slots button { min-height: 44px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); color: var(--text-primary); font-weight: 700; font-variant-numeric: tabular-nums; }
+.customer-portal-slots button:hover { border-color: var(--accent); color: var(--accent-strong); }
+.customer-portal-slot-state { min-height: 52px; display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--text-muted); font-size: 12px; }
+.customer-portal-empty { min-height: 270px; display: grid; place-items: center; align-content: center; padding: 36px 20px; border-block: 1px solid var(--border); text-align: center; }
+.customer-portal-empty > svg { color: var(--accent-strong); }
+.customer-portal-empty h2 { margin: 16px 0 7px; font-size: 24px; }
+.customer-portal-empty p { max-width: 44ch; margin: 0 0 22px; color: var(--text-secondary); line-height: 1.55; }
+.customer-portal-section { margin-top: 42px; }
+.customer-portal-section > header { padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+.customer-portal-section > header > div { display: flex; align-items: center; gap: 10px; }
+.customer-portal-section > header svg { color: var(--accent-strong); }
+.customer-portal-section > header span { display: grid; gap: 2px; }
+.customer-portal-section > header strong { font-size: 15px; }
+.customer-portal-section > header small { color: var(--text-muted); font-size: 11px; }
+.customer-appointment-list article { min-height: 72px; display: grid; grid-template-columns: 190px minmax(0, 1fr) auto; align-items: center; gap: 18px; padding: 13px 0; border-bottom: 1px solid var(--border); }
+.customer-appointment-list time { color: var(--text-secondary); font-size: 12px; font-variant-numeric: tabular-nums; }
+.customer-appointment-list article > div { display: grid; gap: 3px; }
+.customer-appointment-list article > div strong { font-size: 13px; }
+.customer-appointment-list article > div span { color: var(--text-muted); font-size: 11px; }
+.customer-appointment-list article > span { color: var(--text-secondary); font-size: 11px; font-weight: 700; }
+.customer-appointment-list .status-cancelled, .customer-appointment-list .status-no_show { color: var(--danger); }
+.customer-appointment-list .status-completed { color: var(--success); }
+.customer-portal-section__empty { margin: 0; padding: 24px 0; color: var(--text-muted); font-size: 13px; }
+.customer-waitlist-list article { min-height: 70px; display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.customer-waitlist-list article > div { display: grid; gap: 4px; }
+.customer-waitlist-list article strong { font-size: 13px; }
+.customer-waitlist-list article span { color: var(--text-muted); font-size: 11px; }
+.customer-waitlist-list article > button { min-height: 44px; padding: 0 8px; border: 0; background: transparent; color: var(--text-secondary); font-size: 11px; font-weight: 700; }
+.customer-waitlist-list article > button:hover { color: var(--danger); }
+.customer-profile-section { margin-top: 42px; border-block: 1px solid var(--border); }
+.customer-profile-section > button { width: 100%; min-height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 12px 0; border: 0; background: transparent; color: var(--text-primary); text-align: left; }
+.customer-profile-section > button > span { min-width: 0; display: flex; align-items: center; gap: 10px; }
+.customer-profile-section > button > span > svg { color: var(--accent-strong); }
+.customer-profile-section > button span span { min-width: 0; display: grid; gap: 3px; }
+.customer-profile-section > button strong { font-size: 14px; }
+.customer-profile-section > button small { overflow: hidden; color: var(--text-muted); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+.customer-profile-section > button[aria-expanded="true"] > svg { transform: rotate(180deg); }
+.customer-profile-section form { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 4px 0 24px; }
+.customer-profile-section form .field:first-child { grid-column: 1 / -1; }
+.customer-profile-section form .button { grid-column: 1 / -1; justify-self: start; }
+.customer-portal-footer { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-top: 46px; padding-top: 22px; color: var(--text-muted); font-size: 11px; }
+.customer-portal-footer > div, .customer-portal-footer a { display: flex; align-items: center; gap: 7px; }
+.customer-portal-footer a { min-height: 44px; color: var(--text-secondary); font-weight: 700; }
+.customer-portal-footer a:hover { color: var(--accent-strong); }
+.customer-portal-invalid { width: min(620px, calc(100% - 40px)); display: grid; justify-items: start; margin: clamp(80px, 14vh, 150px) auto 0; }
+.customer-portal-invalid > div { width: 52px; height: 52px; display: grid; place-items: center; margin-bottom: 24px; border-radius: 14px; background: var(--surface-elevated); color: var(--accent-strong); }
+.customer-portal-invalid h1 { max-width: 12ch; margin: 0 0 16px; font-size: 48px; line-height: 1; letter-spacing: -.035em; }
+.customer-portal-invalid p { max-width: 56ch; margin: 0 0 28px; color: var(--text-secondary); line-height: 1.65; }
+.customer-portal-loading__header { height: 76px; border-bottom: 1px solid var(--border); }
+.customer-portal-loading__body { width: min(900px, calc(100% - 40px)); margin: 58px auto 0; }
+.customer-portal-loading__line, .customer-portal-loading__pass { background: var(--surface-elevated); animation: portal-skeleton 1.4s ease-in-out infinite alternate; }
+.customer-portal-loading__line { height: 14px; border-radius: 6px; }
+.customer-portal-loading__line--short { width: 120px; }
+.customer-portal-loading__line--title { width: 260px; height: 42px; margin-top: 34px; }
+.customer-portal-loading__pass { height: 240px; margin-top: 38px; border-radius: 16px; }
+.customer-portal-loading__body > span { display: block; margin-top: 16px; color: var(--text-muted); font-size: 12px; }
+@keyframes portal-skeleton { to { opacity: .5; } }
+.booking-portal-link { width: 100%; margin: -4px 0 18px; }
+
+.customer-portal-link-card { display: grid; gap: 14px; margin-top: 18px; padding-top: 20px; border-top: 1px solid var(--border); }
+.customer-portal-link-card > div:first-child { display: flex; align-items: flex-start; gap: 10px; }
+.customer-portal-link-card > div:first-child > svg { flex: 0 0 auto; color: var(--accent-strong); }
+.customer-portal-link-card > div:first-child span { display: grid; gap: 4px; }
+.customer-portal-link-card > div:first-child strong { font-size: 13px; }
+.customer-portal-link-card > div:first-child small { color: var(--text-muted); font-size: 11px; line-height: 1.45; }
+.customer-portal-link-card form .button { width: 100%; }
+.customer-portal-link-result { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+.customer-portal-link-result input { min-width: 0; height: 42px; padding: 0 11px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-elevated); color: var(--text-secondary); font-size: 10px; }
+.customer-portal-link-result button { min-height: 42px; display: flex; align-items: center; gap: 6px; padding: 0 12px; border: 0; border-radius: 10px; background: var(--accent); color: var(--text-on-accent); font-size: 11px; font-weight: 750; }
+
+@media (max-width: 620px) {
+  .customer-portal-header { height: 66px; padding-inline: 18px; }
+  .customer-portal-header > a { width: 104px; }
+  .customer-portal-shell { width: calc(100% - 32px); padding: 34px 0 calc(72px + env(safe-area-inset-bottom)); }
+  .customer-portal-intro { margin-bottom: 26px; }
+  .customer-portal-back { margin-bottom: 28px; }
+  .customer-portal-intro h1 { font-size: 38px; }
+  .appointment-pass { grid-template-columns: 1fr; }
+  .appointment-pass__date { grid-template-columns: auto auto auto; justify-content: start; gap: 7px; padding: 15px 18px; text-align: left; }
+  .appointment-pass__date strong { order: -1; margin: 0; font-size: 30px; }
+  .appointment-pass__date span, .appointment-pass__date small { font-size: 11px; }
+  .appointment-pass__body { padding: 22px 18px 18px; }
+  .appointment-pass h2 { font-size: 24px; }
+  .appointment-pass__facts { display: grid; gap: 10px; }
+  .appointment-pass__actions { display: grid; grid-template-columns: 1fr; }
+  .appointment-pass__actions .button { width: 100%; }
+  .customer-portal-confirm { grid-template-columns: 1fr; padding: 18px; }
+  .customer-portal-confirm .button { width: 100%; }
+  .customer-portal-slots { grid-template-columns: repeat(3, 1fr); }
+  .customer-appointment-list article { grid-template-columns: 1fr auto; gap: 6px 12px; padding: 15px 0; }
+  .customer-appointment-list time { grid-column: 1 / -1; }
+  .customer-waitlist-list article { align-items: flex-start; flex-direction: column; gap: 4px; }
+  .customer-profile-section form { grid-template-columns: 1fr; }
+  .customer-profile-section form .field:first-child, .customer-profile-section form .button { grid-column: auto; }
+  .customer-profile-section form .button { width: 100%; }
+  .customer-portal-footer { align-items: flex-start; flex-direction: column; gap: 4px; }
+  .customer-portal-invalid { width: calc(100% - 36px); margin-top: 64px; }
+  .customer-portal-invalid h1 { font-size: 39px; }
+  .customer-portal-loading__header { height: 66px; }
+  .customer-portal-loading__body { width: calc(100% - 32px); margin-top: 34px; }
+  .customer-portal-loading__pass { height: 360px; }
 }

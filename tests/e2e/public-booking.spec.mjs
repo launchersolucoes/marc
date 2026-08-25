@@ -42,7 +42,7 @@ test.describe("agendamento público do piloto", () => {
   test.beforeEach(async () => cleanupPilotCustomers([customerPhone, waitlistPhone, removedWaitlistPhone]));
   test.afterEach(async () => cleanupPilotCustomers([customerPhone, waitlistPhone, removedWaitlistPhone]));
 
-  test("cliente escolhe um horário real e recebe confirmação", async ({ page }) => {
+  test("cliente escolhe um horário real, abre o portal e cancela @responsive", async ({ page }) => {
     await page.goto(`/agendar/${pilotSlug}`);
 
     await expect(page.getByRole("heading", { level: 1, name: "Estúdio Piloto Marc" })).toBeVisible();
@@ -59,6 +59,22 @@ test.describe("agendamento público do piloto", () => {
     await expect(page.getByRole("status")).toBeVisible();
     await expect(page.getByRole("heading", { level: 2, name: "Pronto, Cliente." })).toBeVisible();
     await expect(page.getByRole("definition").filter({ hasText: selectedService.trim() })).toBeVisible();
+
+    const portalLink = page.getByRole("link", { name: "Ver e gerenciar meus horários" });
+    await expect(portalLink).toHaveAttribute("href", /^\/cliente\/[a-f0-9]{64}$/);
+    await portalLink.click();
+
+    await expect(page).toHaveURL(/\/cliente\/[a-f0-9]{64}$/);
+    await expect(page.getByRole("heading", { level: 1, name: "Olá, Cliente." })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 2, name: selectedService.trim() })).toBeVisible();
+
+    await page.getByRole("button", { name: "Cancelar horário" }).click();
+    await expect(page.getByText("Cancelar este horário?", { exact: true })).toBeVisible();
+    await page.getByRole("button", { name: "Confirmar cancelamento" }).click();
+
+    await expect(page.getByRole("status")).toContainText("Horário cancelado");
+    await expect(page.getByRole("heading", { level: 2, name: "Nenhum horário marcado." })).toBeVisible();
+    await expect(page.getByText("Cancelado", { exact: true })).toBeVisible();
   });
 
   test("cliente entra na lista e recepção converte a solicitação em horário", async ({ page }) => {
