@@ -3684,6 +3684,7 @@ html[data-theme="light"] .customer-portal-reschedule > input { color-scheme: lig
 .customer-portal-footer > div, .customer-portal-footer a { display: flex; align-items: center; gap: 7px; }
 .customer-portal-footer a { min-height: 44px; color: var(--text-secondary); font-weight: 700; }
 .customer-portal-footer a:hover { color: var(--accent-strong); }
+.customer-portal-access-note { max-width: 70ch; margin: 12px 0 0; color: var(--text-muted); font-size: 10px; line-height: 1.5; }
 .customer-portal-invalid { width: min(620px, calc(100% - 40px)); display: grid; justify-items: start; margin: clamp(80px, 14vh, 150px) auto 0; }
 .customer-portal-invalid > div { width: 52px; height: 52px; display: grid; place-items: center; margin-bottom: 24px; border-radius: 14px; background: var(--surface-elevated); color: var(--accent-strong); }
 .customer-portal-invalid h1 { max-width: 12ch; margin: 0 0 16px; font-size: 48px; line-height: 1; letter-spacing: -.035em; }
@@ -3705,7 +3706,13 @@ html[data-theme="light"] .customer-portal-reschedule > input { color-scheme: lig
 .customer-portal-link-card > div:first-child span { display: grid; gap: 4px; }
 .customer-portal-link-card > div:first-child strong { font-size: 13px; }
 .customer-portal-link-card > div:first-child small { color: var(--text-muted); font-size: 11px; line-height: 1.45; }
-.customer-portal-link-card form .button { width: 100%; }
+.customer-portal-link-actions { display: flex; align-items: center; gap: 8px; }
+.customer-portal-link-actions form { flex: 1 1 auto; }
+.customer-portal-link-actions .button { width: 100%; min-height: 44px; padding-inline: 10px; white-space: nowrap; }
+.customer-portal-revoke-confirm { display: grid; gap: 12px; padding-top: 14px; border-top: 1px solid var(--border); }
+.customer-portal-revoke-confirm p { margin: 0; color: var(--text-secondary); font-size: 11px; line-height: 1.5; }
+.customer-portal-revoke-confirm form { display: flex; align-items: center; gap: 8px; }
+.customer-portal-revoke-confirm .button { min-height: 44px; }
 .customer-portal-link-result { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
 .customer-portal-link-result input { min-width: 0; height: 42px; padding: 0 11px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-elevated); color: var(--text-secondary); font-size: 10px; }
 .customer-portal-link-result button { min-height: 42px; display: flex; align-items: center; gap: 6px; padding: 0 12px; border: 0; border-radius: 10px; background: var(--accent); color: var(--text-on-accent); font-size: 11px; font-weight: 750; }
@@ -3737,6 +3744,7 @@ html[data-theme="light"] .customer-portal-reschedule > input { color-scheme: lig
   .customer-profile-section form .field:first-child, .customer-profile-section form .button { grid-column: auto; }
   .customer-profile-section form .button { width: 100%; }
   .customer-portal-footer { align-items: flex-start; flex-direction: column; gap: 4px; }
+  .customer-portal-link-actions, .customer-portal-revoke-confirm form { align-items: stretch; flex-direction: column; }
   .customer-portal-invalid { width: calc(100% - 36px); margin-top: 64px; }
   .customer-portal-invalid h1 { font-size: 39px; }
   .customer-portal-loading__header { height: 66px; }

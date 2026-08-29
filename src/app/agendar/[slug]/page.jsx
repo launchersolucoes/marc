@@ -31,10 +31,12 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default async function PublicBookingPage({ params }) {
+export default async function PublicBookingPage({ params, searchParams }) {
   const { slug } = await params;
+  const query = await searchParams;
   const establishment = await getBookingPage(slug);
   if (!establishment) notFound();
+  const requestedOfferingId = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(query?.oferta || "")) ? String(query.oferta) : "";
 
   const location = [establishment.address, establishment.city, establishment.state].filter(Boolean).join(" · ");
 
@@ -67,7 +69,7 @@ export default async function PublicBookingPage({ params }) {
         </section>
 
         <section className="public-booking-card" aria-label="Formulário de agendamento">
-          <PublicBookingFlow establishment={establishment} />
+          <PublicBookingFlow establishment={establishment} initialOfferingId={requestedOfferingId} />
         </section>
       </div>
     </main>

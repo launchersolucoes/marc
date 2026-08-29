@@ -10,8 +10,18 @@ import {
 } from "./pilot-fixture.mjs";
 
 const customerPhone = "11999990001";
+const mobileCustomerPhone = "11999990002";
 const waitlistPhone = "11999990024";
 const removedWaitlistPhone = "11999990025";
+const revokedPortalPhone = "11999990026";
+
+async function signInOwner(page) {
+  await page.goto("/entrar");
+  await page.getByLabel("E-mail").fill(pilotEmail);
+  await page.locator('input[name="password"]').fill(pilotPassword);
+  await page.getByRole("button", { name: "Entrar no Marc" }).click();
+  await page.waitForURL(/\/app(?:\/|$)/);
+}
 
 async function signInReception(page) {
   await page.goto("/entrar");
@@ -39,21 +49,23 @@ async function joinWaitlist(page, { name, phone }) {
 test.describe("agendamento público do piloto", () => {
   test.skip(!pilotEmail || !pilotPassword || !pilotSlug, "A conta piloto precisa estar provisionada.");
 
-  test.beforeEach(async () => cleanupPilotCustomers([customerPhone, waitlistPhone, removedWaitlistPhone]));
-  test.afterEach(async () => cleanupPilotCustomers([customerPhone, waitlistPhone, removedWaitlistPhone]));
+  test.beforeEach(async () => cleanupPilotCustomers([customerPhone, mobileCustomerPhone, waitlistPhone, removedWaitlistPhone, revokedPortalPhone]));
+  test.afterEach(async () => cleanupPilotCustomers([customerPhone, mobileCustomerPhone, waitlistPhone, removedWaitlistPhone, revokedPortalPhone]));
 
-  test("cliente escolhe um horário real, abre o portal e cancela @responsive", async ({ page }) => {
+  test("cliente escolhe um horário real, abre o portal e cancela @responsive", async ({ page }, testInfo) => {
+    const responsivePhone = testInfo.project.name.includes("mobile") ? mobileCustomerPhone : customerPhone;
     await page.goto(`/agendar/${pilotSlug}`);
 
     await expect(page.getByRole("heading", { level: 1, name: "Estúdio Piloto Marc" })).toBeVisible();
     const selectedService = await page.getByLabel("Serviço").locator("option:checked").textContent();
-    await page.getByLabel("Data").fill(nextOpenDate());
+    const selectedProfessional = await page.getByLabel("Profissional").locator("option:checked").textContent();
+    await page.getByLabel("Data").fill(nextOpenDate(testInfo.project.name.includes("mobile") ? 2 : 1));
 
     const slots = page.getByRole("radio");
     await expect(slots.first()).toBeVisible();
     await slots.first().check();
     await page.getByLabel("Seu nome").fill("Cliente Piloto E2E");
-    await page.getByLabel("WhatsApp").fill(customerPhone);
+    await page.getByLabel("WhatsApp").fill(responsivePhone);
     await page.getByRole("button", { name: "Confirmar meu horário" }).click();
 
     await expect(page.getByRole("status")).toBeVisible();
@@ -75,6 +87,31 @@ test.describe("agendamento público do piloto", () => {
     await expect(page.getByRole("status")).toContainText("Horário cancelado");
     await expect(page.getByRole("heading", { level: 2, name: "Nenhum horário marcado." })).toBeVisible();
     await expect(page.getByText("Cancelado", { exact: true })).toBeVisible();
+
+    const bookAgain = page.getByRole("link", { name: "Agendar novamente" });
+    await expect(bookAgain).toHaveAttribute("href", /^\/agendar\/.+\?oferta=[a-f0-9-]{36}$/);
+    await bookAgain.click();
+    await expect(page.getByLabel("Serviço")).toHaveValue(await page.getByLabel("Serviço").locator("option", { hasText: selectedService.trim() }).getAttribute("value"));
+    await expect(page.getByLabel("Profissional").locator("option:checked")).toHaveText(selectedProfessional.trim());
+  });
+
+  test("equipe revoga o link e encerra imediatamente o acesso do cliente", async ({ page }) => {
+    const customer = "Cliente Revogação E2E";
+    await joinWaitlist(page, { name: customer, phone: revokedPortalPhone });
+    const portalPath = await page.getByRole("link", { name: "Acompanhar minha solicitação" }).getAttribute("href");
+    expect(portalPath).toMatch(/^\/cliente\/[a-f0-9]{64}$/);
+
+    await signInOwner(page);
+    await page.goto(`/app/clientes?busca=${revokedPortalPhone}`);
+    await page.getByRole("link", { name: `Editar ${customer}` }).click();
+    await expect(page.getByRole("button", { name: "Revogar acesso" })).toBeVisible();
+    await page.getByRole("button", { name: "Revogar acesso" }).click();
+    await expect(page.getByText("O link deixará de funcionar imediatamente.", { exact: false })).toBeVisible();
+    await page.getByRole("button", { name: "Revogar agora" }).click();
+    await expect(page.getByRole("status")).toContainText("Acesso revogado");
+
+    await page.goto(portalPath);
+    await expect(page.getByRole("heading", { level: 1, name: "Este acesso não está mais disponível." })).toBeVisible();
   });
 
   test("cliente entra na lista e recepção converte a solicitação em horário", async ({ page }) => {

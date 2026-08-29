@@ -16,7 +16,7 @@ function money(cents) {
   return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(cents / 100);
 }
 
-export default function PublicBookingFlow({ establishment }) {
+export default function PublicBookingFlow({ establishment, initialOfferingId = "" }) {
   const offerings = establishment.offerings || [];
   const services = useMemo(
     () => Array.from(new Map(offerings.map((item) => [item.service_id, {
@@ -26,9 +26,10 @@ export default function PublicBookingFlow({ establishment }) {
     }])).values()),
     [offerings],
   );
-  const [serviceId, setServiceId] = useState(services[0]?.id || "");
+  const requestedOffering = offerings.find((item) => item.id === initialOfferingId);
+  const [serviceId, setServiceId] = useState(requestedOffering?.service_id || services[0]?.id || "");
   const serviceOfferings = useMemo(() => offerings.filter((item) => item.service_id === serviceId), [offerings, serviceId]);
-  const [offeringId, setOfferingId] = useState(serviceOfferings[0]?.id || "");
+  const [offeringId, setOfferingId] = useState(requestedOffering?.id || serviceOfferings[0]?.id || "");
   const maximumBookingDays = establishment.max_booking_days || 60;
   const manualConfirmation = establishment.booking_confirmation_mode === "manual";
   const [date, setDate] = useState(localDate());

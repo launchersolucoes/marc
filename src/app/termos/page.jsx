@@ -10,7 +10,7 @@ export default function TermsPage() {
     <LegalPage
       title="Termos de Uso"
       summary="As regras essenciais para usar o Marc com segurança, clareza e responsabilidade."
-      updatedAt="24 de agosto de 2026"
+      updatedAt="25 de agosto de 2026"
     >
       <section>
         <h2>1. Sobre o Marc</h2>
@@ -37,7 +37,7 @@ export default function TermsPage() {
       <section>
         <h2>4. Agendamentos</h2>
         <p>O horário é registrado com base na disponibilidade apresentada no momento da confirmação. Cancelamentos, reagendamentos, atrasos, faltas e eventuais valores cobrados pelo atendimento seguem as regras informadas pelo estabelecimento.</p>
-        <p>Enquanto o portal de autoatendimento do cliente não estiver disponível, mudanças devem ser solicitadas diretamente ao estabelecimento.</p>
+        <p>Quando o estabelecimento fornecer uma área do cliente, o acesso ocorre por um link pessoal e temporário. O cliente deve evitar compartilhá-lo e pode pedir ao estabelecimento que substitua ou revogue o acesso. Alterações continuam sujeitas aos prazos configurados pelo estabelecimento.</p>
       </section>
 
       <section>

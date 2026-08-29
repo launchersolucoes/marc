@@ -63,6 +63,10 @@ export default function CustomerPortal({ initialData, token }) {
     new Date(appointment.starts_at).getTime() - now >= cancellationNoticeMinutes * 60_000
   );
   const canManageNext = nextAppointment ? canManageAppointment(nextAppointment) : false;
+  const repeatAppointment = history.find((item) => item.professional_service_id) || nextAppointment;
+  const repeatBookingHref = repeatAppointment?.professional_service_id
+    ? `/agendar/${data.establishment.slug}?oferta=${encodeURIComponent(repeatAppointment.professional_service_id)}`
+    : `/agendar/${data.establishment.slug}`;
   const firstName = data.customer.name.split(" ")[0];
 
   async function refresh(successMessage) {
@@ -88,7 +92,10 @@ export default function CustomerPortal({ initialData, token }) {
     });
     setBusy("");
     if (actionError) {
-      setError(actionError.message.toLowerCase().includes("window")
+      const detail = actionError.message.toLowerCase();
+      setError(detail.includes("rate limit")
+        ? "Muitas alterações foram solicitadas em pouco tempo. Aguarde alguns minutos e tente novamente."
+        : detail.includes("window")
         ? "O prazo para cancelar online terminou. Fale diretamente com o estabelecimento."
         : "Não foi possível cancelar este horário. Fale com o estabelecimento para receber ajuda.");
       return;
@@ -132,7 +139,9 @@ export default function CustomerPortal({ initialData, token }) {
     setBusy("");
     if (actionError) {
       const detail = actionError.message.toLowerCase();
-      setError(detail.includes("window")
+      setError(detail.includes("rate limit")
+        ? "Muitas alterações foram solicitadas em pouco tempo. Aguarde alguns minutos e tente novamente."
+        : detail.includes("window")
         ? "O prazo para reagendar online terminou. Fale diretamente com o estabelecimento."
         : detail.includes("notice")
           ? "O novo horário não respeita a antecedência mínima do estabelecimento."
@@ -155,7 +164,9 @@ export default function CustomerPortal({ initialData, token }) {
     });
     setBusy("");
     if (actionError) {
-      setError("Não foi possível remover esta solicitação. Tente novamente.");
+      setError(actionError.message.toLowerCase().includes("rate limit")
+        ? "Muitas alterações foram solicitadas em pouco tempo. Aguarde alguns minutos e tente novamente."
+        : "Não foi possível remover esta solicitação. Tente novamente.");
       return;
     }
     await refresh("Você saiu da lista de espera.");
@@ -180,7 +191,10 @@ export default function CustomerPortal({ initialData, token }) {
     });
     setBusy("");
     if (actionError) {
-      setError(actionError.message.toLowerCase().includes("phone already")
+      const detail = actionError.message.toLowerCase();
+      setError(detail.includes("rate limit")
+        ? "Muitas alterações foram solicitadas em pouco tempo. Aguarde alguns minutos e tente novamente."
+        : detail.includes("phone already")
         ? "Este telefone já pertence a outro cadastro neste estabelecimento."
         : "Não foi possível atualizar seus dados. Revise os campos e tente novamente.");
       return;
@@ -225,7 +239,7 @@ export default function CustomerPortal({ initialData, token }) {
           <CalendarDays size={24} />
           <h2>Nenhum horário marcado.</h2>
           <p>Quando quiser voltar, escolha serviço, profissional e um horário disponível.</p>
-          <Link className="button button--primary" href={`/agendar/${data.establishment.slug}`}>Agendar um horário <ArrowRight size={17} /></Link>
+          <Link className="button button--primary" href={repeatBookingHref}>Agendar um horário <ArrowRight size={17} /></Link>
         </section>
       )}
 
@@ -303,8 +317,9 @@ export default function CustomerPortal({ initialData, token }) {
 
       <footer className="customer-portal-footer">
         <div><MapPin size={16} /><span>{[data.establishment.address, data.establishment.city, data.establishment.state].filter(Boolean).join(" · ") || data.establishment.name}</span></div>
-        <Link href={`/agendar/${data.establishment.slug}`}>Agendar novamente <ArrowRight size={15} /></Link>
+        <Link href={repeatBookingHref}>Agendar novamente <ArrowRight size={15} /></Link>
       </footer>
+      <p className="customer-portal-access-note">Este link é pessoal. Se ele tiver sido compartilhado por engano, peça ao estabelecimento para substituir ou revogar o acesso.</p>
     </div>
   );
 }

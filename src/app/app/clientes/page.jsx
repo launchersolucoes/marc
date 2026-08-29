@@ -42,6 +42,9 @@ export default async function CustomersPage({ searchParams }) {
     };
   });
   const editableCustomer = canManage ? rows.find((customer) => customer.id === editCustomerId) || null : null;
+  const { data: portalAccess } = editableCustomer
+    ? await supabase.rpc("get_customer_portal_access_status", { target_customer_id: editableCustomer.id })
+    : { data: null };
 
   return (
       <div className="app-content customers-page">
@@ -108,7 +111,7 @@ export default async function CustomersPage({ searchParams }) {
           </MobileRouteSheet>}
           {canManage && editableCustomer && <MobileRouteSheet className="customer-form-card customer-edit-sheet" open closeHref={showArchived ? "/app/clientes?arquivados=1" : "/app/clientes"} title="Editar cliente">
             <CustomerForm customer={editableCustomer} />
-            <CustomerPortalLink customerId={editableCustomer.id} />
+            <CustomerPortalLink key={editableCustomer.id} customerId={editableCustomer.id} initialAccess={portalAccess} />
           </MobileRouteSheet>}
         </div>
       </div>

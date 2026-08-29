@@ -107,3 +107,24 @@ export async function createCustomerPortalLink(_previousState, formData) {
 
   return { error: "", path: `/cliente/${data}` };
 }
+
+export async function revokeCustomerPortalLink(_previousState, formData) {
+  const customerId = value(formData, "customerId");
+  if (!customerId) return { error: "Cliente não identificado.", success: "" };
+
+  const { supabase, membership } = await getActionContext();
+  if (!["owner", "manager", "receptionist"].includes(membership.role)) {
+    return { error: "Seu acesso não permite revogar links de clientes.", success: "" };
+  }
+
+  const { data, error } = await supabase.rpc("revoke_customer_portal_access", {
+    target_customer_id: customerId,
+  });
+  if (error) return { error: "Não foi possível revogar o acesso. Tente novamente.", success: "" };
+
+  revalidatePath("/app/clientes");
+  return {
+    error: "",
+    success: data ? "Acesso revogado. O link anterior deixou de funcionar." : "O acesso já estava revogado.",
+  };
+}

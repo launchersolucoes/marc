@@ -1,6 +1,6 @@
 # Relatório de lacunas e evolução do Marc
 
-**Atualizado em:** 24 de agosto de 2026
+**Atualizado em:** 25 de agosto de 2026
 **Base da auditoria:** código Next.js, migrations Supabase, suíte de testes, `PRODUCT.md`, `implementation-plan.md` e runbooks operacionais.
 
 ## 1. Resumo executivo
@@ -90,6 +90,9 @@ Esses itens não exigem WhatsApp, Resend ou Stripe e são o caminho mais curto p
 - reagendamento revalida disponibilidade, folgas, duração e conflitos;
 - cancelamento devolve a vaga imediatamente à agenda;
 - link pode ser substituído pela equipe quando houver suspeita de compartilhamento;
+- equipe visualiza se há acesso ativo e pode revogá-lo imediatamente sem apagar horários ou cadastro;
+- mutações do portal possuem limite dedicado por cliente, com serialização no banco;
+- “agendar novamente” reaproveita o último serviço e profissional sem colocar dados pessoais na URL;
 - E2E cobre criação pública, abertura do portal e cancelamento.
 
 **Ainda falta evoluir:**
@@ -99,9 +102,7 @@ Esses itens não exigem WhatsApp, Resend ou Stripe e são o caminho mais curto p
 - tratamento de sinal pago quando essa função existir;
 - política para cliente marcado como falta;
 - entrega automática e recuperação do link por Resend ou WhatsApp;
-- reaproveitar serviço e profissional diretamente na ação “agendar novamente”;
-- rate limit dedicado às mutações do portal e tela de revogação explícita além da rotação;
-- revisar texto de privacidade e suporte específico do acesso por link.
+- ampliar a recuperação do acesso quando os canais transacionais estiverem disponíveis;
 
 Uma conta completa com senha, Google ou WhatsApp deve vir depois, quando fidelidade, pagamentos, favoritos e uso em vários estabelecimentos justificarem o atrito adicional.
 
