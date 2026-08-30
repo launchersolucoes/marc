@@ -3027,7 +3027,7 @@ html[data-theme="light"] .public-booking-header img { filter: brightness(0); }
 
 .settings-layout { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(330px, .65fr); gap: 20px; align-items: start; }
 .settings-layout--single { grid-template-columns: minmax(0, 1fr) minmax(330px, 440px); }
-.settings-primary, .settings-form--compact, .settings-access, .settings-public-link { border: 1px solid var(--border); border-radius: 16px; background: var(--surface); }
+.settings-primary, .settings-form--compact, .settings-access, .settings-public-link, .data-rights-panel { border: 1px solid var(--border); border-radius: 16px; background: var(--surface); }
 .settings-primary { padding: 28px; }
 .settings-form { display: grid; gap: 20px; }
 .settings-form-separator { height: 1px; margin: 28px 0; background: var(--border); }
@@ -3077,6 +3077,52 @@ html[data-theme="light"] .public-booking-header img { filter: brightness(0); }
 .settings-public-link strong { font-size: 12px; }
 .settings-public-link small { overflow: hidden; color: var(--text-muted); font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
 .settings-public-link > a { display: flex; align-items: center; gap: 4px; color: var(--accent-strong); font-size: 11px; font-weight: 750; }
+.data-rights-panel { overflow: hidden; }
+.data-rights-panel > header { display: flex; align-items: flex-start; gap: 13px; padding: 22px 22px 17px; }
+.data-rights-panel > header .settings-profile-mark { flex: 0 0 auto; margin: 0; }
+.data-rights-panel h2 { margin: 0; font-size: 18px; letter-spacing: -.025em; }
+.data-rights-panel header p { margin: 5px 0 0; color: var(--text-muted); font-size: 11px; line-height: 1.5; }
+.data-rights-list { border-top: 1px solid var(--border); }
+.data-rights-action { width: 100%; min-height: 68px; display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 11px 18px; border: 0; border-bottom: 1px solid var(--border); background: transparent; color: var(--text-primary); text-align: left; cursor: pointer; }
+.data-rights-action:hover { background: var(--surface-elevated); }
+.data-rights-action > span:first-child { min-width: 0; display: flex; align-items: center; gap: 11px; }
+.data-rights-action > span:first-child > svg { flex: 0 0 auto; color: var(--accent-strong); }
+.data-rights-action > span:first-child > span { min-width: 0; display: grid; gap: 3px; }
+.data-rights-action strong { font-size: 12px; }
+.data-rights-action small { color: var(--text-muted); font-size: 10px; line-height: 1.4; }
+.data-rights-action > span:last-child { color: var(--accent-strong); font-size: 10px; font-weight: 760; }
+.data-rights-request { display: grid; gap: 12px; padding: 16px 18px 18px; background: var(--surface-elevated); }
+.data-rights-request > label { color: var(--text-secondary); font-size: 11px; font-weight: 700; }
+.data-rights-request > label span { color: var(--text-muted); font-weight: 500; }
+.data-rights-request textarea { min-height: 86px; resize: vertical; }
+.data-rights-request .button { width: 100%; }
+.data-rights-request .form-message { margin: 0; }
+.account-closure-entry { display: grid; gap: 13px; padding: 17px 18px 18px; }
+.account-closure-entry > div { display: flex; align-items: flex-start; gap: 11px; }
+.account-closure-entry > div > svg { flex: 0 0 auto; color: var(--danger); }
+.account-closure-entry span { display: grid; gap: 3px; }
+.account-closure-entry strong { font-size: 12px; }
+.account-closure-entry small { color: var(--text-muted); font-size: 10px; line-height: 1.45; }
+.account-closure-entry > button { width: fit-content; min-height: 44px; padding: 0; border: 0; background: transparent; color: var(--danger); font: inherit; font-size: 11px; font-weight: 760; cursor: pointer; }
+.account-closure-layer { position: fixed; z-index: 100; inset: 0; display: grid; place-items: center; padding: 20px; }
+.account-closure-backdrop { position: absolute; inset: 0; border: 0; background: rgb(0 0 0 / 64%); backdrop-filter: blur(5px); }
+.account-closure-dialog { position: relative; width: min(100%, 520px); max-height: min(760px, calc(100svh - 40px)); overflow: auto; padding: 28px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); box-shadow: 0 24px 70px rgb(0 0 0 / 38%); outline: none; animation: account-dialog-in 180ms cubic-bezier(.16, 1, .3, 1); }
+.account-closure-dialog.is-dragging { transition: none; }
+.account-closure-dialog > header { position: absolute; top: 16px; right: 16px; }
+.account-closure-dialog > header button { width: 44px; height: 44px; display: grid; place-items: center; border: 0; border-radius: 11px; background: transparent; color: var(--text-secondary); cursor: pointer; }
+.account-closure-dialog > header button:hover { background: var(--surface-elevated); color: var(--text-primary); }
+.account-closure-handle { display: none; }
+.account-closure-mark { width: 46px; height: 46px; display: grid; place-items: center; margin-bottom: 22px; border-radius: 13px; background: var(--danger-soft); color: var(--danger); }
+.account-closure-dialog h2 { max-width: 16ch; margin: 0 0 10px; font-size: 27px; line-height: 1.08; letter-spacing: -.03em; }
+.account-closure-dialog > p { margin: 0; color: var(--text-secondary); font-size: 13px; line-height: 1.55; }
+.account-closure-dialog > ul { display: grid; gap: 8px; margin: 20px 0 24px; padding-left: 19px; color: var(--text-secondary); font-size: 12px; line-height: 1.45; }
+.account-closure-dialog form { display: grid; gap: 15px; }
+.account-closure-dialog .form-message { margin: 0; }
+.account-closure-check { display: grid; grid-template-columns: 18px minmax(0, 1fr); align-items: flex-start; gap: 10px; color: var(--text-secondary); font-size: 11px; line-height: 1.5; }
+.account-closure-check input { width: 18px; height: 18px; margin: 0; accent-color: var(--danger); }
+.account-closure-submit { width: 100%; min-height: 48px; }
+@keyframes account-dialog-in { from { opacity: 0; transform: translateY(12px) scale(.985); } }
+@keyframes account-dialog-fade { from { opacity: 0; } }
 .settings-readonly { min-height: 360px; display: grid; place-items: center; align-content: center; text-align: center; }
 .settings-readonly > svg { color: var(--accent); }
 .settings-readonly h2 { max-width: 23ch; margin: 18px 0 8px; font-size: 22px; }
@@ -3414,6 +3460,18 @@ html[data-theme="light"] .public-booking-header img { filter: brightness(0); }
   .waitlist-list > article { grid-template-columns: 1fr; }
   .waitlist-note { grid-column: auto; margin-left: 56px; }
   .waitlist-actions { grid-column: auto; grid-template-columns: 1fr; padding-left: 0; }
+  .account-closure-layer { align-items: end; padding: 0; }
+  .account-closure-dialog { width: 100%; max-height: calc(100svh - 18px); padding: 20px 20px calc(24px + env(safe-area-inset-bottom)); border-radius: 18px 18px 0 0; animation-name: account-sheet-in; }
+  .account-closure-handle { height: 18px; display: grid; place-items: start center; }
+  .account-closure-handle { touch-action: none; cursor: grab; }
+  .account-closure-handle:active { cursor: grabbing; }
+  .account-closure-handle span { width: 36px; height: 5px; border-radius: 999px; background: var(--border-strong); }
+  .account-closure-dialog > header { top: 18px; right: 14px; }
+  @keyframes account-sheet-in { from { transform: translateY(100%); } }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .account-closure-backdrop, .account-closure-dialog { animation: account-dialog-fade 120ms linear !important; }
 }
 
 @media (max-width: 560px) {
@@ -3680,6 +3738,20 @@ html[data-theme="light"] .customer-portal-reschedule > input { color-scheme: lig
 .customer-profile-section form { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 4px 0 24px; }
 .customer-profile-section form .field:first-child { grid-column: 1 / -1; }
 .customer-profile-section form .button { grid-column: 1 / -1; justify-self: start; }
+.customer-privacy-section { border-bottom: 1px solid var(--border); }
+.customer-privacy-section > button { width: 100%; min-height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 12px 0; border: 0; background: transparent; color: var(--text-primary); text-align: left; cursor: pointer; }
+.customer-privacy-section > button > span { min-width: 0; display: flex; align-items: center; gap: 10px; }
+.customer-privacy-section > button > span > svg { color: var(--accent-strong); }
+.customer-privacy-section > button span span { min-width: 0; display: grid; gap: 3px; }
+.customer-privacy-section > button strong { font-size: 14px; }
+.customer-privacy-section > button small { color: var(--text-muted); font-size: 11px; }
+.customer-privacy-section > button[aria-expanded="true"] > svg { transform: rotate(180deg); }
+.customer-privacy-actions { display: grid; gap: 13px; padding: 2px 0 24px; }
+.customer-privacy-actions > .button { width: fit-content; }
+.customer-privacy-deletion { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding-top: 13px; border-top: 1px solid var(--border); }
+.customer-privacy-deletion > span { max-width: 62ch; color: var(--text-muted); font-size: 11px; line-height: 1.5; }
+.customer-privacy-deletion .button { flex: 0 0 auto; color: var(--danger); }
+.customer-privacy-actions > p { display: flex; align-items: center; gap: 8px; margin: 0; color: var(--success); font-size: 12px; font-weight: 700; }
 .customer-portal-footer { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-top: 46px; padding-top: 22px; color: var(--text-muted); font-size: 11px; }
 .customer-portal-footer > div, .customer-portal-footer a { display: flex; align-items: center; gap: 7px; }
 .customer-portal-footer a { min-height: 44px; color: var(--text-secondary); font-weight: 700; }
@@ -3743,6 +3815,9 @@ html[data-theme="light"] .customer-portal-reschedule > input { color-scheme: lig
   .customer-profile-section form { grid-template-columns: 1fr; }
   .customer-profile-section form .field:first-child, .customer-profile-section form .button { grid-column: auto; }
   .customer-profile-section form .button { width: 100%; }
+  .customer-privacy-actions > .button { width: 100%; }
+  .customer-privacy-deletion { align-items: stretch; flex-direction: column; gap: 8px; }
+  .customer-privacy-deletion .button { width: 100%; }
   .customer-portal-footer { align-items: flex-start; flex-direction: column; gap: 4px; }
   .customer-portal-link-actions, .customer-portal-revoke-confirm form { align-items: stretch; flex-direction: column; }
   .customer-portal-invalid { width: calc(100% - 36px); margin-top: 64px; }

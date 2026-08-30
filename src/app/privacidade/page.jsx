@@ -10,7 +10,7 @@ export default function PrivacyPage() {
     <LegalPage
       title="Política de Privacidade"
       summary="Como os dados são usados para manter contas seguras, organizar estabelecimentos e registrar agendamentos."
-      updatedAt="24 de agosto de 2026"
+      updatedAt="29 de agosto de 2026"
     >
       <section>
         <h2>1. Quem participa do tratamento</h2>
@@ -63,7 +63,8 @@ export default function PrivacyPage() {
       <section>
         <h2>6. Seus direitos</h2>
         <p>Você pode solicitar confirmação de tratamento, acesso, correção, informação sobre compartilhamento, portabilidade quando aplicável, oposição, revisão e eliminação nos casos previstos em lei.</p>
-        <p>Envie a solicitação para <a href="mailto:launchersolucoes@gmail.com">launchersolucoes@gmail.com</a>. Para proteger os dados, poderemos confirmar sua identidade e pedir informações suficientes para localizar o relacionamento ou estabelecimento envolvido.</p>
+        <p>Usuários autenticados encontram exportação, correção e solicitação de exclusão em Configurações. Clientes com uma área de horários ativa podem baixar uma cópia e solicitar exclusão pelo próprio link. Também é possível escrever para <a href="mailto:launchersolucoes@gmail.com">launchersolucoes@gmail.com</a>.</p>
+        <p>Para proteger os dados, confirmamos a identidade e o vínculo antes de atender pedidos. Informações financeiras, de segurança ou necessárias ao exercício de direitos podem ser preservadas pelo prazo aplicável, com anonimização dos contatos quando possível.</p>
       </section>
 
       <section>

@@ -28,7 +28,7 @@ function SubmitButton({ mode }) {
   );
 }
 
-export default function AuthForm({ mode, externalError = "", nextPath = "" }) {
+export default function AuthForm({ mode, externalError = "", externalSuccess = "", nextPath = "" }) {
   const action = mode === "signup" ? signUp : signIn;
   const [state, formAction] = useActionState(action, initialState);
   const [showPassword, setShowPassword] = useState(false);
@@ -116,10 +116,10 @@ export default function AuthForm({ mode, externalError = "", nextPath = "" }) {
         </p>
       )}
 
-      {state.success && (
+      {(state.success || externalSuccess) && (
         <div className="form-message form-message--success" role="status">
           <CheckCircle2 size={18} />
-          <span>{state.success}</span>
+          <span>{state.success || externalSuccess}</span>
         </div>
       )}
 

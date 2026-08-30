@@ -8,7 +8,12 @@ export default async function SignInPage({ searchParams }) {
 
   return (
     <AuthShell mode="signin">
-      <AuthForm mode="signin" externalError={params?.erro || ""} nextPath={params?.next || ""} />
+      <AuthForm
+        mode="signin"
+        externalError={params?.erro || ""}
+        externalSuccess={params?.encerrado === "1" ? "Estabelecimento encerrado. A operação e os acessos foram desativados." : ""}
+        nextPath={params?.next || ""}
+      />
     </AuthShell>
   );
 }

@@ -144,10 +144,10 @@ Os preços estão confirmados, mas a composição ainda é ilustrativa. Falta:
 
 - Termos de Uso e Política de Privacidade versionados.
 - Consentimento/aviso adequado no agendamento público.
-- Processo de acesso, correção, portabilidade e exclusão solicitado pelo titular.
+- Processo inicial de acesso, correção, portabilidade e exclusão solicitado pelo titular implementado no produto. Ainda falta o painel operacional de análise e conclusão dos pedidos.
 - Política de retenção para clientes, agendamentos, auditoria e dados financeiros.
-- Exportação dos dados do estabelecimento e encerramento de conta.
-- Anonimização segura quando a exclusão conflitar com histórico financeiro obrigatório.
+- Exportação estruturada dos dados do estabelecimento e encerramento protegido implementados para o proprietário.
+- Anonimização de contatos no encerramento implementada, preservando histórico financeiro e auditoria. A política formal de retenção ainda precisa de revisão jurídica.
 - Registro de aceite de termos e alterações relevantes.
 - Revisão formal de permissões Master e proteção reforçada para administradores.
 

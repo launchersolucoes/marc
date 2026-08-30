@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { getActionContext } from "../../../lib/action-context";
 
 function value(formData, name) {
@@ -106,4 +107,58 @@ export async function updateBookingRules(_previousState, formData) {
   revalidatePath("/app/configuracoes");
   revalidatePath("/agendar/[slug]", "page");
   return { error: "", success: "Regras atualizadas. Os próximos horários já seguem esta política." };
+}
+
+export async function requestOwnDataDeletion(_previousState, formData) {
+  const details = value(formData, "details");
+  const { supabase } = await getActionContext({ allowRestricted: true });
+  const { error } = await supabase.rpc("request_own_data_deletion", {
+    request_details: details || null,
+  });
+
+  if (error) {
+    const message = error.message.toLowerCase();
+    return {
+      error: message.includes("already open")
+        ? "Você já possui uma solicitação de exclusão em análise."
+        : "Não foi possível registrar a solicitação. Tente novamente ou fale com o suporte.",
+      success: "",
+    };
+  }
+
+  return {
+    error: "",
+    success: "Solicitação registrada. O suporte analisará vínculos e prazos de retenção antes da exclusão.",
+  };
+}
+
+export async function closeEstablishment(_previousState, formData) {
+  const confirmation = value(formData, "confirmation");
+  const acknowledged = value(formData, "acknowledged") === "yes";
+  if (!acknowledged) {
+    return { error: "Confirme que você baixou os dados necessários antes de encerrar.", success: "" };
+  }
+
+  const { supabase, membership } = await getActionContext({ allowRestricted: true });
+  if (membership.role !== "owner") {
+    return { error: "Somente o proprietário pode encerrar o estabelecimento.", success: "" };
+  }
+
+  const { error } = await supabase.rpc("close_current_establishment", {
+    confirmation_slug: confirmation,
+  });
+  if (error) {
+    const message = error.message.toLowerCase();
+    return {
+      error: message.includes("billing subscription")
+        ? "Cancele primeiro a assinatura ativa na área de Plano e assinatura."
+        : message.includes("confirmation")
+        ? "O identificador informado não corresponde ao estabelecimento."
+        : "Não foi possível concluir o encerramento. Nenhum acesso foi alterado; fale com o suporte.",
+      success: "",
+    };
+  }
+
+  await supabase.auth.signOut();
+  redirect("/entrar?encerrado=1");
 }

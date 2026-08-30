@@ -10,7 +10,7 @@ export default function TermsPage() {
     <LegalPage
       title="Termos de Uso"
       summary="As regras essenciais para usar o Marc com segurança, clareza e responsabilidade."
-      updatedAt="25 de agosto de 2026"
+      updatedAt="29 de agosto de 2026"
     >
       <section>
         <h2>1. Sobre o Marc</h2>
@@ -70,7 +70,8 @@ export default function TermsPage() {
 
       <section>
         <h2>9. Suspensão e encerramento</h2>
-        <p>O acesso pode ser restringido em caso de violação destes Termos, risco de segurança, fraude, exigência legal ou ausência de assinatura vigente. Sempre que possível, será oferecida orientação para regularização e tratamento dos dados preservados.</p>
+        <p>O acesso pode ser restringido em caso de violação destes Termos, risco de segurança, fraude, exigência legal ou ausência de assinatura vigente. O proprietário também pode encerrar o estabelecimento nas Configurações depois de confirmar a operação e ter a oportunidade de exportar seus dados.</p>
+        <p>O encerramento desativa a operação e os acessos, cancela solicitações futuras e anonimiza contatos pessoais. Registros financeiros, de segurança e auditoria podem ser preservados quando necessários para cumprir obrigações ou exercer direitos.</p>
       </section>
 
       <section>

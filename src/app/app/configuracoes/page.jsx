@@ -12,6 +12,7 @@ import {
   ProfileSettingsForm,
 } from "../../../components/settings-forms";
 import PwaInstallCard from "../../../components/pwa-install-card";
+import DataRightsPanel from "../../../components/data-rights-panel";
 import { getAppContext } from "../../../lib/app-context";
 
 export const metadata = { title: "Configurações — Marc" };
@@ -68,6 +69,11 @@ export default async function SettingsPage({ searchParams }) {
               <div><Link2 size={17} /><span><strong>Página pública</strong><small>/agendar/{establishment.slug}</small></span></div>
               <Link href={`/agendar/${establishment.slug}`} target="_blank">Abrir <ArrowUpRight size={15} /></Link>
             </section>
+            <DataRightsPanel
+              role={membership.role}
+              establishmentName={establishment.name}
+              establishmentSlug={establishment.slug}
+            />
           </aside>
         </div>
       </div>

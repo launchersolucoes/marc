@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, CalendarDays, Check, ChevronDown, Clock3, History, ListTodo, LoaderCircle, MapPin, Pencil, RefreshCw, Scissors, UserRound, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, CalendarDays, Check, ChevronDown, Clock3, Download, FileKey2, History, ListTodo, LoaderCircle, MapPin, Pencil, RefreshCw, Scissors, UserRound, X } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { isValidPhone, normalizePhone } from "../lib/phone";
@@ -43,6 +43,8 @@ export default function CustomerPortal({ initialData, token }) {
   const [slots, setSlots] = useState([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [privacyOpen, setPrivacyOpen] = useState(false);
+  const [privacyRequested, setPrivacyRequested] = useState(false);
   const now = Date.now();
   const appointments = data.appointments || [];
   const upcoming = useMemo(
@@ -203,6 +205,22 @@ export default function CustomerPortal({ initialData, token }) {
     await refresh("Seus dados foram atualizados.");
   }
 
+  async function requestDeletion() {
+    setBusy("privacy-deletion");
+    setError("");
+    const supabase = createClient();
+    const { error: actionError } = await supabase.rpc("request_customer_portal_deletion", { raw_token: token });
+    setBusy("");
+    if (actionError) {
+      setError(actionError.message.toLowerCase().includes("rate limit")
+        ? "Muitas solicitações foram feitas em pouco tempo. Aguarde alguns minutos e tente novamente."
+        : "Não foi possível registrar a solicitação. Fale com o estabelecimento ou com o suporte do Marc.");
+      return;
+    }
+    setPrivacyRequested(true);
+    setMessage("Solicitação registrada. O estabelecimento analisará os dados que podem ser excluídos ou precisam ser preservados.");
+  }
+
   return (
     <div className="customer-portal-shell">
       <header className="customer-portal-intro">
@@ -313,6 +331,25 @@ export default function CustomerPortal({ initialData, token }) {
           <div className="field"><label htmlFor="portalEmail">E-mail <span>opcional</span></label><input id="portalEmail" name="email" type="email" defaultValue={data.customer.email || ""} /></div>
           <button className="button button--primary" type="submit" disabled={busy === "profile"}>{busy === "profile" ? <><LoaderCircle className="spin" size={16} /> Salvando</> : "Salvar meus dados"}</button>
         </form>}
+      </section>
+
+      <section className="customer-privacy-section">
+        <button type="button" onClick={() => setPrivacyOpen((current) => !current)} aria-expanded={privacyOpen}>
+          <span><FileKey2 size={17} /><span><strong>Privacidade e seus dados</strong><small>Baixe uma cópia ou solicite a exclusão.</small></span></span><ChevronDown size={18} />
+        </button>
+        {privacyOpen && <div className="customer-privacy-actions">
+          <a className="button button--secondary" href={`/api/customer/${token}/export`} download><Download size={16} /> Baixar meus dados</a>
+          {privacyRequested ? (
+            <p role="status"><Check size={16} /> Solicitação de exclusão em análise.</p>
+          ) : (
+            <div className="customer-privacy-deletion">
+              <span>Registra um pedido para análise. Agendamentos e registros financeiros podem precisar ser preservados sem seus contatos.</span>
+              <button className="button button--quiet" type="button" disabled={busy === "privacy-deletion"} onClick={requestDeletion}>
+                {busy === "privacy-deletion" ? <><LoaderCircle className="spin" size={16} /> Registrando</> : "Solicitar exclusão"}
+              </button>
+            </div>
+          )}
+        </div>}
       </section>
 
       <footer className="customer-portal-footer">
