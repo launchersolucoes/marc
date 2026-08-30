@@ -7,6 +7,7 @@ import {
   CircleDot,
   ClipboardCheck,
   ExternalLink,
+  FileKey2,
   FlaskConical,
   LogOut,
   ShieldCheck,
@@ -22,15 +23,22 @@ import {
   updatePilotCheckItem,
   updatePilotIssue,
   updatePilotProgram,
+  updatePrivacyRequest,
 } from "./actions";
 import { getPlatformAdminContext } from "../../lib/platform-admin-context";
 import { subscriptionPlanLabels, subscriptionStatusLabels } from "../../lib/subscription";
+import MasterPrivacySubmit from "../../components/master-privacy-submit";
 
 export const metadata = { title: "Master — Marc" };
 
 function dateLabel(value) {
   if (!value) return "Sem data";
   return new Intl.DateTimeFormat("pt-BR", { dateStyle: "medium", timeZone: "America/Sao_Paulo" }).format(new Date(value));
+}
+
+function dateTimeLabel(value) {
+  if (!value) return "Sem data";
+  return new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short", timeZone: "America/Sao_Paulo" }).format(new Date(value));
 }
 
 function accessDate(item) {
@@ -59,6 +67,10 @@ const eventLabels = {
   "availability.blocked": "Disponibilidade bloqueada",
 };
 
+const privacyStatusLabels = { pending: "Recebida", in_review: "Em análise", completed: "Concluída", rejected: "Recusada" };
+const privacyTypeLabels = { access: "Acesso", correction: "Correção", portability: "Portabilidade", deletion: "Exclusão", establishment_closure: "Encerramento" };
+const privacySourceLabels = { authenticated_account: "Conta da equipe", customer_portal: "Área do cliente", support: "Suporte" };
+
 function pilotChecklist(counts, stored = {}) {
   const automatic = [
     { key: "owner_access", title: "Conta proprietária", description: "Dono ativo e estabelecimento acessível.", passed: Number(counts.owners || 0) > 0 },
@@ -82,6 +94,19 @@ export default async function MasterPage({ searchParams }) {
   const { supabase, user } = await getPlatformAdminContext();
   const { data, error } = await supabase.rpc("get_platform_admin_overview");
   const establishments = data || [];
+  const privacyFilter = ["open", "closed", "all"].includes(params?.direitos) ? params.direitos : "open";
+  const requestedPrivacyPage = Number(params?.pagina || 1);
+  const privacyPage = Number.isInteger(requestedPrivacyPage) && requestedPrivacyPage > 0 ? requestedPrivacyPage : 1;
+  const privacyPageSize = 25;
+  const { data: privacyData, error: privacyError } = await supabase.rpc("get_platform_privacy_requests", {
+    request_scope: privacyFilter,
+    page_limit: privacyPageSize,
+    page_offset: (privacyPage - 1) * privacyPageSize,
+  });
+  const privacyRequests = Array.isArray(privacyData?.items) ? privacyData.items : [];
+  const privacyTotal = Number(privacyData?.total || 0);
+  const openPrivacyRequests = Number(privacyData?.open_total || 0);
+  const privacyPages = Math.max(1, Math.ceil(privacyTotal / privacyPageSize));
   const requestedPilot = typeof params?.piloto === "string" ? params.piloto : "";
   const selectedEstablishment = establishments.find((item) => item.establishment_id === requestedPilot)
     || establishments.find((item) => item.slug.includes("piloto"))
@@ -119,6 +144,7 @@ export default async function MasterPage({ searchParams }) {
 
         {params?.atualizado && <p className="master-message master-message--success">Assinatura atualizada e registrada no histórico.</p>}
         {(params?.pilotoAtualizado || params?.checklistAtualizado || params?.problemaCriado || params?.problemaAtualizado) && <p className="master-message master-message--success">Operação do piloto atualizada.</p>}
+        {params?.privacidadeAtualizada && <p className="master-message master-message--success">Solicitação de privacidade atualizada e registrada no histórico.</p>}
         {params?.erro && <p className="master-message master-message--error">{params.erro}</p>}
         {error && <p className="master-message master-message--error">Não foi possível carregar os dados globais.</p>}
 
@@ -126,7 +152,61 @@ export default async function MasterPage({ searchParams }) {
           <article><Building2 size={20} /><span>Estabelecimentos</span><strong>{establishments.length}</strong></article>
           <article><CalendarClock size={20} /><span>Acessos vigentes</span><strong>{activeSubscriptions}</strong></article>
           <article><UsersRound size={20} /><span>Profissionais</span><strong>{totalProfessionals}</strong></article>
+          <article><FileKey2 size={20} /><span>Pedidos de dados abertos</span><strong>{openPrivacyRequests}</strong></article>
         </div>
+
+        <section className="master-privacy" aria-labelledby="privacy-operations-title">
+          <div className="master-privacy__heading">
+            <div className="master-pilot__title"><FileKey2 size={22} /><div><h2 id="privacy-operations-title">Direitos de dados</h2><p>Fila restrita da Launcher para acompanhar solicitações, decisões e evidências.</p></div></div>
+            <nav aria-label="Filtrar solicitações de privacidade">
+              <Link className={privacyFilter === "open" ? "is-active" : ""} aria-current={privacyFilter === "open" ? "page" : undefined} href="/master?direitos=open">Abertas <span>{openPrivacyRequests}</span></Link>
+              <Link className={privacyFilter === "closed" ? "is-active" : ""} aria-current={privacyFilter === "closed" ? "page" : undefined} href="/master?direitos=closed">Encerradas</Link>
+              <Link className={privacyFilter === "all" ? "is-active" : ""} aria-current={privacyFilter === "all" ? "page" : undefined} href="/master?direitos=all">Todas</Link>
+            </nav>
+          </div>
+
+          {privacyError ? (
+            <p className="master-message master-message--error">A fila de privacidade ainda não está disponível neste ambiente.</p>
+          ) : privacyRequests.length ? (
+            <div className="master-privacy-list">
+              {privacyRequests.map((request) => (
+                <article key={request.id}>
+                  <div className="master-privacy-request">
+                    <span className={`privacy-state is-${request.status}`}><CircleDot size={13} />{privacyStatusLabels[request.status] || request.status}</span>
+                    <div>
+                      <strong>{privacyTypeLabels[request.request_type] || request.request_type} · {request.subject_name}</strong>
+                      <small>{request.establishment_name} · {privacySourceLabels[request.source] || request.source} · {dateLabel(request.requested_at)}</small>
+                      {request.subject_contact && <span>{request.subject_contact}</span>}
+                    </div>
+                  </div>
+                  <div className="master-privacy-context">
+                    <span>Contexto informado</span>
+                    <p>{request.details || "Nenhum contexto adicional foi enviado."}</p>
+                    {request.resolution_notes && <small><strong>Última decisão:</strong> {request.resolution_notes}</small>}
+                  </div>
+                  <form action={updatePrivacyRequest} className="master-privacy-command">
+                    <input type="hidden" name="requestId" value={request.id} />
+                    <input type="hidden" name="filter" value={privacyFilter} />
+                    <label>Estado<select name="status" defaultValue={request.status}><option value="pending">Recebida</option><option value="in_review">Em análise</option><option value="completed">Concluída</option><option value="rejected">Recusada</option></select></label>
+                    <label>Registro da análise<input name="resolutionNotes" defaultValue={request.resolution_notes || ""} maxLength={1200} placeholder="Obrigatório para concluir ou recusar" /></label>
+                    <MasterPrivacySubmit />
+                  </form>
+                  {!!request.history?.length && <details className="master-privacy-history">
+                    <summary>Histórico da solicitação <span>{request.history.length}</span></summary>
+                    <ol>{request.history.map((event) => <li key={event.id}><span className={`privacy-state is-${event.next_status}`}>{privacyStatusLabels[event.next_status] || event.next_status}</span><div><strong>{privacyStatusLabels[event.previous_status] || event.previous_status} → {privacyStatusLabels[event.next_status] || event.next_status}</strong><small>{event.actor_name} · {dateTimeLabel(event.created_at)}</small>{event.notes && <p>{event.notes}</p>}</div></li>)}</ol>
+                  </details>}
+                </article>
+              ))}
+              {privacyPages > 1 && <nav className="master-privacy-pages" aria-label="Paginação das solicitações">
+                {privacyPage > 1 ? <Link href={`/master?direitos=${privacyFilter}&pagina=${privacyPage - 1}`}>Anterior</Link> : <span />}
+                <small>Página {privacyPage} de {privacyPages}</small>
+                {privacyPage < privacyPages ? <Link href={`/master?direitos=${privacyFilter}&pagina=${privacyPage + 1}`}>Próxima</Link> : <span />}
+              </nav>}
+            </div>
+          ) : (
+            <div className="master-privacy-empty"><CheckCircle2 size={22} /><strong>{privacyFilter === "open" ? "Nenhuma solicitação aberta" : "Nenhuma solicitação nesta visão"}</strong><span>A fila será atualizada quando equipe ou clientes exercerem seus direitos pelo Marc.</span></div>
+          )}
+        </section>
 
         {selectedEstablishment && (
           <section className="master-pilot" aria-labelledby="pilot-title">

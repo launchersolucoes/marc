@@ -5,6 +5,7 @@ export const pilotCheckStatuses = ["pending", "passed", "failed", "blocked"];
 export const pilotIssueStatuses = ["open", "in_progress", "resolved", "wont_fix"];
 export const pilotIssuePriorities = ["p1", "p2", "p3"];
 export const pilotIssueAreas = ["agenda", "clientes", "servicos", "equipe", "financeiro", "relatorios", "pwa", "acesso", "outro"];
+export const privacyRequestStatuses = ["pending", "in_review", "completed", "rejected"];
 
 function uuid(value) {
   return /^[0-9a-f-]{36}$/i.test(String(value || "")) ? String(value) : null;
@@ -48,4 +49,11 @@ export function normalizePilotIssueCommand({ establishmentId, title, area, prior
 export function normalizePilotIssueUpdate({ issueId, status, resolutionNotes }) {
   if (!uuid(issueId) || !pilotIssueStatuses.includes(status)) return null;
   return { issueId, status, resolutionNotes: String(resolutionNotes || "").trim().slice(0, 2000) };
+}
+
+export function normalizePrivacyRequestCommand({ requestId, status, resolutionNotes }) {
+  const notes = String(resolutionNotes || "").trim().slice(0, 1200);
+  if (!uuid(requestId) || !privacyRequestStatuses.includes(status)) return null;
+  if (["completed", "rejected"].includes(status) && notes.length < 3) return null;
+  return { requestId, status, resolutionNotes: notes };
 }

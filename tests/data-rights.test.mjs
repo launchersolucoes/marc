@@ -3,6 +3,8 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 const migrationUrl = new URL("../supabase/migrations/20260829090000_data_rights_and_account_closure.sql", import.meta.url);
+const operationsMigrationUrl = new URL("../supabase/migrations/20260830100000_platform_privacy_operations.sql", import.meta.url);
+const hardenedOperationsMigrationUrl = new URL("../supabase/migrations/20260830113000_harden_platform_privacy_operations.sql", import.meta.url);
 
 test("data exports are owner scoped and never expose portal token hashes", async () => {
   const [migration, route] = await Promise.all([
@@ -43,4 +45,18 @@ test("deletion requests are deduplicated and rate limited for customers", async 
   assert.match(migration, /Deletion request already open/);
   assert.match(migration, /guard_customer_portal_mutation\(target_customer_id, 'privacy\.deletion_requested'\)/);
   assert.match(migration, /status in \('pending', 'in_review'\)/);
+});
+
+test("platform privacy operations are admin-only and keep decision history", async () => {
+  const [migration, hardenedMigration] = await Promise.all([readFile(operationsMigrationUrl, "utf8"), readFile(hardenedOperationsMigrationUrl, "utf8")]);
+  assert.match(migration, /if not public\.is_platform_admin\(\)/g);
+  assert.match(migration, /create table public\.privacy_request_events/);
+  assert.match(migration, /Decision notes are required/);
+  assert.match(migration, /insert into public\.privacy_request_events/);
+  assert.match(migration, /revoke all on function public\.admin_update_privacy_request/);
+  assert.match(migration, /grant execute on function public\.admin_update_privacy_request\(uuid, text, text\) to authenticated/);
+  assert.match(hardenedMigration, /request_scope text default 'open'/);
+  assert.match(hardenedMigration, /limit normalized_limit offset normalized_offset/);
+  assert.match(hardenedMigration, /'history', coalesce/);
+  assert.match(hardenedMigration, /target_request\.status = desired_status/);
 });

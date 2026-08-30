@@ -5,6 +5,7 @@ import {
   normalizePilotIssueCommand,
   normalizePilotIssueUpdate,
   normalizePilotProgramCommand,
+  normalizePrivacyRequestCommand,
   normalizeSubscriptionCommand,
 } from "../src/lib/platform-admin.js";
 
@@ -15,6 +16,22 @@ test("normalizes a valid platform subscription command", () => {
     normalizeSubscriptionCommand({ establishmentId, planCode: "pro", status: "active", accessDays: "30" }),
     { establishmentId, planCode: "pro", status: "active", accessDays: 30 },
   );
+});
+
+test("validates privacy request decisions and requires terminal evidence", () => {
+  const requestId = "33333333-3333-4333-8333-333333333333";
+  assert.deepEqual(normalizePrivacyRequestCommand({ requestId, status: "in_review", resolutionNotes: "" }), {
+    requestId,
+    status: "in_review",
+    resolutionNotes: "",
+  });
+  assert.deepEqual(normalizePrivacyRequestCommand({ requestId, status: "completed", resolutionNotes: "  Identidade validada e dados anonimizados.  " }), {
+    requestId,
+    status: "completed",
+    resolutionNotes: "Identidade validada e dados anonimizados.",
+  });
+  assert.equal(normalizePrivacyRequestCommand({ requestId, status: "completed", resolutionNotes: "" }), null);
+  assert.equal(normalizePrivacyRequestCommand({ requestId, status: "deleted", resolutionNotes: "Motivo" }), null);
 });
 
 test("rejects unsupported plans, states and access periods", () => {

@@ -1,6 +1,6 @@
 # Relatório de lacunas e evolução do Marc
 
-**Atualizado em:** 25 de agosto de 2026
+**Atualizado em:** 30 de agosto de 2026
 **Base da auditoria:** código Next.js, migrations Supabase, suíte de testes, `PRODUCT.md`, `implementation-plan.md` e runbooks operacionais.
 
 ## 1. Resumo executivo
@@ -72,7 +72,7 @@ O produto ainda não está completo para lançamento comercial autônomo em esca
 | Backup e recuperação | Verificado em 24/08/2026: o plano Free do Supabase não possui backups agendados; upgrade adiado por decisão dos responsáveis | Manter somente dados sintéticos nas rodadas internas; migrar para um plano com backup antes de dados reais, confirmar a primeira cópia e testar restauração. |
 | Suporte do piloto | Calebe Alves e Alan Pires, das 8h às 22h, com canal, prioridades, triagem e SLAs em `docs/pilot-support.md` | Combinar a contingência P1 com cada participante enquanto não houver telefone ou grupo dedicado. |
 | Aceite em dispositivos reais | Testes automatizados cobrem breakpoints | Validar iPhone/Android reais, teclado, instalação PWA, retomada, rede instável, sheets e safe areas. |
-| Privacidade mínima | Termos, Política, avisos de coleta, identificação `58.199.674 Alan de Souza Pires`, CNPJ e endereço de contato implementados | Confirmar a divergência entre endereço de contato e endereço cadastral e concluir revisão jurídica antes do piloto externo. |
+| Privacidade mínima | Termos, Política, avisos de coleta, identificação `58.199.674 Alan de Souza Pires`, CNPJ e endereço de contato implementados; exportação, solicitações, encerramento e fila administrativa auditável estão operacionais | Confirmar a divergência entre endereço de contato e endereço cadastral, definir prazos formais de retenção e concluir revisão jurídica antes do piloto externo. |
 
 Esses itens não exigem WhatsApp, Resend ou Stripe e são o caminho mais curto para colocar um estabelecimento real em operação assistida.
 
@@ -144,7 +144,7 @@ Os preços estão confirmados, mas a composição ainda é ilustrativa. Falta:
 
 - Termos de Uso e Política de Privacidade versionados.
 - Consentimento/aviso adequado no agendamento público.
-- Processo inicial de acesso, correção, portabilidade e exclusão solicitado pelo titular implementado no produto. Ainda falta o painel operacional de análise e conclusão dos pedidos.
+- Processo inicial de acesso, correção, portabilidade e exclusão solicitado pelo titular implementado no produto, incluindo fila operacional restrita, justificativa para decisões e histórico auditável. Ainda faltam a política jurídica formal de retenção e a validação do processo pela assessoria responsável.
 - Política de retenção para clientes, agendamentos, auditoria e dados financeiros.
 - Exportação estruturada dos dados do estabelecimento e encerramento protegido implementados para o proprietário.
 - Anonimização de contatos no encerramento implementada, preservando histórico financeiro e auditoria. A política formal de retenção ainda precisa de revisão jurídica.

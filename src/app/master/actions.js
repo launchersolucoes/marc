@@ -9,6 +9,7 @@ import {
   normalizePilotIssueCommand,
   normalizePilotIssueUpdate,
   normalizePilotProgramCommand,
+  normalizePrivacyRequestCommand,
 } from "../../lib/platform-admin";
 
 function field(formData, name) {
@@ -125,4 +126,24 @@ export async function updatePilotIssue(formData) {
   if (error) pilotRedirect(establishmentId, "erro=Nao+foi+possivel+atualizar+o+problema");
   revalidatePath("/master");
   pilotRedirect(establishmentId, "problemaAtualizado=1");
+}
+
+export async function updatePrivacyRequest(formData) {
+  const command = normalizePrivacyRequestCommand({
+    requestId: field(formData, "requestId"),
+    status: field(formData, "status"),
+    resolutionNotes: field(formData, "resolutionNotes"),
+  });
+  const filter = ["open", "closed", "all"].includes(field(formData, "filter")) ? field(formData, "filter") : "open";
+  if (!command) redirect(`/master?direitos=${filter}&erro=Inclua+uma+justificativa+para+concluir+ou+recusar`);
+
+  const { supabase } = await getPlatformAdminContext();
+  const { error } = await supabase.rpc("admin_update_privacy_request", {
+    target_request_id: command.requestId,
+    desired_status: command.status,
+    decision_notes: command.resolutionNotes || null,
+  });
+  if (error) redirect(`/master?direitos=${filter}&erro=Nao+foi+possivel+atualizar+a+solicitacao`);
+  revalidatePath("/master");
+  redirect(`/master?direitos=${filter}&privacidadeAtualizada=1`);
 }
