@@ -10,7 +10,7 @@ export default function PrivacyPage() {
     <LegalPage
       title="Política de Privacidade"
       summary="Como os dados são usados para manter contas seguras, organizar estabelecimentos e registrar agendamentos."
-      updatedAt="29 de agosto de 2026"
+      updatedAt="30 de agosto de 2026"
     >
       <section>
         <h2>1. Quem participa do tratamento</h2>
@@ -56,7 +56,8 @@ export default function PrivacyPage() {
 
       <section>
         <h2>5. Retenção e segurança</h2>
-        <p>Os dados são mantidos pelo tempo necessário para prestar o serviço, preservar histórico operacional e financeiro, cumprir obrigações ou exercer direitos. Depois disso, podem ser eliminados ou anonimizados quando não existir fundamento para conservação.</p>
+        <p>A legislação não define um prazo único para todos os dados. Conservamos cada categoria enquanto for necessária à finalidade informada e, quando aplicável, para cumprir obrigação legal, investigar segurança ou exercer direitos. Depois disso, os dados são eliminados ou anonimizados quando não existir fundamento para conservação.</p>
+        <p>Contatos e perfis devem ser anonimizados depois de um pedido aprovado ou do encerramento, salvo obrigação ou disputa registrada. Histórico financeiro, auditoria e evidências de pedidos podem permanecer sem os contatos diretos quando isso for suficiente. Os prazos operacionais exatos dessas categorias ainda passam por validação jurídica e contábil antes de qualquer descarte automático.</p>
         <p>Aplicamos controle de acesso por estabelecimento, permissões por papel, registros de auditoria e proteção de credenciais. Nenhum sistema elimina todos os riscos; por isso, investigamos incidentes e comunicamos os envolvidos quando exigido.</p>
       </section>
 

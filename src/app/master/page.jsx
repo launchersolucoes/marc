@@ -28,6 +28,7 @@ import {
 import { getPlatformAdminContext } from "../../lib/platform-admin-context";
 import { subscriptionPlanLabels, subscriptionStatusLabels } from "../../lib/subscription";
 import MasterPrivacySubmit from "../../components/master-privacy-submit";
+import { retentionPolicyVersion, retentionRules, retentionStatusLabels } from "../../lib/data-retention";
 
 export const metadata = { title: "Master — Marc" };
 
@@ -206,6 +207,31 @@ export default async function MasterPage({ searchParams }) {
           ) : (
             <div className="master-privacy-empty"><CheckCircle2 size={22} /><strong>{privacyFilter === "open" ? "Nenhuma solicitação aberta" : "Nenhuma solicitação nesta visão"}</strong><span>A fila será atualizada quando equipe ou clientes exercerem seus direitos pelo Marc.</span></div>
           )}
+        </section>
+
+        <section className="master-retention" aria-labelledby="retention-protocol-title">
+          <div className="master-retention__heading">
+            <div className="master-pilot__title"><ShieldCheck size={22} /><div><h2 id="retention-protocol-title">Protocolo de retenção</h2><p>Matriz operacional para orientar decisões enquanto os prazos passam por validação jurídica e contábil.</p></div></div>
+            <span>Versão operacional {retentionPolicyVersion}</span>
+          </div>
+          <div className="master-retention__notice">
+            <AlertTriangle size={18} />
+            <p><strong>Nenhum descarte é automático.</strong> A conclusão de um pedido continua exigindo análise, registro da decisão e verificação de obrigação ou bloqueio jurídico.</p>
+          </div>
+          <div className="master-retention-list">
+            {retentionRules.map((rule) => (
+              <article key={rule.key}>
+                <div><strong>{rule.category}</strong><span>{retentionStatusLabels[rule.status]}</span></div>
+                <p>{rule.summary}</p>
+                <strong>{rule.period}</strong>
+                <small>{rule.disposition}</small>
+              </article>
+            ))}
+          </div>
+          <footer>
+            <p>Bloqueios por obrigação, disputa ou incidente devem ter motivo, responsável e data de revisão.</p>
+            <Link href="/privacidade" target="_blank">Ler política pública <ExternalLink size={14} /></Link>
+          </footer>
         </section>
 
         {selectedEstablishment && (
