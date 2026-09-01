@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getActionContext } from "../../../lib/action-context";
+import { currentLegalDocuments } from "../../../lib/legal-documents";
 
 function value(formData, name) {
   return String(formData.get(name) || "").trim();
@@ -107,6 +108,27 @@ export async function updateBookingRules(_previousState, formData) {
   revalidatePath("/app/configuracoes");
   revalidatePath("/agendar/[slug]", "page");
   return { error: "", success: "Regras atualizadas. Os próximos horários já seguem esta política." };
+}
+
+export async function recordLegalAcceptance(formData) {
+  if (formData.get("legalAcceptance") !== "on") {
+    redirect("/app/configuracoes?legal=required");
+  }
+
+  const { supabase, membership } = await getActionContext({ allowRestricted: true });
+  const { error } = await supabase.rpc("record_settings_legal_acceptance", {
+    terms_version: currentLegalDocuments.terms.version,
+    terms_content_sha256: currentLegalDocuments.terms.contentSha256,
+    privacy_version: currentLegalDocuments.privacy.version,
+    privacy_content_sha256: currentLegalDocuments.privacy.contentSha256,
+    target_establishment_id: membership.establishment_id,
+    acceptance_confirmed: true,
+  });
+
+  if (error) redirect("/app/configuracoes?legal=error");
+
+  revalidatePath("/app/configuracoes");
+  redirect("/app/configuracoes?legal=accepted");
 }
 
 export async function requestOwnDataDeletion(_previousState, formData) {

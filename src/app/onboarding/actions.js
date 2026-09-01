@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { currentLegalDocuments } from "../../lib/legal-documents";
 import { createClient } from "../../lib/supabase/server";
 
 function value(formData, name) {
@@ -22,11 +23,16 @@ export async function createEstablishment(_previousState, formData) {
   const name = value(formData, "businessName");
   const phone = value(formData, "phone");
   const category = value(formData, "category");
+  const legalAcceptance = formData.get("legalAcceptance") === "on";
 
   if (name.length < 2 || phone.length < 8 || !category) {
     return {
       error: "Preencha nome, categoria e telefone para continuar.",
     };
+  }
+
+  if (!legalAcceptance) {
+    return { error: "Leia e aceite os documentos vigentes para criar o estabelecimento." };
   }
 
   const supabase = await createClient();
@@ -35,6 +41,11 @@ export async function createEstablishment(_previousState, formData) {
   if (authError || !authData.user) redirect("/entrar");
 
   const { error } = await supabase.rpc("onboard_establishment", {
+    terms_version: currentLegalDocuments.terms.version,
+    terms_content_sha256: currentLegalDocuments.terms.contentSha256,
+    privacy_version: currentLegalDocuments.privacy.version,
+    privacy_content_sha256: currentLegalDocuments.privacy.contentSha256,
+    acceptance_confirmed: true,
     establishment_name: name,
     establishment_slug: slugify(name),
     establishment_phone: phone,

@@ -2,6 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { randomUUID } from "node:crypto";
 import { readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
+import { currentLegalDocuments } from "../src/lib/legal-documents.js";
 
 const confirmation = process.env.E2E_ROLE_PROVISION_CONFIRM;
 if (!["prepare-role-credentials", "provision-role-matrix"].includes(confirmation)) {
@@ -149,6 +150,11 @@ for (const definition of definitions) {
 
     const { error: acceptanceError } = await roleClient.rpc("accept_team_invitation", {
       invitation_token: token,
+      terms_version: currentLegalDocuments.terms.version,
+      terms_content_sha256: currentLegalDocuments.terms.contentSha256,
+      privacy_version: currentLegalDocuments.privacy.version,
+      privacy_content_sha256: currentLegalDocuments.privacy.contentSha256,
+      acceptance_confirmed: true,
     });
     if (acceptanceError) throw acceptanceError;
   }

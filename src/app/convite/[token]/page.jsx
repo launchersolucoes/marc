@@ -1,9 +1,10 @@
-import { ArrowRight, BadgeCheck, Clock3, Mail } from "lucide-react";
+import { ArrowRight, BadgeCheck, Check, Clock3, Mail } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import AppThemeToggle from "../../../components/app-theme-toggle";
 import { createClient } from "../../../lib/supabase/server";
+import { currentLegalDocuments } from "../../../lib/legal-documents";
 import { acceptInvitation } from "./actions";
 
 const roleLabels = {
@@ -50,6 +51,11 @@ export default async function InvitationPage({ params, searchParams }) {
         ) : authData.user ? (
           <form action={acceptInvitation}>
             <input type="hidden" name="token" value={token} />
+            <label className="choice-row choice-row--legal invitation-legal-choice">
+              <input type="checkbox" name="legalAcceptance" required />
+              <span className="choice-row__check"><Check size={15} /></span>
+              <span><strong>Concordo com os documentos vigentes</strong><small><Link href={currentLegalDocuments.terms.href} target="_blank">Termos</Link><span aria-hidden="true"> · </span><Link href={currentLegalDocuments.privacy.href} target="_blank">Privacidade</Link>. Registraremos as versões e a data.</small></span>
+            </label>
             <button className="button button--primary" type="submit">Aceitar e abrir o painel <ArrowRight size={18} /></button>
           </form>
         ) : (

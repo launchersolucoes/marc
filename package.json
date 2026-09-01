@@ -15,6 +15,7 @@
     "test:booking-rules": "node --test tests/booking-rules.test.mjs",
     "test:customer-portal": "node --test tests/customer-portal.test.mjs",
     "test:data-rights": "node --test tests/data-rights.test.mjs",
+    "test:legal": "node --test tests/legal-acceptance.test.mjs",
     "test:email": "node --test tests/email.test.mjs",
     "test:mvp": "node --test tests/mvp-integrity.test.mjs",
     "test:performance": "node --test tests/performance-regressions.test.mjs",
@@ -26,7 +27,7 @@
     "test:sites": "node --test tests/sites-worker.test.mjs",
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
-    "test:all": "npm run test:admin && npm run test:billing && npm run test:booking-rules && npm run test:customer-portal && npm run test:data-rights && npm run test:email && npm run test:mvp && npm run test:performance && npm run test:reports && npm run test:retention && npm run test:operational && npm run test:security && npm run test:subscriptions && npm run test:sites && npm run test:e2e"
+    "test:all": "npm run test:admin && npm run test:billing && npm run test:booking-rules && npm run test:customer-portal && npm run test:data-rights && npm run test:legal && npm run test:email && npm run test:mvp && npm run test:performance && npm run test:reports && npm run test:retention && npm run test:operational && npm run test:security && npm run test:subscriptions && npm run test:sites && npm run test:e2e"
   },
   "dependencies": {
     "@fontsource-variable/instrument-sans": "^5.3.0",

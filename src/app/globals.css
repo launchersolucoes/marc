@@ -2037,9 +2037,14 @@ html[data-theme="light"] .form-message--success { color: #167a4a; }
   color: transparent;
 }
 .choice-row input:checked + .choice-row__check { border-color: var(--accent); background: var(--accent); color: var(--text-on-accent); }
+.choice-row:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 3px; }
 .choice-row > span:last-child { display: grid; gap: 4px; }
 .choice-row strong { font-size: 14px; }
 .choice-row small { color: var(--text-muted); line-height: 1.4; }
+.choice-row--legal { margin-top: 24px; margin-bottom: 0; background: var(--surface-elevated); }
+.choice-row--legal small a { color: var(--accent-strong); font-weight: 720; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.choice-row--legal small a:hover { color: var(--text-primary); }
+.choice-row--legal input:invalid:not(:focus) + .choice-row__check { border-color: var(--border); }
 .onboarding-actions { display: grid; grid-template-columns: auto 1fr; gap: 12px; margin-top: 28px; }
 
 .app-layout { min-height: 100svh; display: grid; grid-template-columns: 244px minmax(0, 1fr); background: var(--bg-primary); }
@@ -2791,6 +2796,7 @@ html[data-theme="light"] .invitation-page > header img { filter: brightness(0); 
 .invitation-card dt { display: flex; align-items: center; gap: 8px; color: var(--text-muted); font-size: 12px; }
 .invitation-card dd { margin: 0; font-size: 13px; font-weight: 700; }
 .invitation-card form .button { width: 100%; }
+.invitation-card .invitation-legal-choice { margin: 0 0 16px; }
 .invitation-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
 .public-booking-page { min-height: 100svh; background: var(--bg-primary); }
@@ -3108,7 +3114,7 @@ html[data-theme="light"] .public-booking-header img { filter: brightness(0); }
 
 .settings-layout { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(330px, .65fr); gap: 20px; align-items: start; }
 .settings-layout--single { grid-template-columns: minmax(0, 1fr) minmax(330px, 440px); }
-.settings-primary, .settings-form--compact, .settings-access, .settings-public-link, .data-rights-panel { border: 1px solid var(--border); border-radius: 16px; background: var(--surface); }
+.settings-primary, .settings-form--compact, .settings-access, .settings-public-link, .settings-legal, .data-rights-panel { border: 1px solid var(--border); border-radius: 16px; background: var(--surface); }
 .settings-primary { padding: 28px; }
 .settings-form { display: grid; gap: 20px; }
 .settings-form-separator { height: 1px; margin: 28px 0; background: var(--border); }
@@ -3158,6 +3164,27 @@ html[data-theme="light"] .public-booking-header img { filter: brightness(0); }
 .settings-public-link strong { font-size: 12px; }
 .settings-public-link small { overflow: hidden; color: var(--text-muted); font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
 .settings-public-link > a { display: flex; align-items: center; gap: 4px; color: var(--accent-strong); font-size: 11px; font-weight: 750; }
+.settings-legal { overflow: hidden; }
+.settings-legal > header { display: flex; align-items: flex-start; gap: 13px; padding: 20px 20px 15px; }
+.settings-legal > header .settings-profile-mark { flex: 0 0 auto; margin: 0; }
+.settings-legal h2 { margin: 0; font-size: 18px; letter-spacing: -.025em; }
+.settings-legal header p { margin: 5px 0 0; color: var(--text-muted); font-size: 11px; line-height: 1.5; }
+.settings-legal__documents { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.settings-legal__documents a { min-height: 56px; display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 9px; padding: 10px 18px; color: var(--text-primary); }
+.settings-legal__documents a + a { border-top: 1px solid var(--border); }
+.settings-legal__documents a:hover { background: var(--surface-elevated); }
+.settings-legal__documents span { font-size: 12px; font-weight: 720; }
+.settings-legal__documents small { color: var(--text-muted); font-size: 10px; }
+.settings-legal__documents svg { color: var(--accent-strong); }
+.settings-legal__status { min-height: 68px; display: flex; align-items: center; gap: 11px; padding: 14px 18px; color: #42b883; }
+.settings-legal__status > span { display: grid; gap: 3px; }
+.settings-legal__status strong { color: var(--text-primary); font-size: 12px; }
+.settings-legal__status small { color: var(--text-muted); font-size: 10px; }
+.settings-legal form { padding: 0 18px 18px; }
+.settings-legal form .choice-row { margin: 16px 0 12px; padding: 12px; }
+.settings-legal form .choice-row strong { font-size: 12px; }
+.settings-legal form .choice-row small { font-size: 10px; }
+.settings-legal form .button { width: 100%; }
 .data-rights-panel { overflow: hidden; }
 .data-rights-panel > header { display: flex; align-items: flex-start; gap: 13px; padding: 22px 22px 17px; }
 .data-rights-panel > header .settings-profile-mark { flex: 0 0 auto; margin: 0; }

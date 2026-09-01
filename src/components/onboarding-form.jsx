@@ -11,6 +11,7 @@ import {
 import { useActionState, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { createEstablishment } from "../app/onboarding/actions";
+import { currentLegalDocuments } from "../lib/legal-documents";
 
 const initialState = { error: "" };
 
@@ -139,6 +140,20 @@ export default function OnboardingForm({ defaultName = "" }) {
         </div>
 
         {state.error && <p className="form-message form-message--error" role="alert">{state.error}</p>}
+
+        <label className="choice-row choice-row--legal">
+          <input type="checkbox" name="legalAcceptance" required />
+          <span className="choice-row__check"><Check size={15} /></span>
+          <span>
+            <strong>Li e concordo com os documentos vigentes</strong>
+            <small>
+              <a href={currentLegalDocuments.terms.href} target="_blank" rel="noreferrer">Termos de Uso</a>
+              <span aria-hidden="true"> · </span>
+              <a href={currentLegalDocuments.privacy.href} target="_blank" rel="noreferrer">Política de Privacidade</a>
+              . O aceite será registrado com sua conta, versões e data.
+            </small>
+          </span>
+        </label>
 
         <div className="onboarding-actions">
           <button className="button button--secondary" type="button" onClick={() => setStep(1)}>
