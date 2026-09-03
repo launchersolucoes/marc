@@ -11,9 +11,10 @@ export default defineConfig({
   fullyParallel: false,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 2 : 0,
-  // The local Next.js dev server compiles dynamic app routes on demand. Keeping
-  // the runner bounded avoids false timeouts caused by eight simultaneous cold routes.
-  workers: process.env.CI ? 1 : 4,
+  // The local Next.js server and the shared pilot database become nondeterministic
+  // under heavier parallel mutation. Two workers keep feedback fast without
+  // creating false failures in appointment and waitlist flows.
+  workers: process.env.CI ? 1 : 2,
   reporter: process.env.CI ? [["line"], ["html", { open: "never" }]] : "line",
   use: {
     baseURL,
