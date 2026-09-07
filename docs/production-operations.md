@@ -54,5 +54,6 @@ O cenário que conclui um atendimento e cria lançamento financeiro exige confir
 ## Transparência e documentos legais
 
 - A aplicação já apresenta Termos de Uso, Política de Privacidade e avisos junto ao cadastro e ao agendamento público.
+- Ao publicar uma nova versão corrente de Termos ou Privacidade, usuários autenticados sem evidência correspondente ficam restritos à tela de revisão, ajuda e saída até registrar novo aceite. A publicação deve atualizar conjuntamente o conteúdo, a versão, o hash SHA-256 e o registro corrente no banco.
 - A identificação pública usa `58.199.674 Alan de Souza Pires`, CNPJ `58.199.674/0001-47`, e o endereço de contato informado: Rua João Marques Ferreira, 312 — Praça Cruzeiro, Rio Bonito — RJ.
 - Antes do primeiro piloto externo, submeter o conteúdo à revisão jurídica e confirmar se o endereço de contato deve permanecer diferente do endereço cadastral constante no comprovante de CNPJ. A implementação atual é uma base operacional de transparência, não um parecer jurídico.

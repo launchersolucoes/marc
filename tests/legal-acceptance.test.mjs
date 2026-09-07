@@ -6,6 +6,7 @@ import test from "node:test";
 import { currentLegalDocuments, hasCurrentLegalAcceptance } from "../src/lib/legal-documents.js";
 
 const migrationUrl = new URL("../supabase/migrations/20260901100000_versioned_legal_acceptance.sql", import.meta.url);
+const reconsentMigrationUrl = new URL("../supabase/migrations/20260903100000_enforce_legal_reconsent.sql", import.meta.url);
 
 test("current legal document versions match the published pages", () => {
   assert.equal(currentLegalDocuments.terms.version, "2026-08-29");
@@ -77,5 +78,30 @@ test("pilot provisioners follow the versioned legal RPC signatures", async () =>
     assert.match(provisioner, /currentLegalDocuments\.terms\.contentSha256/);
     assert.match(provisioner, /currentLegalDocuments\.privacy\.contentSha256/);
     assert.match(provisioner, /acceptance_confirmed: true/);
+    assert.match(provisioner, /record_reconsent_legal_acceptance/);
   }
+});
+
+test("returning users are gated until they accept every current document", async () => {
+  const [migration, appContext, actionContext, layout, gate, form, action] = await Promise.all([
+    readFile(reconsentMigrationUrl, "utf8"),
+    readFile(new URL("../src/lib/app-context.js", import.meta.url), "utf8"),
+    readFile(new URL("../src/lib/action-context.js", import.meta.url), "utf8"),
+    readFile(new URL("../src/app/app/layout.jsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/components/legal-reconsent-gate.jsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/components/legal-reconsent-form.jsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/app/app/legal-actions.js", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(migration, /source in \('onboarding', 'invitation', 'settings', 'reconsent'\)/);
+  assert.match(migration, /create function public\.record_reconsent_legal_acceptance/);
+  assert.match(migration, /'legal_acceptance_current', not exists/);
+  assert.match(appContext, /allowLegalPending = false/);
+  assert.match(appContext, /redirect\("\/app\?legal=required"\)/);
+  assert.match(actionContext, /allowLegalPending = false/);
+  assert.match(layout, /legalAcceptanceCurrent \? children : <LegalReconsentGate/);
+  assert.match(gate, /Nenhum dado foi alterado/);
+  assert.match(form, /name="legalAcceptance" required/);
+  assert.match(action, /record_reconsent_legal_acceptance/);
+  assert.match(action, /allowLegalPending: true/);
 });

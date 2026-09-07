@@ -110,7 +110,7 @@ function ActionSheet({ open, title, onClose, children, className = "" }) {
   );
 }
 
-export default function AppShell({ membership, firstName, children }) {
+export default function AppShell({ membership, firstName, children, legalPending = false }) {
   const pathname = usePathname();
   const [openSheet, setOpenSheet] = useState(null);
   const establishment = membership.establishment;
@@ -143,13 +143,13 @@ export default function AppShell({ membership, firstName, children }) {
   ];
 
   return (
-    <main className="app-layout">
+    <main className={`app-layout ${legalPending ? "is-legal-pending" : ""}`}>
       <Suspense fallback={null}><AppNavigationProgress /></Suspense>
       <aside className="app-sidebar">
         <Link className="app-brand" href="/app">
           <Image src="/assets/marc-logo-cropped.png" alt="Marc" width={208} height={90} priority />
         </Link>
-        <nav aria-label="Navegação do painel">
+        {!legalPending && <nav aria-label="Navegação do painel">
           {visibleGroups.map(([groupLabel, items]) => (
             <div className="app-sidebar__group" key={groupLabel}>
               <span>{groupLabel}</span>
@@ -160,12 +160,12 @@ export default function AppShell({ membership, firstName, children }) {
               ))}
             </div>
           ))}
-        </nav>
+        </nav>}
         <div className="app-sidebar__bottom">
-          {["owner", "manager"].includes(membership.role) && (
+          {!legalPending && ["owner", "manager"].includes(membership.role) && (
             <Link className={activeKey === "assinatura" ? "is-active" : ""} href="/app/assinatura"><CreditCard size={19} /> Plano e assinatura</Link>
           )}
-          <Link className={activeKey === "configuracoes" ? "is-active" : ""} href="/app/configuracoes"><Settings size={19} /> Configurações</Link>
+          {!legalPending && <Link className={activeKey === "configuracoes" ? "is-active" : ""} href="/app/configuracoes"><Settings size={19} /> Configurações</Link>}
           <a href="mailto:launchersolucoes@gmail.com?subject=Ajuda%20com%20o%20Marc"><CircleHelp size={19} /> Ajuda</a>
           <form action={signOut}><button type="submit"><LogOut size={19} /> Sair</button></form>
         </div>
@@ -178,18 +178,18 @@ export default function AppShell({ membership, firstName, children }) {
             <div><strong>{establishment.name}</strong><small>{roleLabels[membership.role]}</small></div>
           </div>
           <div className="app-topbar__actions">
-            <button className="app-quick-actions-trigger" type="button" aria-label="Criar novo" aria-expanded={openSheet === "create"} onClick={() => setOpenSheet(openSheet === "create" ? null : "create")}>
+            {!legalPending && <button className="app-quick-actions-trigger" type="button" aria-label="Criar novo" aria-expanded={openSheet === "create"} onClick={() => setOpenSheet(openSheet === "create" ? null : "create")}>
               <Plus size={18} /><span>Ações rápidas</span>
-            </button>
+            </button>}
             <AppThemeToggle />
             <div className="app-avatar">{firstName.slice(0, 1).toUpperCase()}</div>
           </div>
         </header>
-        {pathname !== "/app/assinatura" && <SubscriptionNotice access={membership.subscriptionAccess} role={membership.role} />}
+        {!legalPending && pathname !== "/app/assinatura" && <SubscriptionNotice access={membership.subscriptionAccess} role={membership.role} />}
         <div className="app-view-transition" key={pathname}>{children}</div>
       </section>
 
-      <nav className="app-mobile-nav" aria-label="Navegação principal">
+      {!legalPending && <nav className="app-mobile-nav" aria-label="Navegação principal">
         {mobileNavigation.map(([key, href, Icon, label]) => (
           <Link className={activeKey === key ? "is-active" : ""} href={href} key={key} aria-current={activeKey === key ? "page" : undefined}>
             <Icon size={21} strokeWidth={activeKey === key ? 2.4 : 1.8} /><span>{label === "Visão geral" ? "Início" : label}</span>
@@ -198,7 +198,7 @@ export default function AppShell({ membership, firstName, children }) {
         <button className={`app-mobile-more-trigger ${secondaryActive ? "is-active" : ""}`} type="button" aria-expanded={openSheet === "more"} onClick={() => setOpenSheet(openSheet === "more" ? null : "more")}>
           <Menu size={21} /><span>Mais</span>
         </button>
-      </nav>
+      </nav>}
 
       <ActionSheet open={openSheet === "create"} title="Criar novo" onClose={closeSheet} className="is-create-sheet">
         <div className="app-action-list">

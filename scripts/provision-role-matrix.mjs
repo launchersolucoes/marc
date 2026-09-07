@@ -157,6 +157,16 @@ for (const definition of definitions) {
       acceptance_confirmed: true,
     });
     if (acceptanceError) throw acceptanceError;
+  } else {
+    const { error: legalAcceptanceError } = await roleClient.rpc("record_reconsent_legal_acceptance", {
+      terms_version: currentLegalDocuments.terms.version,
+      terms_content_sha256: currentLegalDocuments.terms.contentSha256,
+      privacy_version: currentLegalDocuments.privacy.version,
+      privacy_content_sha256: currentLegalDocuments.privacy.contentSha256,
+      target_establishment_id: ownerMembership.establishment_id,
+      acceptance_confirmed: true,
+    });
+    if (legalAcceptanceError) throw legalAcceptanceError;
   }
 
   if (definition.role === "professional") {

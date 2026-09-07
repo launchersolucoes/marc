@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { getSubscriptionAccess } from "./subscription";
 import { createClient } from "./supabase/server";
 
-export async function getActionContext({ allowRestricted = false } = {}) {
+export async function getActionContext({ allowRestricted = false, allowLegalPending = false } = {}) {
   const supabase = await createClient();
   const [{ data: authData }, { data: context, error: contextError }] = await Promise.all([
     supabase.auth.getUser(),
@@ -15,6 +15,8 @@ export async function getActionContext({ allowRestricted = false } = {}) {
   if (!context?.membership) redirect("/onboarding");
 
   const subscriptionAccess = getSubscriptionAccess(context.subscription);
+  const legalAcceptanceCurrent = context.legal_acceptance_current !== false;
+  if (!allowLegalPending && !legalAcceptanceCurrent) redirect("/app?legal=required");
   if (!allowRestricted && !subscriptionAccess.canAccess) redirect("/app/assinatura?estado=bloqueado");
 
   return {
@@ -23,5 +25,6 @@ export async function getActionContext({ allowRestricted = false } = {}) {
     membership: context.membership,
     subscription: context.subscription,
     subscriptionAccess,
+    legalAcceptanceCurrent,
   };
 }

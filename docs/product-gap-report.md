@@ -148,7 +148,7 @@ Os preços estão confirmados, mas a composição ainda é ilustrativa. Falta:
 - Transformar os prazos propostos de retenção para clientes, agendamentos, auditoria e dados financeiros em política jurídica formal e, depois, em rotinas automatizadas auditáveis.
 - Exportação estruturada dos dados do estabelecimento e encerramento protegido implementados para o proprietário.
 - Anonimização de contatos no encerramento implementada, preservando histórico financeiro e auditoria. A política formal de retenção ainda precisa de revisão jurídica.
-- Registro versionado de aceite dos Termos e da Política implementado no onboarding, nos convites e em Configurações, com hash imutável do conteúdo e retenção pseudonimizada da evidência após exclusão da conta. Ainda falta definir o procedimento jurídico e de comunicação que tornará um novo aceite obrigatório quando uma alteração futura for relevante.
+- Registro versionado de aceite dos Termos e da Política implementado no onboarding, nos convites e em Configurações, com hash imutável do conteúdo e retenção pseudonimizada da evidência após exclusão da conta. Uma mudança de versão agora bloqueia a operação autenticada até o usuário revisar os documentos e registrar novo aceite. Ainda falta validar juridicamente quais alterações exigem reconsentimento e definir o canal de comunicação externa aos usuários afetados.
 - Revisão formal de permissões Master e proteção reforçada para administradores.
 
 ## 4. Integrações preparadas ou em standby

@@ -96,6 +96,16 @@ if (!establishmentId) {
   });
   if (error) throw error;
   establishmentId = data;
+} else {
+  const { error: legalAcceptanceError } = await supabase.rpc("record_reconsent_legal_acceptance", {
+    terms_version: currentLegalDocuments.terms.version,
+    terms_content_sha256: currentLegalDocuments.terms.contentSha256,
+    privacy_version: currentLegalDocuments.privacy.version,
+    privacy_content_sha256: currentLegalDocuments.privacy.contentSha256,
+    target_establishment_id: establishmentId,
+    acceptance_confirmed: true,
+  });
+  if (legalAcceptanceError) throw legalAcceptanceError;
 }
 
 const offerings = [

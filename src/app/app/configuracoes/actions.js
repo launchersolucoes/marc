@@ -115,7 +115,7 @@ export async function recordLegalAcceptance(formData) {
     redirect("/app/configuracoes?legal=required");
   }
 
-  const { supabase, membership } = await getActionContext({ allowRestricted: true });
+  const { supabase, membership } = await getActionContext({ allowRestricted: true, allowLegalPending: true });
   const { error } = await supabase.rpc("record_settings_legal_acceptance", {
     terms_version: currentLegalDocuments.terms.version,
     terms_content_sha256: currentLegalDocuments.terms.contentSha256,
@@ -133,7 +133,7 @@ export async function recordLegalAcceptance(formData) {
 
 export async function requestOwnDataDeletion(_previousState, formData) {
   const details = value(formData, "details");
-  const { supabase } = await getActionContext({ allowRestricted: true });
+  const { supabase } = await getActionContext({ allowRestricted: true, allowLegalPending: true });
   const { error } = await supabase.rpc("request_own_data_deletion", {
     request_details: details || null,
   });
@@ -161,7 +161,7 @@ export async function closeEstablishment(_previousState, formData) {
     return { error: "Confirme que você baixou os dados necessários antes de encerrar.", success: "" };
   }
 
-  const { supabase, membership } = await getActionContext({ allowRestricted: true });
+  const { supabase, membership } = await getActionContext({ allowRestricted: true, allowLegalPending: true });
   if (membership.role !== "owner") {
     return { error: "Somente o proprietário pode encerrar o estabelecimento.", success: "" };
   }
